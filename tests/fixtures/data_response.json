@@ -1,0 +1,64 @@
+{
+  "indicador": "0004167",
+  "nome": "Resident population (No.) by Place of residence (NUTS - 2013); Annual",
+  "lang": "EN",
+  "unidade": "No.",
+  "dados": [
+    {
+      "geocod": "1",
+      "geodsg": "Portugal",
+      "dim_3": "PT",
+      "dim_3_t": "Portugal",
+      "periodo": "2020",
+      "valor": "10298252"
+    },
+    {
+      "geocod": "1",
+      "geodsg": "Portugal",
+      "dim_3": "PT",
+      "dim_3_t": "Portugal",
+      "periodo": "2021",
+      "valor": "10295909"
+    },
+    {
+      "geocod": "1",
+      "geodsg": "Portugal",
+      "dim_3": "PT",
+      "dim_3_t": "Portugal",
+      "periodo": "2022",
+      "valor": "10467366"
+    },
+    {
+      "geocod": "1",
+      "geodsg": "Portugal",
+      "dim_3": "PT",
+      "dim_3_t": "Portugal",
+      "periodo": "2023",
+      "valor": "10639726"
+    },
+    {
+      "geocod": "3",
+      "geodsg": "Norte",
+      "dim_3": "PT11",
+      "dim_3_t": "Norte",
+      "periodo": "2023",
+      "valor": "3576205"
+    },
+    {
+      "geocod": "4",
+      "geodsg": "Centro",
+      "dim_3": "PT16",
+      "dim_3_t": "Centro",
+      "periodo": "2023",
+      "valor": "2210819"
+    },
+    {
+      "geocod": "5",
+      "geodsg": "Lisboa",
+      "dim_3": "PT17",
+      "dim_3_t": "Lisboa",
+      "periodo": "2023",
+      "valor": "2925461"
+    }
+  ]
+}

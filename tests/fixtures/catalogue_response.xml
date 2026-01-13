@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+    <indicator id="0004167">
+        <theme>Population</theme>
+        <subtheme>Demographic estimates</subtheme>
+        <keywords>INE,population,residents,demographics</keywords>
+        <title>Resident population</title>
+        <varcd>0004167</varcd>
+        <description>Resident population (No.) by Place of residence (NUTS - 2013); Annual</description>
+        <geo_lastlevel>Municipality</geo_lastlevel>
+        <source>INE, Population estimates</source>
+        <dates>
+            <last_period_available>2023</last_period_available>
+            <last_update>14-06-2024</last_update>
+        </dates>
+        <periodicity>Annual</periodicity>
+        <html>
+            <bdd_url>https://www.ine.pt/xurl/indx/0004167/EN</bdd_url>
+            <metainfo_url>https://www.ine.pt/xurl/metax/0004167/EN</metainfo_url>
+        </html>
+        <json>
+            <json_dataset>https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&amp;varcd=0004167&amp;lang=EN</json_dataset>
+            <json_metainfo>https://www.ine.pt/ine/json_indicador/pindicaMeta.jsp?varcd=0004167&amp;lang=EN</json_metainfo>
+        </json>
+    </indicator>
+    <indicator id="0008074">
+        <theme>Population</theme>
+        <subtheme>Demographic estimates</subtheme>
+        <keywords>INE,population,sex,age</keywords>
+        <title>Resident population by sex and age group</title>
+        <varcd>0008074</varcd>
+        <description>Resident population by sex and age group; Annual</description>
+        <geo_lastlevel>National</geo_lastlevel>
+        <source>INE, Population estimates</source>
+        <dates>
+            <last_period_available>2023</last_period_available>
+            <last_update>14-06-2024</last_update>
+        </dates>
+        <periodicity>Annual</periodicity>
+        <html>
+            <bdd_url>https://www.ine.pt/xurl/indx/0008074/EN</bdd_url>
+            <metainfo_url>https://www.ine.pt/xurl/metax/0008074/EN</metainfo_url>
+        </html>
+        <json>
+            <json_dataset>https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&amp;varcd=0008074&amp;lang=EN</json_dataset>
+            <json_metainfo>https://www.ine.pt/ine/json_indicador/pindicaMeta.jsp?varcd=0008074&amp;lang=EN</json_metainfo>
+        </json>
+    </indicator>
+</catalog>

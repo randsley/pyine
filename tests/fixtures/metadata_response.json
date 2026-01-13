@@ -1,0 +1,42 @@
+{
+  "indicador": "0004167",
+  "nome": "Resident population (No.) by Place of residence (NUTS - 2013); Annual",
+  "lang": "EN",
+  "unidade": "No.",
+  "dimensoes": [
+    {
+      "id": 1,
+      "nome": "Period",
+      "valores": [
+        {"codigo": "2011", "label": "2011"},
+        {"codigo": "2012", "label": "2012"},
+        {"codigo": "2013", "label": "2013"},
+        {"codigo": "2014", "label": "2014"},
+        {"codigo": "2015", "label": "2015"},
+        {"codigo": "2016", "label": "2016"},
+        {"codigo": "2017", "label": "2017"},
+        {"codigo": "2018", "label": "2018"},
+        {"codigo": "2019", "label": "2019"},
+        {"codigo": "2020", "label": "2020"},
+        {"codigo": "2021", "label": "2021"},
+        {"codigo": "2022", "label": "2022"},
+        {"codigo": "2023", "label": "2023"}
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "Geographic localization (NUTS - 2013)",
+      "valores": [
+        {"codigo": "1", "label": "Portugal"},
+        {"codigo": "2", "label": "Continent"},
+        {"codigo": "3", "label": "Norte"},
+        {"codigo": "4", "label": "Centro"},
+        {"codigo": "5", "label": "Lisboa"},
+        {"codigo": "6", "label": "Alentejo"},
+        {"codigo": "7", "label": "Algarve"},
+        {"codigo": "8", "label": "Região Autónoma dos Açores"},
+        {"codigo": "9", "label": "Região Autónoma da Madeira"}
+      ]
+    }
+  ]
+}
