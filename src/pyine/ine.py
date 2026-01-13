@@ -91,18 +91,19 @@ class INE:
             cache_dir=cache_dir,
         )
 
-        self.data_client = DataClient(
+        self.metadata_client = MetadataClient(
             language=self.language,
             timeout=timeout,
             cache_enabled=cache,
             cache_dir=cache_dir,
         )
 
-        self.metadata_client = MetadataClient(
+        self.data_client = DataClient(
             language=self.language,
             timeout=timeout,
             cache_enabled=cache,
             cache_dir=cache_dir,
+            metadata_client=self.metadata_client, # Pass metadata_client
         )
 
         # Initialize catalogue browser

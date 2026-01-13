@@ -1,9 +1,10 @@
 """Data client for INE Portugal API."""
 
 import logging
-from typing import Any, Dict, Iterator, Optional, cast
+from typing import Any, Dict, Iterator, List, Optional, Union, cast
 
 from pyine.client.base import INEClient
+from pyine.client.metadata import MetadataClient # Import MetadataClient
 from pyine.models.response import DataResponse
 from pyine.utils.exceptions import DataProcessingError, DimensionError
 
@@ -24,6 +25,17 @@ class DataClient(INEClient):
 
     DATA_ENDPOINT = "/ine/json_indicador/pindica.jsp"
     DEFAULT_PAGE_SIZE = 40000  # API limit for data points per request
+
+    def __init__(
+        self,
+        language: str = "EN",
+        timeout: int = 30,
+        cache_enabled: bool = True,
+        cache_dir: Optional[Path] = None,
+        metadata_client: Optional[MetadataClient] = None, # New parameter
+    ):
+        super().__init__(language, timeout, cache_enabled, cache_dir)
+        self.metadata_client = metadata_client
 
     def get_data(
         self,
@@ -59,10 +71,10 @@ class DataClient(INEClient):
         params = self._build_params(varcd, dimensions)
 
         try:
-            response = self._make_request(self.DATA_ENDPOINT, params=params, response_format="json")
+            raw_response = self._make_request(self.DATA_ENDPOINT, params=params, response_format="json")
 
             # Parse response
-            data_response = self._parse_data_response(cast(Dict[str, Any], response))
+            data_response = self._parse_data_response(varcd, cast(Union[Dict[str, Any], List[Dict[str, Any]]], raw_response))
 
             logger.info(f"Retrieved {len(data_response.data)} data points for {varcd}")
 
@@ -142,11 +154,12 @@ class DataClient(INEClient):
 
         return params
 
-    def _parse_data_response(self, response: Dict[str, Any]) -> DataResponse:
+    def _parse_data_response(self, varcd: str, response: Union[Dict[str, Any], List[Dict[str, Any]]]) -> DataResponse:
         """Parse data API response into DataResponse model.
 
         Args:
-            response: Raw JSON response from API
+            varcd: Indicator code (used if response is a list)
+            response: Raw JSON response from API (can be dict or list)
 
         Returns:
             Parsed DataResponse object
@@ -155,14 +168,40 @@ class DataClient(INEClient):
             DataProcessingError: If parsing fails
         """
         try:
-            # Extract basic info
-            indicator_code = response.get("indicador", "")
-            indicator_name = response.get("nome", "")
-            language = response.get("lang", self.language)
-            unit = response.get("unidade")
+            indicator_code = varcd
+            indicator_name = ""
+            language = self.language
+            unit = None
+            data_array = []
 
-            # Extract data array
-            data_array = response.get("dados", [])
+            if isinstance(response, list):
+                # If response is a list, assume it's directly the data array
+                data_array = response
+                # Fetch metadata separately to get indicator_name and unit
+                if self.metadata_client:
+                    try:
+                        metadata = self.metadata_client.get_metadata(varcd)
+                        indicator_name = metadata.indicator_name
+                        unit = metadata.unit
+                    except Exception as e:
+                        logger.warning(f"Could not fetch metadata for {varcd} when parsing list data response: {e}")
+                else:
+                    logger.warning("MetadataClient not available in DataClient to fetch indicator name and unit.")
+                
+                if not indicator_name and data_array:
+                    # Fallback: try to get unit from first data point if metadata not available
+                    first_point = data_array[0]
+                    unit = first_point.get("unidade") or first_point.get("unit")
+
+            elif isinstance(response, dict):
+                # If response is a dict, parse as before
+                indicator_code = response.get("indicador", "")
+                indicator_name = response.get("nome", "")
+                language = response.get("lang", self.language)
+                unit = response.get("unidade")
+                data_array = response.get("dados", [])
+            else:
+                raise DataProcessingError("Unexpected data API response format: neither dict nor list")
 
             # Process data points
             processed_data = []

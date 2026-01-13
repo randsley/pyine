@@ -100,6 +100,41 @@ class CatalogueClient(INEClient):
             logger.error(f"Failed to get main indicators: {str(e)}")
             raise
 
+    def get_complete_catalogue(self) -> List[Indicator]:
+        """Get the complete catalogue of indicators.
+
+        Returns:
+            List of all Indicator objects in the complete catalogue.
+
+        Raises:
+            DataProcessingError: If XML parsing fails.
+            Exception: For other API request failures.
+
+        Example:
+            >>> client = CatalogueClient()
+            >>> all_indicators = client.get_complete_catalogue()
+            >>> print(f"Found {len(all_indicators)} indicators in complete catalogue")
+        """
+        logger.info("Fetching complete catalogue of indicators (opc=2)")
+
+        params = {
+            "opc": "2",  # Complete catalogue
+        }
+
+        try:
+            xml_response = self._make_request(
+                self.CATALOGUE_ENDPOINT, params=params, response_format="xml"
+            )
+
+            indicators = self._parse_catalogue_xml(cast(str, xml_response))
+
+            logger.info(f"Retrieved {len(indicators)} indicators from complete catalogue")
+            return indicators
+
+        except Exception as e:
+            logger.error(f"Failed to get complete catalogue: {str(e)}")
+            raise
+
     def get_catalogue_response(self, varcd: Optional[str] = None) -> CatalogueResponse:
         """Get catalogue response wrapped in CatalogueResponse model.
 

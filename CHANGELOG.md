@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CLI Parameters**: Renamed `format` parameter to `output_format` in `pyine download` command to avoid shadowing Python's built-in `format` function.
 - **CLI Commands**: Renamed `list` command group to `list-commands` to avoid shadowing Python's built-in `list` function.
 
+### Added
+
+- **Complete Catalogue Access**: Implemented `opc=2` for `CatalogueClient` to fetch the complete list of indicators, and updated `CatalogueBrowser.get_all_indicators()` to use it.
+
 ## [0.1.0] - 2026-01-13
 
 ### Added

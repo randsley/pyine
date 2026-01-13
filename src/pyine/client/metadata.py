@@ -117,11 +117,11 @@ class MetadataClient(INEClient):
             f"Available dimensions: {[d.id for d in dimensions]}"
         )
 
-    def _parse_metadata_response(self, response: Dict[str, Any]) -> IndicatorMetadata:
+    def _parse_metadata_response(self, response: Union[Dict[str, Any], List[Any]]) -> IndicatorMetadata:
         """Parse metadata API response into IndicatorMetadata model.
 
         Args:
-            response: Raw JSON response from API
+            response: Raw JSON response from API (can be dict or list)
 
         Returns:
             Parsed IndicatorMetadata object
@@ -130,31 +130,49 @@ class MetadataClient(INEClient):
             DataProcessingError: If parsing fails
         """
         try:
-            # Extract basic info
-            indicator_code = response.get("indicador", "")
-            indicator_name = response.get("nome", "")
-            language = response.get("lang", self.language)
-            unit = response.get("unidade")
-            source = response.get("fonte")
-            notes = response.get("notas")
+            if isinstance(response, list):
+                if len(response) == 1 and isinstance(response[0], dict):
+                    # If it's a list with a single dictionary, use that dictionary
+                    response = response[0]
+                elif not response:
+                    # If it's an empty list, treat as no metadata found
+                    raise DataProcessingError(f"No metadata found for indicator (empty list response).")
+                else:
+                    # If it's a list with multiple items or non-dict items, it's unexpected
+                    raise DataProcessingError(
+                        f"Unexpected metadata API response format: received a list with {len(response)} items. "
+                        f"Expected a single dictionary for indicator metadata."
+                    )
 
-            # Parse dimensions
-            dimensions = []
-            dims_data = response.get("dimensoes", [])
+            if isinstance(response, dict):
+                # Extract basic info
+                indicator_code = response.get("indicador", "")
+                indicator_name = response.get("nome", "")
+                language = response.get("lang", self.language)
+                unit = response.get("unidade")
+                source = response.get("fonte")
+                notes = response.get("notas")
 
-            for i, dim_data in enumerate(dims_data, start=1):
-                dimension = self._parse_dimension(dim_data, dimension_id=i)
-                dimensions.append(dimension)
+                # Parse dimensions
+                dimensions = []
+                dims_data = response.get("dimensoes", [])
 
-            return IndicatorMetadata(
-                indicator_code=indicator_code,
-                indicator_name=indicator_name,
-                language=language,
-                dimensions=dimensions,
-                unit=unit,
-                source=source,
-                notes=notes,
-            )
+                for i, dim_data in enumerate(dims_data, start=1):
+                    dimension = self._parse_dimension(dim_data, dimension_id=i)
+                    dimensions.append(dimension)
+
+                return IndicatorMetadata(
+                    indicator_code=indicator_code,
+                    indicator_name=indicator_name,
+                    language=language,
+                    dimensions=dimensions,
+                    unit=unit,
+                    source=source,
+                    notes=notes,
+                )
+            else:
+                # This case should ideally not be reached after the list check
+                raise DataProcessingError("Unexpected metadata API response format: not a dictionary after list check.")
 
         except Exception as e:
             logger.error(f"Failed to parse metadata response: {str(e)}")

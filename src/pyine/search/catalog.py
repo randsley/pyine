@@ -58,8 +58,8 @@ class CatalogueBrowser:
             logger.debug("Using cached indicator list")
             return self._cached_indicators
 
-        logger.info("Fetching all indicators from catalogue")
-        indicators = self.client.get_main_indicators()
+        logger.info("Fetching all indicators from complete catalogue (opc=2)")
+        indicators = self.client.get_complete_catalogue()
         self._cached_indicators = indicators
 
         logger.info(f"Retrieved {len(indicators)} indicators")
