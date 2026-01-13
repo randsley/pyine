@@ -43,11 +43,11 @@ class INE:
         >>> print(f"Found {len(results)} indicators")
         >>>
         >>> # Get data as DataFrame
-        >>> df = ine.get_data("0004167")
+        >>> df = ine.get_data("0004127")
         >>> print(df.head())
         >>>
         >>> # Export to CSV
-        >>> ine.export_csv("0004167", "output.csv")
+        >>> ine.export_csv("0004127", "output.csv")
     """
 
     def __init__(
@@ -355,8 +355,8 @@ class INE:
 
         Example:
             >>> ine = INE()
-            >>> ine.export_json("0004167", "data.json")
-            >>> ine.export_json("0004167", "compact.json", pretty=False)
+            >>> ine.export_json("0004127", "data.json")
+            >>> ine.export_json("0004127", "compact.json", pretty=False)
         """
         logger.info(f"Exporting indicator {varcd} to {filepath}")
 
