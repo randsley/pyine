@@ -40,19 +40,7 @@ This ensures compatibility across:
 - **3 operating systems**
 - **21 total test combinations**
 
-## ⚠️ Known Warnings
 
-### Pydantic Deprecation Warnings
-
-4 non-blocking deprecation warnings from Pydantic:
-
-```
-PydanticDeprecatedSince20: Support for class-based `config` is deprecated
-```
-
-**Impact**: None - functionality is not affected
-**Severity**: Low
-**Action**: Can be resolved by migrating to ConfigDict in future release
 
 ## 📦 Dependency Compatibility
 
@@ -83,7 +71,7 @@ pip install pyine
 **Passed**: 133 (100%)
 **Failed**: 0
 **Coverage**: 82%
-**Warnings**: 4 (non-blocking)
+
 
 ### Component Breakdown
 
@@ -104,7 +92,7 @@ pyine is **production-ready** for Python 3.14 with:
 - ✅ Full functionality verified
 - ✅ CLI working correctly
 - ✅ All dependencies compatible
-- ⚠️ Minor deprecation warnings (non-blocking)
+
 
 **Recommendation**: Safe to use in production with Python 3.8 through 3.14.
 
