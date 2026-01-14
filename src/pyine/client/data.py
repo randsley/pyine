@@ -255,9 +255,12 @@ class DataClient(INEClient):
                 # Handle value field specially (convert to float)
                 if key == "valor" or key == "value":
                     try:
-                        # Try to convert to float
-                        processed["value"] = float(value) if value else None
-                    except (ValueError, TypeError):
+                        processed["value"] = float(value) if value is not None else None
+                    except (ValueError, TypeError) as e:
+                        logger.warning(
+                            f"Could not convert value '{value}' for key '{key}' to float in data point {data_point}. "
+                            f"Setting to None. Error: {e}"
+                        )
                         processed["value"] = None
                 else:
                     # Keep other fields as-is
@@ -266,7 +269,7 @@ class DataClient(INEClient):
             return processed
 
         except Exception as e:
-            logger.warning(f"Failed to process data point: {str(e)}")
+            logger.warning(f"Failed to process data point {data_point}: {str(e)}")
             return None
 
     def validate_dimensions(self, varcd: str, dimensions: Dict[str, str]) -> bool:
