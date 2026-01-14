@@ -228,7 +228,7 @@ class CatalogueBrowser:
             >>> all_subthemes = browser.list_subthemes()
             >>> pop_subthemes = browser.list_subthemes(theme="Population")
         """
-        indicators = self.filter_by_theme(theme=theme) if theme else self.get_all_indicators()
+        indicators = self.search(query="", theme=theme) if theme else self.get_all_indicators()
 
         subthemes = set()
         for indicator in indicators:
