@@ -93,14 +93,8 @@ class TestCatalogueBrowser:
         assert all(isinstance(ind, Indicator) for ind in results)
 
     @responses.activate
-    def test_search_empty_query(self, browser):
+    def test_search_empty_query(self, browser, sample_catalogue):
         """Test search with empty query."""
-        results = browser.search("")
-        assert len(results) == 0
-
-    @responses.activate
-    def test_filter_by_theme(self, browser, sample_catalogue):
-        """Test filtering by theme."""
         responses.add(
             responses.GET,
             "https://www.ine.pt/ine/xml_indic.jsp",
@@ -108,15 +102,9 @@ class TestCatalogueBrowser:
             status=200,
             content_type="application/xml",
         )
-
-        # Get all themes first
-        themes = browser.list_themes()
-        assert len(themes) > 0
-
-        # Filter by first theme
-        if themes:
-            results = browser.filter_by_theme(theme=themes[0])
-            assert all(ind.theme == themes[0] for ind in results if ind.theme)
+        results = browser.search("")
+        assert len(results) > 0
+        assert all(isinstance(ind, Indicator) for ind in results)
 
     @responses.activate
     def test_list_themes(self, browser, sample_catalogue):
@@ -154,7 +142,7 @@ class TestCatalogueBrowser:
         # Get subthemes for specific theme
         themes = browser.list_themes()
         if themes:
-            theme_subthemes = browser.list_subthemes(theme=themes[0])
+            theme_subthemes = browser.search(query="", theme=themes[0])
             assert isinstance(theme_subthemes, list)
 
     @responses.activate

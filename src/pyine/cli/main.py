@@ -58,6 +58,11 @@ def cli(ctx: Context) -> None:  # type: ignore[misc]
     help="Filter by theme",
 )
 @click.option(
+    "--subtheme",
+    "-s",
+    help="Filter by subtheme",
+)
+@click.option(
     "--lang",
     "-l",
     default="EN",
@@ -71,7 +76,13 @@ def cli(ctx: Context) -> None:  # type: ignore[misc]
     help="Maximum number of results to display",
 )
 @handle_exceptions
-def search(query: str, theme: Optional[str], lang: str, limit: Optional[int]) -> None:
+def search(
+    query: str,
+    theme: Optional[str],
+    subtheme: Optional[str],
+    lang: str,
+    limit: Optional[int],
+) -> None:
     """Search for indicators by keyword.
 
     \b
@@ -83,17 +94,7 @@ def search(query: str, theme: Optional[str], lang: str, limit: Optional[int]) ->
     ine = INE(language=lang, cache=True)
 
     # Search
-    if theme:
-        results = ine.filter_by_theme(theme=theme)
-        # Further filter by query within theme results
-        results = [
-            ind
-            for ind in results
-            if query.lower() in ind.title.lower()
-            or query.lower() in (ind.description or "").lower()
-        ]
-    else:
-        results = ine.search(query)
+    results = ine.search(query, theme=theme, subtheme=subtheme)
 
     if not results:
         click.echo(f"No indicators found for '{query}'", err=True)
@@ -116,6 +117,7 @@ def search(query: str, theme: Optional[str], lang: str, limit: Optional[int]) ->
             )
             click.echo(f"    {desc}")
         click.echo()
+
 
 
 
@@ -377,7 +379,7 @@ def list_indicators(theme: Optional[str], lang: str, limit: int) -> None:
     ine = INE(language=lang, cache=True)
 
     # Get indicators
-    indicators = ine.filter_by_theme(theme=theme) if theme else ine.browser.get_all_indicators()
+    indicators = ine.search(query="", theme=theme)
 
     if not indicators:
         if theme:

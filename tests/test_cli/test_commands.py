@@ -302,7 +302,9 @@ class TestListCommands:
         result = runner.invoke(cli, ["list-commands", "indicators"])
 
         assert result.exit_code == 0
-        assert "Indicators" in result.output
+        assert "Indicators (2 of 2):" in result.output
+        assert "0004167" in result.output
+        assert "0008074" in result.output
 
     @responses.activate
     def test_list_indicators_with_theme(self, sample_catalogue):
@@ -332,9 +334,12 @@ class TestListCommands:
         )
 
         runner = CliRunner()
-        result = runner.invoke(cli, ["list-commands", "indicators", "--limit", "5"])
+        result = runner.invoke(cli, ["list-commands", "indicators", "--limit", "1"])
 
         assert result.exit_code == 0
+        assert "Indicators" in result.output
+        assert "0004167" in result.output
+        assert "of 2" in result.output  # Assuming sample_catalogue has 2 indicators
 
 
 class TestCacheCommands:

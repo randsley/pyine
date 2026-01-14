@@ -168,7 +168,7 @@ class TestINEIntegration:
 
         # Filter by theme
         if themes:
-            indicators = ine.filter_by_theme(themes[0])
+            indicators = ine.search(query="", theme=themes[0])
             assert all(ind.theme == themes[0] for ind in indicators if ind.theme)
 
     @responses.activate

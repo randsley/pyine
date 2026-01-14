@@ -105,8 +105,10 @@ class INE:
         query: str,
         search_fields: Optional[List[str]] = None,
         case_sensitive: bool = False,
+        theme: Optional[str] = None,
+        subtheme: Optional[str] = None,
     ) -> List[Indicator]:
-        """Search for indicators by keyword.
+        """Search for indicators by keyword, with optional theme/subtheme filtering.
 
         Searches across indicator titles, descriptions, keywords, themes, and subthemes.
 
@@ -114,6 +116,8 @@ class INE:
             query: Search query string
             search_fields: Specific fields to search (default: all)
             case_sensitive: Perform case-sensitive search
+            theme: Optional theme name to filter by
+            subtheme: Optional subtheme name to filter by
 
         Returns:
             List of matching indicators
@@ -128,6 +132,8 @@ class INE:
             query=query,
             search_fields=search_fields,
             case_sensitive=case_sensitive,
+            theme=theme,
+            subtheme=subtheme,
         )
 
     def get_data(
@@ -251,25 +257,9 @@ class INE:
             >>> ine = INE()
             >>> themes = ine.list_themes()
             >>> print(themes)
+            ['Agriculture', 'Economy', 'Population', ...]
         """
         return self.browser.list_themes()
-
-    def filter_by_theme(self, theme: str, subtheme: Optional[str] = None) -> List[Indicator]:
-        """Filter indicators by theme or subtheme.
-
-        Args:
-            theme: Theme name
-            subtheme: Optional subtheme name
-
-        Returns:
-            List of matching indicators
-
-        Example:
-            >>> ine = INE()
-            >>> pop_indicators = ine.filter_by_theme("Population")
-            >>> employment = ine.filter_by_theme("Labour Market", "Employment")
-        """
-        return self.browser.filter_by_theme(theme=theme, subtheme=subtheme)
 
     def export_csv(
         self,

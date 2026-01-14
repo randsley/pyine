@@ -71,8 +71,10 @@ class CatalogueBrowser:
         search_fields: Optional[List[str]] = None,
         case_sensitive: bool = False,
         exact_match: bool = False,
+        theme: Optional[str] = None,
+        subtheme: Optional[str] = None,
     ) -> List[Indicator]:
-        """Search indicators by text query.
+        """Search indicators by text query, with optional theme/subtheme filtering.
 
         Searches across indicator title, description, keywords, theme, and subtheme.
 
@@ -81,36 +83,65 @@ class CatalogueBrowser:
             search_fields: Fields to search in (default: all text fields)
             case_sensitive: Perform case-sensitive search
             exact_match: Require exact match (not substring)
+            theme: Optional theme name to filter by
+            subtheme: Optional subtheme name to filter by
 
         Returns:
             List of matching indicators
 
         Example:
             >>> browser = CatalogueBrowser(client)
-            >>> results = browser.search("population")
+            >>> results = browser.search("population", theme="Population")
             >>> results = browser.search("GDP", search_fields=["title", "keywords"])
         """
-        if not query:
-            return []
+        if not query and not theme and not subtheme:
+            return self.get_all_indicators()
 
         indicators = self.get_all_indicators()
+        filtered_indicators = []
 
-        # Default to searching all text fields
-        if search_fields is None:
-            search_fields = ["title", "description", "keywords", "theme", "subtheme"]
-
-        # Prepare query
-        search_query = query if case_sensitive else query.lower()
-
-        results = []
         for indicator in indicators:
-            if self._matches_query(
-                indicator, search_query, search_fields, case_sensitive, exact_match
-            ):
-                results.append(indicator)
+            # Apply theme filter first
+            if theme is not None:
+                indicator_theme = indicator.theme or ""
+                theme_compare = theme if case_sensitive else theme.lower()
+                indicator_theme_compare = (
+                    indicator_theme if case_sensitive else indicator_theme.lower()
+                )
+                if theme_compare not in indicator_theme_compare:
+                    continue
 
-        logger.debug(f"Search for '{query}' found {len(results)} results")
-        return results
+            # Apply subtheme filter
+            if subtheme is not None:
+                indicator_subtheme = indicator.subtheme or ""
+                subtheme_compare = subtheme if case_sensitive else subtheme.lower()
+                indicator_subtheme_compare = (
+                    indicator_subtheme if case_sensitive else indicator_subtheme.lower()
+                )
+                if subtheme_compare not in indicator_subtheme_compare:
+                    continue
+
+            # Apply query search if query is provided
+            if query:
+                # Default to searching all text fields
+                if search_fields is None:
+                    search_fields = ["title", "description", "keywords", "theme", "subtheme"]
+
+                # Prepare query
+                search_query = query if case_sensitive else query.lower()
+
+                if not self._matches_query(
+                    indicator, search_query, search_fields, case_sensitive, exact_match
+                ):
+                    continue
+            elif query == "" and (theme or subtheme):
+                # If query is empty but theme/subtheme are provided, include all matching theme/subtheme indicators
+                pass
+
+            filtered_indicators.append(indicator)
+
+        logger.debug(f"Search for '{query}' with theme '{theme}' found {len(filtered_indicators)} results")
+        return filtered_indicators
 
     def _matches_query(
         self,
@@ -159,61 +190,6 @@ class CatalogueBrowser:
                         return True
 
         return False
-
-    def filter_by_theme(
-        self,
-        theme: Optional[str] = None,
-        subtheme: Optional[str] = None,
-        case_sensitive: bool = False,
-    ) -> List[Indicator]:
-        """Filter indicators by theme or subtheme.
-
-        Args:
-            theme: Theme name to filter by
-            subtheme: Subtheme name to filter by
-            case_sensitive: Perform case-sensitive matching
-
-        Returns:
-            List of indicators matching theme/subtheme
-
-        Example:
-            >>> browser = CatalogueBrowser(client)
-            >>> pop_indicators = browser.filter_by_theme(theme="Population")
-            >>> employment = browser.filter_by_theme(
-            ...     theme="Labour Market",
-            ...     subtheme="Employment"
-            ... )
-        """
-        indicators = self.get_all_indicators()
-        results = []
-
-        for indicator in indicators:
-            # Check theme match
-            if theme is not None:
-                indicator_theme = indicator.theme or ""
-                theme_compare = theme if case_sensitive else theme.lower()
-                indicator_theme_compare = (
-                    indicator_theme if case_sensitive else indicator_theme.lower()
-                )
-
-                if theme_compare not in indicator_theme_compare:
-                    continue
-
-            # Check subtheme match
-            if subtheme is not None:
-                indicator_subtheme = indicator.subtheme or ""
-                subtheme_compare = subtheme if case_sensitive else subtheme.lower()
-                indicator_subtheme_compare = (
-                    indicator_subtheme if case_sensitive else indicator_subtheme.lower()
-                )
-
-                if subtheme_compare not in indicator_subtheme_compare:
-                    continue
-
-            results.append(indicator)
-
-        logger.debug(f"Theme filter found {len(results)} results")
-        return results
 
     def list_themes(self) -> List[str]:
         """Get list of all unique themes in catalogue.
