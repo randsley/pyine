@@ -1,9 +1,9 @@
 """Command-line interface for pyine."""
 
 import sys
-from pathlib import Path
-from typing import Optional, Callable, Any
 from functools import wraps
+from pathlib import Path
+from typing import Any, Callable, Optional
 
 import click
 from click import Context

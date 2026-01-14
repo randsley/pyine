@@ -1,8 +1,8 @@
 """Tests for CatalogueBrowser functionality."""
 
+
 import pytest
 import responses
-from typing import Union
 
 from pyine.client.catalogue import CatalogueClient
 from pyine.models.indicator import Indicator

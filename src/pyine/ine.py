@@ -2,9 +2,7 @@
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Union, cast
-
-import pandas as pd
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from pyine.client.base import INEClient
 from pyine.client.catalogue import CatalogueClient
@@ -13,8 +11,7 @@ from pyine.client.metadata import MetadataClient
 from pyine.models.indicator import Dimension, Indicator, IndicatorMetadata
 from pyine.models.response import DataResponse
 from pyine.processors.csv import export_to_csv
-from pyine.processors.dataframe import json_to_dataframe
-from pyine.processors.json import export_to_json, format_json
+from pyine.processors.json import export_to_json
 from pyine.search.catalog import CatalogueBrowser
 
 logger = logging.getLogger(__name__)

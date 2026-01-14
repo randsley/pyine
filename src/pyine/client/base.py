@@ -9,9 +9,9 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+from pyine.__version__ import __version__
 from pyine.cache.disk import DiskCache
 from pyine.utils.exceptions import APIError, RateLimitError
-from pyine.__version__ import __version__
 
 logger = logging.getLogger(__name__)
 
@@ -170,10 +170,7 @@ class INEClient:
         url = self.BASE_URL + endpoint
 
         # Add language to params
-        if params is None:
-            params = {}
-        else:
-            params = params.copy()
+        params = {} if params is None else params.copy()
         params["lang"] = self.language
 
         logger.debug(f"Making request to {endpoint} with params: {params}")

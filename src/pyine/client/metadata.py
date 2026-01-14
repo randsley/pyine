@@ -139,7 +139,7 @@ class MetadataClient(INEClient):
                 elif not response:
                     # If it's an empty list, treat as no metadata found
                     raise DataProcessingError(
-                        f"No metadata found for indicator (empty list response)."
+                        "No metadata found for indicator (empty list response)."
                     )
                 else:
                     # If it's a list with multiple items or non-dict items, it's unexpected

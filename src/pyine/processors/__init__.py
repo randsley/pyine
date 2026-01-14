@@ -4,10 +4,6 @@ from pyine.processors.csv import (
     export_to_csv,
     read_csv_with_metadata,
 )
-from pyine.processors.excel import (
-    export_multiple_sheets,
-    format_for_excel,
-)
 from pyine.processors.dataframe import (
     aggregate_by_period,
     clean_dataframe,
@@ -16,6 +12,10 @@ from pyine.processors.dataframe import (
     json_to_dataframe,
     merge_metadata,
     pivot_by_dimension,
+)
+from pyine.processors.excel import (
+    export_multiple_sheets,
+    format_for_excel,
 )
 from pyine.processors.json import (
     export_to_json,
