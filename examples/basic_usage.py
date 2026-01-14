@@ -1,128 +1,106 @@
-"""Basic usage examples for pyine."""
+"""Basic usage examples for the pyine library."""
 
 from pyine import INE
 
-# Initialize client with English language
-ine = INE(language="EN", cache=True)
+# Initialize the client. Caching is enabled by default.
+ine = INE(language="EN")
 
 print("=" * 60)
-print("Example 1: Search for indicators")
+print("Example 1: Search for indicators by keyword")
 print("=" * 60)
-
-# Search for indicators about population
-results = ine.search("population")
-print(f"\nFound {len(results)} indicators about population:")
-for i, indicator in enumerate(results[:5], 1):  # Show first 5
-    print(f"{i}. {indicator.varcd}: {indicator.title}")
-    if indicator.theme:
-        print(f"   Theme: {indicator.theme}")
+results = ine.search("gdp")
+print(f"Found {len(results)} indicators for 'gdp':")
+for indicator in results[:5]:  # Print top 5 results
+    print(f"- {indicator.varcd}: {indicator.title} (Theme: {indicator.theme})")
 
 print("\n" + "=" * 60)
-print("Example 2: Get indicator metadata")
+print("Example 2: Get detailed metadata for an indicator")
 print("=" * 60)
-
-# Get metadata for resident population indicator
-varcd = "0004167"
-metadata = ine.get_metadata(varcd)
-print(f"\nIndicator: {metadata.indicator_code}")
-print(f"Name: {metadata.indicator_name}")
-print(f"Unit: {metadata.unit}")
-print(f"Number of dimensions: {len(metadata.dimensions)}")
+indicator_code = "0004167"  # Resident population
+metadata = ine.get_metadata(indicator_code)
+print(f"Metadata for indicator {metadata.varcd}:")
+print(f"- Title: {metadata.title}")
+print(f"- Unit: {metadata.unit}")
+print(f"- Source: {metadata.source}")
+print(f"- Dimensions: {len(metadata.dimensions)}")
 
 print("\n" + "=" * 60)
-print("Example 3: Explore dimensions")
+print("Example 3: Explore indicator dimensions")
 print("=" * 60)
-
-# Get available dimensions
-dimensions = ine.get_dimensions(varcd)
-print(f"\nAvailable dimensions for {varcd}:")
+dimensions = ine.get_dimensions(indicator_code)
 for dim in dimensions:
-    print(f"\n  Dimension {dim.id}: {dim.name}")
-    print(f"  Number of values: {len(dim.values)}")
-    # Show first few values
+    print(f"\nDimension '{dim.name}' (ID: {dim.id}) has {len(dim.values)} values.")
     print("  Sample values:")
-    for val in dim.values[:3]:
-        print(f"    - {val.code}: {val.label}")
+    for value in dim.values[:3]:
+        print(f"  - Code: {value.code}, Label: {value.label}")
 
 print("\n" + "=" * 60)
-print("Example 4: Get data as DataFrame")
+print("Example 4: Get data and convert to a pandas DataFrame")
 print("=" * 60)
-
-# Get all data for the indicator
-df = ine.get_data(varcd, format="dataframe")
-print(f"\nDataFrame shape: {df.shape}")
-print(f"Columns: {list(df.columns)}")
-print("\nFirst few rows:")
+response = ine.get_data(indicator_code)
+df = response.to_dataframe()
+print("Data converted to DataFrame:")
+print(f"- Shape: {df.shape}")
+print(f"- Columns: {list(df.columns)}")
+print("First 5 rows:")
 print(df.head())
 
 print("\n" + "=" * 60)
-print("Example 5: Filter data by dimensions")
+print("Example 5: Filter data using dimensions")
 print("=" * 60)
-
-# Get data for specific year and region
-# First, let's see what dimension values are available
-dims = ine.get_dimensions(varcd)
-if dims and dims[0].values:
-    # Use the first value from first dimension as example
-    dim_filter = {f"Dim{dims[0].id}": dims[0].values[0].code}
-
-    filtered_df = ine.get_data(varcd, dimensions=dim_filter, format="dataframe")
-    print(f"\nFiltered data with {dim_filter}:")
-    print(f"Shape: {filtered_df.shape}")
-    print(filtered_df.head())
+# Use a dimension code from the metadata explored in Example 3
+# For indicator 0004167, Dim1 is 'Period' and Dim2 is 'Geographic localization'
+dimension_filter = {"Dim1": "2023", "Dim2": "1"}  # Year 2023, Region 'Portugal'
+print(f"Fetching data with filter: {dimension_filter}...")
+filtered_response = ine.get_data(indicator_code, dimensions=dimension_filter)
+filtered_df = filtered_response.to_dataframe()
+print("Filtered DataFrame:")
+print(f"- Shape: {filtered_df.shape}")
+print(filtered_df.head())
 
 print("\n" + "=" * 60)
-print("Example 6: Export data to CSV")
+print("Example 6: Export data directly to a CSV file")
 print("=" * 60)
-
-# Export to CSV with metadata
-output_file = "population_data.csv"
-ine.export_csv(varcd, output_file, include_metadata=True)
-print(f"\nData exported to {output_file}")
+output_csv_file = "population_data.csv"
+print(f"Exporting data for {indicator_code} to '{output_csv_file}'...")
+ine.export_csv(indicator_code, output_csv_file, include_metadata=True)
+print(f"Successfully exported to '{output_csv_file}'.")
 
 print("\n" + "=" * 60)
-print("Example 7: List available themes")
+print("Example 7: List all available themes")
 print("=" * 60)
-
-# Get all themes
 themes = ine.list_themes()
-print(f"\nTotal themes: {len(themes)}")
-print("Sample themes:")
+print(f"Found {len(themes)} themes. First 10:")
 for theme in themes[:10]:
-    print(f"  - {theme}")
+    print(f"- {theme}")
 
 print("\n" + "=" * 60)
-print("Example 8: Filter indicators by theme")
+print("Example 8: Search for indicators within a specific theme")
 print("=" * 60)
-
-# Get indicators for a specific theme
-if themes:
-    theme_indicators = ine.filter_by_theme(theme=themes[0])
-    print(f"\nIndicators in '{themes[0]}' theme: {len(theme_indicators)}")
-    for ind in theme_indicators[:3]:  # Show first 3
-        print(f"  - {ind.varcd}: {ind.title}")
+theme_to_search = "Labour market"
+print(f"Searching for indicators in theme '{theme_to_search}'...")
+theme_indicators = ine.search(query="", theme=theme_to_search)
+print(f"Found {len(theme_indicators)} indicators in the '{theme_to_search}' theme.")
+for indicator in theme_indicators[:3]:
+    print(f"- {indicator.varcd}: {indicator.title}")
 
 print("\n" + "=" * 60)
-print("Example 9: Cache management")
+print("Example 9: Manage the cache")
 print("=" * 60)
-
-# Get cache information
 cache_info = ine.get_cache_info()
-print(f"\nCache enabled: {cache_info['enabled']}")
-if cache_info["enabled"]:
-    print("Metadata cache:", cache_info.get("metadata_cache", {}))
-    print("Data cache:", cache_info.get("data_cache", {}))
+print("Current cache info:")
+print(cache_info)
+# To clear the cache, you would run:
+# ine.clear_cache()
+# print("\nCache cleared.")
 
 print("\n" + "=" * 60)
-print("Example 10: Validate indicator")
+print("Example 10: Validate an indicator code")
 print("=" * 60)
-
-# Check if indicator exists
 valid_code = "0004167"
 invalid_code = "9999999"
-
-print(f"\nIs '{valid_code}' valid? {ine.validate_indicator(valid_code)}")
-print(f"Is '{invalid_code}' valid? {ine.validate_indicator(invalid_code)}")
+print(f"Is '{valid_code}' a valid indicator code? {ine.validate_indicator(valid_code)}")
+print(f"Is '{invalid_code}' a valid indicator code? {ine.validate_indicator(invalid_code)}")
 
 print("\n" + "=" * 60)
 print("All examples completed!")

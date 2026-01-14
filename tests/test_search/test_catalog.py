@@ -1,6 +1,5 @@
 """Tests for CatalogueBrowser functionality."""
 
-
 import pytest
 import responses
 

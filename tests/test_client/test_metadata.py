@@ -1,6 +1,5 @@
 """Tests for MetadataClient."""
 
-
 import pytest
 import responses
 
