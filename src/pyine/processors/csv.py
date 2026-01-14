@@ -73,7 +73,7 @@ def export_to_csv(
         raise DataProcessingError(f"Failed to export CSV: {str(e)}") from e
 
 
-def _write_metadata_header(file_handle: Any, metadata: Dict[str, Any]) -> None:
+def _write_metadata_header(file_handle: TextIO, metadata: Dict[str, Any]) -> None:
     """Write metadata as CSV comments.
 
     Args:
