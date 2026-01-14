@@ -394,3 +394,24 @@ class TestCLIHelp:
 
         assert result.exit_code == 0
         assert "output" in result.output.lower()
+
+
+class TestExceptionHandling:
+    """Tests for CLI exception handling."""
+
+    @responses.activate
+    def test_exception_is_handled(self, monkeypatch):
+        """Test that a generic INEError is handled."""
+        # Mock the INE class to raise an exception
+        from pyine.utils.exceptions import INEError
+
+        def mock_get_indicator(*args, **kwargs):
+            raise INEError("A test error occurred")
+
+        monkeypatch.setattr("pyine.INE.get_indicator", mock_get_indicator)
+
+        runner = CliRunner()
+        result = runner.invoke(cli, ["info", "0004167"])
+
+        assert result.exit_code == 1
+        assert "Error: A test error occurred" in result.output
