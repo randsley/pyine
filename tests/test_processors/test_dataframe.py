@@ -82,7 +82,28 @@ class TestPivotByDimension:
 
         pivoted = pivot_by_dimension(df, "region")
 
-        assert "North" in pivoted.columns or "North" in pivoted.index.names
+        assert isinstance(pivoted, pd.DataFrame)
+        assert ("valor", "North") in pivoted.columns
+        assert ("valor", "South") in pivoted.columns
+        assert pivoted.loc["2023", ("valor", "North")] == 100
+        assert pivoted.loc["2023", ("valor", "South")] == 200
+        assert pivoted.loc["2022", ("valor", "North")] == 150
+
+    def test_pivot_by_dimension_list_value_column(self):
+        """Test pivot operation with value_column as a list."""
+        df = pd.DataFrame(
+            {
+                "periodo": ["2023", "2023", "2022"],
+                "region": ["North", "South", "North"],
+                "valor1": [100, 200, 150],
+                "valor2": [10, 20, 15],
+            }
+        )
+
+        pivoted = pivot_by_dimension(df, "region", value_column=["valor1", "valor2"])
+
+        assert ("valor1", "North") in pivoted.columns
+        assert ("valor2", "South") in pivoted.columns
         assert len(pivoted) > 0
 
 
@@ -160,6 +181,24 @@ class TestAggregateByPeriod:
 
         with pytest.raises(DataProcessingError, match="Period column"):
             aggregate_by_period(df)
+
+    def test_aggregate_by_period_list_value_column(self):
+        """Test aggregation with value_column as a list."""
+        df = pd.DataFrame(
+            {
+                "periodo": ["2023", "2023", "2022"],
+                "valor1": [100, 200, 150],
+                "valor2": [10, 20, 15],
+            }
+        )
+
+        agg = aggregate_by_period(df, value_column=["valor1", "valor2"])
+
+        assert len(agg) == 2
+        assert "valor1" in agg.columns
+        assert "valor2" in agg.columns
+        assert agg["valor1"].iloc[1] == 300  # 100 + 200
+        assert agg["valor2"].iloc[1] == 30  # 10 + 20
 
 
 class TestFilterByGeography:

@@ -271,14 +271,12 @@ def unflatten_json(
 def merge_json_files(
     filepaths: List[Path],
     output_path: Path,
-    merge_key: Optional[str] = None,
 ) -> None:
     """Merge multiple JSON files into one.
 
     Args:
         filepaths: List of JSON file paths to merge
         output_path: Output file path
-        merge_key: Optional key to merge on (for list of dicts)
 
     Raises:
         DataProcessingError: If merge fails
@@ -286,6 +284,8 @@ def merge_json_files(
     Example:
         >>> files = [Path("data1.json"), Path("data2.json")]
         >>> merge_json_files(files, Path("merged.json"))
+
+    TODO: Implement merging logic based on a `merge_key` parameter for more complex scenarios.
     """
     try:
         merged_data = []
