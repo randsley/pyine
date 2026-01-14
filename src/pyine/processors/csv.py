@@ -3,7 +3,7 @@
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 
 import pandas as pd
 
@@ -97,7 +97,7 @@ def read_csv_with_metadata(
     filepath: Path,
     encoding: str = "utf-8-sig",
     **kwargs: Any,
-) -> tuple[pd.DataFrame, Dict[str, str]]:
+) -> Tuple[pd.DataFrame, Dict[str, str]]:
     """Read CSV file and extract metadata from comments.
 
     Args:
