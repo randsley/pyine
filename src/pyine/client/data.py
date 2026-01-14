@@ -137,23 +137,17 @@ class DataClient(INEClient):
             Dictionary of query parameters
 
         Raises:
-            DimensionError: If dimension keys are invalid
+            DimensionError: If dimension keys or values are invalid
         """
         params = {
             "op": "2",  # Operation code for data retrieval
             "varcd": varcd,
         }
 
-        # Add dimension filters
+        # Validate dimensions before building params
         if dimensions:
+            self.validate_dimensions(varcd, dimensions)
             for key, value in dimensions.items():
-                # Validate dimension key format (should be Dim1, Dim2, etc.)
-                if not key.startswith("Dim"):
-                    raise DimensionError(
-                        f"Invalid dimension key: {key}. "
-                        f"Dimension keys must be in format 'Dim1', 'Dim2', etc."
-                    )
-
                 params[key] = str(value)
 
         return params
@@ -275,20 +269,40 @@ class DataClient(INEClient):
     def validate_dimensions(self, varcd: str, dimensions: Dict[str, str]) -> bool:
         """Validate dimension filters against indicator metadata.
 
-        This method would check if the provided dimension codes are valid
-        for the indicator. Currently returns True as a placeholder.
+        This method checks if the provided dimension codes and values are valid
+        for the indicator.
 
         Args:
             varcd: Indicator code
-            dimensions: Dimension filters to validate
+            dimensions: Dimension filters to validate (e.g., {"Dim1": "2023"})
 
         Returns:
             True if dimensions are valid
 
-        Note:
-            Full validation would require fetching metadata and checking
-            dimension codes. This is left as a future enhancement.
+        Raises:
+            DimensionError: If metadata client is not available, or if any
+                            dimension key or value is invalid.
         """
-        # TODO: Implement full validation by fetching metadata
-        # and checking dimension codes against available values
+        if not self.metadata_client:
+            raise DimensionError("MetadataClient not available for dimension validation.")
+
+        metadata = self.metadata_client.get_metadata(varcd)
+        available_dimensions = {f"Dim{d.id}": d for d in metadata.dimensions}
+
+        for dim_key, dim_value in dimensions.items():
+            if dim_key not in available_dimensions:
+                raise DimensionError(
+                    f"Invalid dimension key '{dim_key}' for indicator {varcd}. "
+                    f"Available keys: {list(available_dimensions.keys())}"
+                )
+
+            dimension = available_dimensions[dim_key]
+            valid_values = {val.code for val in dimension.values}
+
+            if dim_value not in valid_values:
+                raise DimensionError(
+                    f"Invalid value '{dim_value}' for dimension '{dim_key}' "
+                    f"of indicator {varcd}. Available values: {list(valid_values)}"
+                )
+
         return True

@@ -3,15 +3,51 @@
 import pytest
 import responses
 
+from unittest.mock import MagicMock
+
 from pyine.client.data import DataClient
+from pyine.client.metadata import MetadataClient
+from pyine.models.indicator import Dimension, DimensionValue, IndicatorMetadata
 from pyine.models.response import DataResponse
 from pyine.utils.exceptions import APIError, DimensionError
 
 
 @pytest.fixture
-def data_client():
+def metadata_client_mock():
+    """Mock MetadataClient instance."""
+    mock = MagicMock(spec=MetadataClient)
+    # Configure the mock to return a sample IndicatorMetadata
+    mock.get_metadata.return_value = IndicatorMetadata(
+        varcd="0004167",
+        title="Resident population",
+        language="EN",
+        dimensions=[
+            Dimension(
+                id=1,
+                name="Period",
+                values=[
+                    DimensionValue(code="2020", label="2020"),
+                    DimensionValue(code="2021", label="2021"),
+                    DimensionValue(code="2023", label="2023"),
+                ],
+            ),
+            Dimension(
+                id=2,
+                name="Geographic localization",
+                values=[
+                    DimensionValue(code="1", label="Portugal"),
+                    DimensionValue(code="2", label="North"),
+                ],
+            ),
+        ],
+    )
+    return mock
+
+
+@pytest.fixture
+def data_client(metadata_client_mock):
     """Create DataClient instance."""
-    return DataClient(language="EN", cache_enabled=False)
+    return DataClient(language="EN", cache_enabled=False, metadata_client=metadata_client_mock)
 
 
 class TestDataClient:
@@ -56,10 +92,11 @@ class TestDataClient:
         assert "Dim1=2023" in request_params
         assert "Dim2=1" in request_params
 
-    def test_invalid_dimension_key(self, data_client):
+    @responses.activate
+    def test_invalid_dimension_key(self, data_client, metadata_client_mock):
         """Test error handling for invalid dimension keys."""
-        with pytest.raises(DimensionError, match="Invalid dimension key"):
-            data_client._build_params("0004167", {"InvalidKey": "value"})
+        with pytest.raises(DimensionError, match="Invalid dimension key 'Dim3'"):
+            data_client._build_params("0004167", {"Dim3": "value"})
 
     @responses.activate
     def test_data_to_dataframe(self, data_client, sample_data):
@@ -157,6 +194,12 @@ class TestDataClient:
         assert params["op"] == "2"
         assert "varcd" in params
         assert params["varcd"] == "0004167"
+
+    @responses.activate
+    def test_invalid_dimension_value(self, data_client, metadata_client_mock):
+        """Test error handling for invalid dimension values."""
+        with pytest.raises(DimensionError, match="Invalid value '9999' for dimension 'Dim1'"):
+            data_client._build_params("0004167", {"Dim1": "9999"})
 
     def test_build_params_with_dimensions(self, data_client):
         """Test building parameters with dimensions."""

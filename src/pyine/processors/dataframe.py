@@ -38,6 +38,7 @@ def json_to_dataframe(
     """
     try:
         # Handle dict with 'dados' key (full API response)
+        # If data is a dict without 'dados', treat it as a single data point
         if isinstance(data, dict):
             data = data.get("dados", [data])
 

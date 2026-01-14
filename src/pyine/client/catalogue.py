@@ -27,6 +27,13 @@ class CatalogueClient(INEClient):
 
     CATALOGUE_ENDPOINT = "/ine/xml_indic.jsp"
 
+    def _get_element_text(self, element: ET.Element, tag: str, default: str = "") -> str:
+        """Helper to get text from a child element."""
+        child = element.find(tag)
+        if child is not None and child.text:
+            return child.text.strip()
+        return default
+
     def get_indicator(self, varcd: str) -> Indicator:
         """Get single indicator metadata from catalogue.
 
@@ -205,41 +212,34 @@ class CatalogueClient(INEClient):
             Parsed Indicator object or None if parsing fails
         """
         try:
-            # Helper function to get text from element
-            def get_text(element: ET.Element, tag: str, default: str = "") -> str:
-                child = element.find(tag)
-                if child is not None and child.text:
-                    return child.text.strip()
-                return default
-
             # Extract fields using new tag names
-            varcd = get_text(indicator_elem, "varcd")
+            varcd = self._get_element_text(indicator_elem, "varcd")
             if not varcd:
                 logger.warning("Found indicator without varcd, skipping")
                 return None
 
-            title = get_text(indicator_elem, "title")
-            theme = get_text(indicator_elem, "theme")
-            subtheme = get_text(indicator_elem, "subtheme")
-            periodicity = get_text(indicator_elem, "periodicity")
-            geo_last_level = get_text(indicator_elem, "geo_lastlevel")
-            source = get_text(indicator_elem, "source")
+            title = self._get_element_text(indicator_elem, "title")
+            theme = self._get_element_text(indicator_elem, "theme")
+            subtheme = self._get_element_text(indicator_elem, "subtheme")
+            periodicity = self._get_element_text(indicator_elem, "periodicity")
+            geo_last_level = self._get_element_text(indicator_elem, "geo_lastlevel")
+            source = self._get_element_text(indicator_elem, "source")
 
             # URLs are nested under <html> and <json>
             html_elem = indicator_elem.find("html")
-            html_url = get_text(html_elem, "bdd_url") if html_elem is not None else ""
+            html_url = self._get_element_text(html_elem, "bdd_url") if html_elem is not None else ""
 
             json_elem = indicator_elem.find("json")
-            metadata_url = get_text(json_elem, "json_metainfo") if json_elem is not None else ""
-            data_url = get_text(json_elem, "json_dataset") if json_elem is not None else ""
+            metadata_url = self._get_element_text(json_elem, "json_metainfo") if json_elem is not None else ""
+            data_url = self._get_element_text(json_elem, "json_dataset") if json_elem is not None else ""
 
             # Parse last_period and last_update from <dates>
             last_period = None
             last_update = None
             dates_elem = indicator_elem.find("dates")
             if dates_elem is not None:
-                last_period = get_text(dates_elem, "last_period_available")
-                last_update_str = get_text(dates_elem, "last_update")
+                last_period = self._get_element_text(dates_elem, "last_period_available")
+                last_update_str = self._get_element_text(dates_elem, "last_update")
                 if last_update_str:
                     try:
                         # The date format is 'DD-MM-YYYY'
@@ -247,8 +247,8 @@ class CatalogueClient(INEClient):
                     except ValueError:
                         logger.debug(f"Could not parse date: {last_update_str}")
 
-            description = get_text(indicator_elem, "description")
-            unit = get_text(indicator_elem, "unit")
+            description = self._get_element_text(indicator_elem, "description")
+            unit = self._get_element_text(indicator_elem, "unit")
 
             # Create Indicator object
             indicator = Indicator(
