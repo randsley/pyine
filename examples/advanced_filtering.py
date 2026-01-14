@@ -9,17 +9,17 @@ from pyine.processors.dataframe import (
 
 # Initialize the client
 ine = INE(language="EN")
-indicator_code = "0004167"  # Resident population
+varcd = "0004167"  # Resident population
 
 print("=" * 60)
 print("Advanced Filtering and Data Processing Examples")
 print("=" * 60)
 
-print(f"Using indicator: {indicator_code} (Resident population)")
+print(f"Using indicator: {varcd} (Resident population)")
 
 # --- 1. Get base data for processing ---
 print("\nFetching base data for examples...")
-response = ine.get_data(indicator_code)
+response = ine.get_data(varcd)
 df = response.to_dataframe()
 print(f"Base DataFrame shape: {df.shape}")
 
@@ -83,8 +83,8 @@ for i, indicator in enumerate(results[:2], 1):
 print("\n" + "=" * 60)
 print("Example 5: Comparing Data Formats")
 print("=" * 60)
-print(f"Fetching data for {indicator_code} in multiple formats...")
-response = ine.get_data(indicator_code, dimensions={"Dim1": "2023"})
+print(f"Fetching data for {varcd} in multiple formats...")
+response = ine.get_data(varcd, dimensions={"Dim1": "2023"})
 
 # To DataFrame
 df_format = response.to_dataframe()

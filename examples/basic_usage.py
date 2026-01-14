@@ -16,8 +16,8 @@ for indicator in results[:5]:  # Print top 5 results
 print("\n" + "=" * 60)
 print("Example 2: Get detailed metadata for an indicator")
 print("=" * 60)
-indicator_code = "0004167"  # Resident population
-metadata = ine.get_metadata(indicator_code)
+varcd = "0004167"  # Resident population
+metadata = ine.get_metadata(varcd)
 print(f"Metadata for indicator {metadata.varcd}:")
 print(f"- Title: {metadata.title}")
 print(f"- Unit: {metadata.unit}")
@@ -27,7 +27,7 @@ print(f"- Dimensions: {len(metadata.dimensions)}")
 print("\n" + "=" * 60)
 print("Example 3: Explore indicator dimensions")
 print("=" * 60)
-dimensions = ine.get_dimensions(indicator_code)
+dimensions = ine.get_dimensions(varcd)
 for dim in dimensions:
     print(f"\nDimension '{dim.name}' (ID: {dim.id}) has {len(dim.values)} values.")
     print("  Sample values:")
@@ -37,7 +37,7 @@ for dim in dimensions:
 print("\n" + "=" * 60)
 print("Example 4: Get data and convert to a pandas DataFrame")
 print("=" * 60)
-response = ine.get_data(indicator_code)
+response = ine.get_data(varcd)
 df = response.to_dataframe()
 print("Data converted to DataFrame:")
 print(f"- Shape: {df.shape}")
@@ -52,7 +52,7 @@ print("=" * 60)
 # For indicator 0004167, Dim1 is 'Period' and Dim2 is 'Geographic localization'
 dimension_filter = {"Dim1": "2023", "Dim2": "1"}  # Year 2023, Region 'Portugal'
 print(f"Fetching data with filter: {dimension_filter}...")
-filtered_response = ine.get_data(indicator_code, dimensions=dimension_filter)
+filtered_response = ine.get_data(varcd, dimensions=dimension_filter)
 filtered_df = filtered_response.to_dataframe()
 print("Filtered DataFrame:")
 print(f"- Shape: {filtered_df.shape}")
@@ -62,8 +62,8 @@ print("\n" + "=" * 60)
 print("Example 6: Export data directly to a CSV file")
 print("=" * 60)
 output_csv_file = "population_data.csv"
-print(f"Exporting data for {indicator_code} to '{output_csv_file}'...")
-ine.export_csv(indicator_code, output_csv_file, include_metadata=True)
+print(f"Exporting data for {varcd} to '{output_csv_file}'...")
+ine.export_csv(varcd, output_csv_file, include_metadata=True)
 print(f"Successfully exported to '{output_csv_file}'.")
 
 print("\n" + "=" * 60)

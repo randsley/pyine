@@ -45,9 +45,9 @@ for indicator in results[:5]:  # Print top 5 results
     print(f"- {indicator.varcd}: {indicator.title}")
 
 # 2. Get data for a specific indicator
-indicator_code = "0004167"  # Resident population
-print(f"\nFetching data for indicator {indicator_code}...")
-response = ine.get_data(indicator_code)
+varcd = "0004167"  # Resident population
+print(f"\nFetching data for indicator {varcd}...")
+response = ine.get_data(varcd)
 
 # 3. Convert to a pandas DataFrame
 df = response.to_dataframe()
@@ -57,7 +57,7 @@ print(df.head())
 # 4. Export data to a CSV file
 output_file = "population_data.csv"
 print(f"\nExporting data to {output_file}...")
-ine.export_csv(indicator_code, output_file)
+ine.export_csv(varcd, output_file)
 print("Done!")
 ```
 
