@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-01-14
+
+### Fixed
+
+- **Python 3.8 Compatibility**:
+  - Resolved `TypeError: 'type' object is not subscriptable` by replacing `tuple` with `typing.Tuple` in `src/pyine/processors/csv.py`.
+  - Fixed `NameError` for `Union`, `Path`, and `DataResponse` by adding missing imports in `src/pyine/client/metadata.py`, `src/pyine/client/data.py`, and `src/pyine/ine.py` respectively.
+- **Code Style**:
+  - Ran `black` on `src/pyine/processors/dataframe.py` to fix formatting issues.
+  - Removed redundant `type: str` comments in `src/pyine/processors/excel.py`.
+
+### Refactored
+
+- **Client Robustness**: Modified `_make_request` in `src/pyine/client/base.py` to create a copy of the `params` dictionary, preventing side effects.
+- **Type Hinting**: Improved type safety by replacing `Any` with `TextIO` for the `file_handle` parameter in `src/pyine/processors/csv.py`.
+
 ## [0.1.1] - 2026-01-13
 
 ### Fixed

@@ -8,8 +8,8 @@
 
 - **Source Files**: 25 Python files
 - **Test Files**: 18 test files
-- **Total Tests**: 133 tests
-- **Test Coverage**: 82%
+- **Total Tests**: 136 tests
+- **Test Coverage**: 73%
 - **Python Version**: 3.8+
 - **License**: MIT
 
@@ -51,7 +51,7 @@ pyine/
 │   └── cli/                      # Command-line interface (212 lines)
 │       └── main.py               # CLI with Click framework
 │
-├── tests/                        # Test suite (133 tests)
+├── tests/                        # Test suite (136 tests)
 │   ├── conftest.py               # pytest fixtures
 │   ├── fixtures/                 # Sample API responses
 │   ├── test_client/              # Client tests (46 tests)
@@ -104,7 +104,7 @@ pyine/
 - Integration tests for end-to-end workflows
 - CLI tests with Click's testing framework
 - Mocked HTTP requests using responses library
-- 82% code coverage
+- 73% code coverage
 
 ## API Endpoints Used
 
@@ -147,7 +147,7 @@ ine = INE(language="EN")
 results = ine.search("population")
 
 # Get data as DataFrame
-df = ine.get_data("0004167")
+df = ine.get_data("0004167").to_dataframe()
 
 # Export to CSV
 ine.export_csv("0004167", "data.csv")
@@ -173,18 +173,18 @@ pyine list-commands themes
 
 | Module | Coverage |
 |--------|----------|
-| INE class | 98% |
+| INE class | 99% |
 | Base client | 95% |
-| Metadata client | 95% |
-| Data client | 85% |
-| Catalogue client | 84% |
-| Search module | 88% |
-| DataFrame processors | 86% |
-| CLI | 80% |
+| Metadata client | 86% |
+| Data client | 77% |
+| Catalogue client | 85% |
+| Search module | 86% |
+| DataFrame processors | 34% |
+| CLI | 91% |
 | JSON processors | 67% |
-| CSV processors | 61% |
-| Cache | 68% |
-| **Overall** | **82%** |
+| CSV processors | 87% |
+| Cache | 67% |
+| **Overall** | **73%** |
 
 ## Code Quality
 
@@ -193,7 +193,7 @@ pyine list-commands themes
 - ✅ PEP 8 compliant (black formatted)
 - ✅ Linting passed (ruff)
 - ✅ Type checking addressed (mypy)
-- ✅ 133 tests, all passing
+- ✅ 136 tests, all passing
 - ✅ No critical security issues
 
 ## Error Handling
@@ -253,6 +253,6 @@ MIT License - See LICENSE file for details
 
 **Project Status**: ✅ Complete and ready for use
 
-**Last Updated**: 2026-01-13
+**Last Updated**: 2026-01-14
 
-**Version**: 0.1.1
+**Version**: 0.1.2

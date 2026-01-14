@@ -1,19 +1,22 @@
 # pyine - INE Portugal API Client
 
-[![Python 3.8-3.14](https://img.shields.io/badge/python-3.8--3.14-blue.svg)](https://www.python.org/downloads/)
+[![PyPI version](https://badge.fury.io/py/pyine.svg)](https://badge.fury.io/py/pyine)
+[![Build Status](https://github.com/nigelrandsley/pyine/actions/workflows/tests.yml/badge.svg)](https://github.com/nigelrandsley/pyine/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/nigelrandsley/pyine/branch/main/graph/badge.svg?token=YOUR_CODECOV_TOKEN)](https://codecov.io/gh/nigelrandsley/pyine)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 High-level Python client for Statistics Portugal (INE) API. Query and download statistical data from [INE Portugal](https://www.ine.pt) with a simple, intuitive interface.
 
 ## Features
 
-- 🎯 **High-level convenience API** - Simple interface for common tasks
-- 📊 **Multiple output formats** - pandas DataFrames, JSON, CSV
-- 💾 **Smart caching** - Disk-based caching to reduce API calls
-- 🔍 **Metadata browsing** - Search and discover indicators
-- 🖥️ **Command-line interface** - CLI tool for quick data access
-- 📖 **Type hints** - Full type annotations for IDE support
-- ✅ **Comprehensive testing** - 82% test coverage
+- 🎯 **High-level Convenience API**: Simple interface for common data retrieval and analysis tasks.
+- 📊 **Multiple Output Formats**: Export data to pandas DataFrames, JSON, or CSV with ease.
+- 💾 **Smart Caching**: Disk-based caching reduces redundant API calls, speeding up repeated queries.
+- 🔍 **Metadata Browsing**: Search and discover indicators, themes, and dimensions.
+- 🖥️ **Command-Line Interface**: A powerful CLI for quick data access and scripting.
+- 📖 **Modern Python**: Fully type-annotated for better developer experience and IDE support.
+- ✅ **Well-Tested**: Comprehensive test suite with 73% code coverage.
 
 ## Installation
 
@@ -21,10 +24,10 @@ High-level Python client for Statistics Portugal (INE) API. Query and download s
 pip install pyine
 ```
 
-For development:
+For development, install with all extra dependencies:
 
 ```bash
-pip install pyine[dev]
+pip install "pyine[dev,docs]"
 ```
 
 ## Quick Start
@@ -32,264 +35,220 @@ pip install pyine[dev]
 ```python
 from pyine import INE
 
-# Initialize client
+# Initialize the client
 ine = INE(language="EN")
 
-# Search for indicators
-results = ine.search("population")
-for indicator in results:
-    print(f"{indicator.varcd}: {indicator.title}")
+# 1. Search for an indicator
+print("Searching for 'gdp' indicators...")
+results = ine.search("gdp")
+for indicator in results[:5]:  # Print top 5 results
+    print(f"- {indicator.varcd}: {indicator.title}")
 
-# Get data as DataFrame
-df = ine.get_data("0004127")
+# 2. Get data for a specific indicator
+indicator_code = "0004167"  # Resident population
+print(f"\nFetching data for indicator {indicator_code}...")
+response = ine.get_data(indicator_code)
+
+# 3. Convert to a pandas DataFrame
+df = response.to_dataframe()
+print("\nData as DataFrame:")
 print(df.head())
 
-# Get data with dimension filters
-df = ine.get_data(
-    "0004127",
-    dimensions={"Dim1": "2023", "Dim2": "1"}  # Year 2023, Portugal
-)
-
-# Export to CSV
-ine.export_csv("0004127", "population.csv")
+# 4. Export data to a CSV file
+output_file = "population_data.csv"
+print(f"\nExporting data to {output_file}...")
+ine.export_csv(indicator_code, output_file)
+print("Done!")
 ```
 
-## Command Line Usage
+## Command-Line Usage
+
+The `pyine` CLI provides a convenient way to access INE data from your terminal.
 
 ```bash
-# Search for indicators
+# Search for indicators related to "pib" (GDP in Portuguese)
 pyine search "pib"
 
-# Download data
-pyine download 0004127 --output data.csv
-
-# Get indicator information
+# Get detailed information about a specific indicator
 pyine info 0004127
 
-# List available themes
+# Download data for an indicator to a CSV file
+pyine download 0004127 --output data.csv
+
+# Download data and filter by dimensions
+pyine download 0004167 --output filtered_data.csv -d Dim1=2023 -d Dim2=1
+
+# List all available statistical themes
 pyine list-commands themes
 
-# Clear cache
+# Clear the local cache
 pyine cache clear
 ```
 
 ## Documentation
 
-### Basic Usage
+### Initializing the Client
 
-#### Initialize Client
+The `INE` class is the main entry point.
 
 ```python
 from pyine import INE
+from pathlib import Path
 
-# English language (default)
-ine = INE(language="EN")
+# Default client (language='EN', caching=True)
+ine = INE()
 
-# Portuguese language
-ine = INE(language="PT")
+# Client with Portuguese language
+ine_pt = INE(language="PT")
 
 # Disable caching
-ine = INE(cache=False)
+ine_no_cache = INE(cache=False)
 
-# Custom cache directory
-from pathlib import Path
-ine = INE(cache_dir=Path("/custom/cache"))
+# Use a custom cache directory
+ine_custom_cache = INE(cache_dir=Path("/path/to/custom/cache"))
 ```
 
-#### Search for Indicators
+### Working with Indicators
+
+#### Searching for Indicators
+
+You can search for indicators by keyword and filter by theme or sub-theme.
 
 ```python
-# Search by keyword
-results = ine.search("population")
+# Basic search
+results = ine.search("unemployment rate")
 
-# Filter by theme
-results = ine.filter_by_theme(theme="Labour Market")
+# Search within a specific theme
+results = ine.search("employment", theme="Labour market")
 ```
 
-#### Get Indicator Data
+#### Getting Indicator Metadata
+
+Retrieve detailed information about an indicator, including its dimensions.
 
 ```python
-# Get all data for an indicator
-df = ine.get_data("0004127")
+metadata = ine.get_metadata("0004167")
+print(f"Title: {metadata.title}")
+print(f"Unit: {metadata.unit}")
+print(f"Source: {metadata.source}")
 
-# Get data with filters
-df = ine.get_data(
+# List available dimensions
+dimensions = ine.get_dimensions("0004167")
+for dim in dimensions:
+    print(f"\nDimension: {dim.name}")
+    for value in dim.values[:5]:  # Show first 5 values
+        print(f"- {value.code}: {value.label}")
+```
+
+### Fetching and Exporting Data
+
+#### Getting Data
+
+The `get_data` method returns a `DataResponse` object, which can be easily converted to different formats.
+
+```python
+response = ine.get_data("0004127")
+
+# Convert to pandas DataFrame
+df = response.to_dataframe()
+
+# Convert to a dictionary
+data_dict = response.to_dict()
+
+# Get data as a JSON string
+json_str = response.to_json()
+```
+
+#### Filtering Data with Dimensions
+
+Use the `dimensions` parameter to filter data before downloading.
+
+```python
+# Get data for the year 2023 and region "Portugal"
+filtered_response = ine.get_data(
     "0004167",
     dimensions={
         "Dim1": "2023",  # Year
-        "Dim2": "5"      # Geographic region
+        "Dim2": "1"      # Geographic region 'Portugal'
     }
 )
-
-# Get data as JSON
-json_data = ine.get_data("0004127", output_format="json")
-
-# Get data as dictionary
-dict_data = ine.get_data("0004127", output_format="dict")
+df_filtered = filtered_response.to_dataframe()
 ```
 
-#### Get Metadata
+#### Exporting Data
 
-```python
-# Get indicator metadata
-metadata = ine.get_metadata("0004167")
-print(metadata.indicator_name)
-print(metadata.unit)
-
-# Get available dimensions
-dimensions = ine.get_dimensions("0004127")
-for dim in dimensions:
-    print(f"Dimension {dim.id}: {dim.name}")
-    for value in dim.values:
-        print(f"  {value.code}: {value.label}")
-```
-
-#### Export Data
+You can export data directly to CSV or JSON files.
 
 ```python
 # Export to CSV
 ine.export_csv("0004127", "output.csv")
 
-# Export with metadata header
-ine.export_csv(
-    "0004127",
-    "output.csv",
-    include_metadata=True
-)
+# Export to JSON with pretty printing
+ine.export_json("0004127", "output.json", pretty=True)
 
-# Export with dimension filters
+# Export filtered data
 ine.export_csv(
     "0004127",
-    "output.csv",
+    "filtered_output.csv",
     dimensions={"Dim1": "2023"}
 )
 ```
 
-### CLI Commands
-
-#### Search Command
-
-```bash
-# Basic search
-pyine search "population"
-
-# Search with theme filter
-pyine search "population" --theme "Population"
-
-# Limit results
-pyine search "pib" --limit 5
-
-# Portuguese language
-pyine search "população" --lang PT
-```
-
-#### Download Command
-
-```bash
-# Download to CSV (default)
-pyine download 0004127 --output data.csv
-
-# Download as JSON
-pyine download 0004127 --output data.json --output-format json
-
-# Download with dimension filters
-pyine download 0004127 --output data.csv -d Dim1=2023 -d Dim2=1
-```
-
-#### Info Command
-
-```bash
-# Get indicator information
-pyine info 0004127
-
-# Portuguese language
-pyine info 0004127 --lang PT
-```
-
-#### List Command
-
-```bash
-# List all themes
-pyine list-commands themes
-
-# List indicators in a theme
-pyine list-commands indicators --theme "Population"
-```
-
-#### Dimensions Command
-
-```bash
-# Get available dimensions for an indicator
-pyine dimensions 0004127
-```
-
-#### Cache Commands
-
-```bash
-# Show cache information
-pyine cache info
-
-# Clear cache
-pyine cache clear
-```
-
 ## API Reference
 
-### INE Class
+### `INE` Class
 
-Main interface to INE Portugal API.
+The main class for interacting with the INE API.
 
-```python
-INE(
-    language: str = "EN",
-    cache: bool = True,
-    cache_dir: Optional[Path] = None,
-    cache_ttl: int = 86400
-)
-```
+`INE(language: str = "EN", cache: bool = True, cache_dir: Optional[Path] = None, cache_ttl: int = 86400)`
 
-#### Methods
+| Method | Description |
+| --- | --- |
+| `search(query, ...)` | Search for indicators. |
+| `get_data(varcd, ...)` | Get data for an indicator as a `DataResponse` object. |
+| `get_metadata(varcd)` | Get detailed metadata for an indicator. |
+| `get_dimensions(varcd)` | Get available dimensions for an indicator. |
+| `get_indicator(varcd)` | Get catalogue information for a single indicator. |
+| `validate_indicator(varcd)` | Check if an indicator code is valid. |
+| `list_themes()` | Get a list of all available themes. |
+| `export_csv(varcd, ...)` | Export indicator data to a CSV file. |
+| `export_json(varcd, ...)` | Export indicator data to a JSON file. |
+| `clear_cache()` | Clear all cached data. |
+| `get_cache_info()` | Get statistics about the cache. |
 
-- `search(query: str, **kwargs) -> List[Indicator]` - Search for indicators
-- `get_data(varcd: str, dimensions=None, output_format="dataframe")` - Get indicator data
-- `get_metadata(varcd: str) -> IndicatorMetadata` - Get indicator metadata
-- `get_dimensions(varcd: str) -> List[Dimension]` - Get available dimensions
-- `export_csv(varcd: str, filepath: str, ...)` - Export data to CSV
-- `validate_indicator(varcd: str) -> bool` - Check if indicator exists
+---
 
 ## Development
 
-### Setup Development Environment
+### Setup
+
+To set up the development environment:
 
 ```bash
-# Clone repository
+# Clone the repository
 git clone https://github.com/nigelrandsley/pyine.git
 cd pyine
 
-# Install in development mode
+# Install in editable mode with development dependencies
 pip install -e ".[dev]"
 
-# Install pre-commit hooks
+# Install pre-commit hooks to ensure code quality
 pre-commit install
 ```
 
-### Run Tests
+### Running Tests
 
 ```bash
 # Run all tests
 pytest
 
-# Run with coverage
-pytest --cov=pyine --cov-report=html
-
-# Run specific test file
-pytest tests/test_client/test_base.py
-
-# Run live API tests (optional)
-pytest tests/ -m live
+# Run tests with coverage report
+pytest --cov=src/pyine --cov-report=term-missing
 ```
 
 ### Code Quality
+
+This project uses `black` for formatting, `ruff` for linting, and `mypy` for type checking.
 
 ```bash
 # Format code
@@ -302,57 +261,16 @@ ruff check src/ tests/
 mypy src/
 ```
 
-## Project Structure
-
-```
-pyine/
-├── src/pyine/           # Main package
-│   ├── client/          # API clients
-│   ├── models/          # Data models
-│   ├── cache/           # Caching system
-│   ├── processors/      # Data transformation
-│   ├── search/          # Metadata search
-│   ├── utils/           # Utilities
-│   └── cli/             # Command-line interface
-├── tests/               # Test suite
-├── examples/            # Usage examples
-└── docs/                # Documentation
-```
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1.  Fork the repository.
+2.  Create your feature branch (`git checkout -b feature/amazing-feature`).
+3.  Commit your changes (`git commit -m 'Add amazing feature'`).
+4.  Push to the branch (`git push origin feature/amazing-feature`).
+5.  Open a Pull Request.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Data provided by [INE Portugal](https://www.ine.pt)
-- Inspired by the [ineptR](https://c-matos.github.io/ineptR/) R package
-
-## Links
-
-- **Homepage**: https://github.com/nigelrandsley/pyine
-- **Documentation**: https://pyine.readthedocs.io
-- **PyPI**: https://pypi.org/project/pyine/
-- **INE Portugal**: https://www.ine.pt
-- **INE API Documentation**: https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_api&INST=322751522
-
-## Changelog
-
-### 0.1.0 (2026-01-13)
-
-- Initial release
-- Core API client functionality
-- Data retrieval and processing
-- Caching system
-- Command-line interface
-- Basic search functionality

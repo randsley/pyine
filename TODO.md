@@ -7,7 +7,6 @@ This document outlines suggested improvements and refactorings for the `pyine` p
 *   **Centralized Error Handling for CLI:** Implement a decorator or Click's context-based error handling to reduce repetitive `try...except` blocks in `src/pyine/cli/main.py`. This will make the CLI more robust and maintainable.
 *   **`Indicator` and `IndicatorMetadata` Model Relationship:** Refactor `src/pyine/models/indicator.py` to make `IndicatorMetadata` inherit from `Indicator` to reduce redundancy and clarify their relationship. Standardize naming (`varcd` vs. `indicator_code`, `title` vs. `indicator_name`) across these models.
 *   **`CacheManager` Role Clarification:** Re-evaluate the need for `src/pyine/cache/manager.py`. If the `INE` class's cache methods are sufficient, consider removing `CacheManager`. Otherwise, clearly define its distinct purpose and usage guidelines.
-*   **Separate CSV and Excel Processors:** Move Excel-related functions (`export_multiple_sheets`, `format_for_excel`) from `src/pyine/processors/csv.py` to a new file (e.g., `src/pyine/processors/excel.py` or `src/pyine/processors/tabular.py`) for better modularity and clarity.
 
 ## Mid-Level / Design Improvements
 
@@ -24,8 +23,6 @@ This document outlines suggested improvements and refactorings for the `pyine` p
 
 ## Low-Level / Code Quality Improvements
 
-*   **`INEClient` `USER_AGENT` Versioning:** Dynamically construct the `USER_AGENT` string in `src/pyine/client/base.py` using `pyine.__version__` to ensure it's always up-to-date.
-*   **`INEClient._make_request` `params` Copy:** In `src/pyine/client/base.py`, create a copy of the `params` dictionary before modification to avoid unintended side effects on the caller's dictionary.
 *   **`INEClient._parse_json_response` Debug Logging:** Optimize the debug logging in `src/pyine/client/base.py` to avoid potentially expensive `len(str(data))` calls for very large JSON responses.
 *   **`CatalogueClient` Consistent Error Re-raising:** In `src/pyine/client/catalogue.py`, ensure all `try...except` blocks re-raise exceptions using `raise SomeSpecificError(...) from e` to preserve the original exception chain.
 *   **`MetadataClient` Custom `DimensionNotFoundError`:** Consider creating a more specific custom exception (e.g., `DimensionNotFoundError`) in `src/pyine/client/metadata.py` to distinguish it from generic `ValueError` types.
@@ -34,8 +31,6 @@ This document outlines suggested improvements and refactorings for the `pyine` p
 *   **`cli.main.py` `cache_info` Output:** In `src/pyine/cli/main.py`, leverage the `CacheManager.format_stats()` method for displaying cache information to ensure consistent and well-formatted output.
 *   **`_get_disk_cache` Type Hinting:** In `src/pyine/client/base.py`, ensure `_disk_cache` is correctly typed as `Optional[Type[DiskCache]]` to improve type safety.
 *   **`_create_session` and `_get_session_for_endpoint` `cast` Usage:** Review and remove unnecessary `cast` calls in `src/pyine/client/base.py` if the types are correctly inferred or explicitly defined.
-*   **`_write_metadata_header` `file_handle` Type Hint:** In `src/pyine/processors/csv.py`, use `TextIO` from `typing` for the `file_handle` parameter.
-*   **`format_for_excel` Type Hint Comments:** Remove redundant `type: str` comments in `src/pyine/processors/csv.py`.
 *   **`json_to_dataframe` Column Renaming:** While generally fine, be aware that `col.replace("_", " ").strip()` might not handle all possible "internal prefixes" if they are not just underscores.
 *   **`json_to_dataframe` Date Parsing:** The `_parse_date_column` function is a good approach to centralize date parsing logic.
 *   **`_get_directory_size` Error Handling:** The error handling in `src/pyine/cache/disk.py` is generally fine for a utility function.
