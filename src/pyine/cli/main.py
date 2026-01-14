@@ -249,18 +249,16 @@ def download(
     # Download data
     click.echo(f"Downloading indicator {varcd}...")
 
+    response = ine.get_data(varcd, dimensions=dimensions)
+
     if output_format.lower() == "csv":
-        ine.export_csv(
-            varcd,
+        response.to_csv(
             output_path,
-            dimensions=dimensions,
             include_metadata=not no_metadata,
         )
     else:  # json
-        ine.export_json(
-            varcd,
+        response.to_json(
             output_path,
-            dimensions=dimensions,
             pretty=True,
         )
 

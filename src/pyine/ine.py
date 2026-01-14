@@ -134,17 +134,16 @@ class INE:
         self,
         varcd: str,
         dimensions: Optional[Dict[str, str]] = None,
-        output_format: OutputFormat = "dataframe",
-    ) -> Union[pd.DataFrame, str, Dict[str, Any]]:
+    ) -> DataResponse:
         """Get indicator data.
 
         Args:
             varcd: Indicator code
             dimensions: Optional dimension filters (e.g., {"Dim1": "2020"})
-            format: Output format ('dataframe', 'json', or 'dict')
 
         Returns:
-            Data in requested format
+            DataResponse object with indicator data.
+            Use .to_dataframe(), .to_json(), or .to_dict() for specific formats.
 
         Raises:
             InvalidIndicatorError: If indicator code is invalid
@@ -152,25 +151,16 @@ class INE:
 
         Example:
             >>> ine = INE()
-            >>> df = ine.get_data("0004167")
-            >>> json_str = ine.get_data("0004167", format="json")
-            >>> data_dict = ine.get_data("0004167", format="dict")
+            >>> response = ine.get_data("0004167")
+            >>> df = response.to_dataframe()
+            >>> json_str = response.to_json()
+            >>> data_dict = response.to_dict()
         """
         logger.info(f"Fetching data for indicator {varcd}")
 
         # Fetch data from API
         response = self.data_client.get_data(varcd=varcd, dimensions=dimensions)
-
-        # Convert to requested format
-        if output_format == "dataframe":
-            return json_to_dataframe(response.model_dump())
-        elif output_format == "json":
-            # Use mode="json" to serialize datetime objects
-            return format_json(response.model_dump(mode="json"), pretty=True)
-        elif output_format == "dict":
-            return response.model_dump()
-        else:
-            raise ValueError(f"Invalid format: {output_format}. Use 'dataframe', 'json', or 'dict'")
+        return response
 
     def get_metadata(self, varcd: str) -> IndicatorMetadata:
         """Get indicator metadata.
@@ -304,9 +294,8 @@ class INE:
         logger.info(f"Exporting indicator {varcd} to {filepath}")
 
         # Get data as DataFrame
-        df = cast(
-            pd.DataFrame, self.get_data(varcd, dimensions=dimensions, output_format="dataframe")
-        )
+        response = self.get_data(varcd, dimensions=dimensions)
+        df = response.to_dataframe()
 
         # Get metadata if requested
         metadata_dict = None
@@ -352,7 +341,7 @@ class INE:
         logger.info(f"Exporting indicator {varcd} to {filepath}")
 
         # Get data - fetch from API
-        response = self.data_client.get_data(varcd=varcd, dimensions=dimensions)
+        response = self.get_data(varcd=varcd, dimensions=dimensions)
 
         # Convert to dict with JSON serialization for datetime objects
         data = response.model_dump(mode="json")

@@ -1,8 +1,10 @@
 """End-to-end integration tests for pyine."""
 
+import json
 import pandas as pd
 import pytest
 import responses
+from pathlib import Path
 
 from pyine import INE
 
@@ -11,7 +13,7 @@ class TestINEIntegration:
     """Integration tests for INE class."""
 
     @responses.activate
-    def test_basic_workflow(self, sample_catalogue, sample_metadata, sample_data):
+    def test_basic_workflow(self, sample_catalogue, sample_metadata, sample_data, tmp_path):
         """Test basic workflow: search, get data, export."""
         # Mock catalogue endpoint
         responses.add(
@@ -47,17 +49,19 @@ class TestINEIntegration:
         assert any("population" in ind.title.lower() for ind in results)
 
         # Get data as DataFrame
-        df = ine.get_data("0004167", output_format="dataframe")
+        response = ine.get_data("0004167")
+        df = response.to_dataframe()
         assert isinstance(df, pd.DataFrame)
         assert not df.empty
 
         # Get data as JSON
-        json_str = ine.get_data("0004167", output_format="json")
-        assert isinstance(json_str, str)
-        assert "0004167" in json_str
+        json_output_file = tmp_path / "basic_workflow_output.json"
+        response.to_json(json_output_file)
+        assert json_output_file.exists()
+        assert "0004167" in json_output_file.read_text()
 
         # Get data as dict
-        data_dict = ine.get_data("0004167", output_format="dict")
+        data_dict = response.to_dict()
         assert isinstance(data_dict, dict)
 
     @responses.activate
@@ -133,18 +137,16 @@ class TestINEIntegration:
         # Export to JSON
         output_file = tmp_path / "test_export.json"
         ine.export_json("0004167", output_file)
-
-        # Verify file exists
         assert output_file.exists()
-        assert output_file.stat().st_size > 0
 
-        # Read back and verify
-        import json
-
+        # Verify JSON content
         with open(output_file) as f:
             data = json.load(f)
-
         assert isinstance(data, dict)
+        assert data["varcd"] == "0004167"
+        assert "data" in data
+        assert len(data["data"]) > 0
+        assert output_file.stat().st_size > 0
 
     @responses.activate
     def test_theme_filtering(self, sample_catalogue):
@@ -243,7 +245,8 @@ class TestINEIntegration:
         # Get data with dimension filter
         if dimensions and dimensions[0].values:
             dim_filter = {"Dim1": dimensions[0].values[0].code}
-            df = ine.get_data("0004167", dimensions=dim_filter, output_format="dataframe")
+            response = ine.get_data("0004167", dimensions=dim_filter)
+            df = response.to_dataframe()
             assert isinstance(df, pd.DataFrame)
 
     def test_language_setting(self):

@@ -1,11 +1,12 @@
-"""Pydantic models for API responses."""
-
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from pyine.models.indicator import Indicator
+from pyine.processors.csv import export_to_csv
+from pyine.processors.json import export_to_json
 
 try:
     import pandas as pd
@@ -76,6 +77,45 @@ class DataResponse(BaseModel):
             return pd.DataFrame()
 
         return pd.DataFrame(self.data)
+
+    def to_csv(
+        self,
+        filepath: Union[str, Path],
+        include_metadata: bool = True,
+        **kwargs: Any,
+    ) -> None:
+        """Export data to CSV file.
+
+        Args:
+            filepath: Output file path
+            include_metadata: Include metadata as comment header
+            **kwargs: Additional arguments passed to df.to_csv()
+        """
+        df = self.to_dataframe()
+        metadata = {
+            "indicator": self.varcd,
+            "title": self.title,
+            "unit": self.unit,
+            "language": self.language,
+            "extraction_date": self.extraction_date.isoformat(),
+        }
+        export_to_csv(df, Path(filepath), include_metadata=include_metadata, metadata=metadata, **kwargs)
+
+    def to_json(
+        self,
+        filepath: Union[str, Path],
+        pretty: bool = True,
+        **kwargs: Any,
+    ) -> None:
+        """Export data to JSON file.
+
+        Args:
+            filepath: Output file path
+            pretty: Use pretty printing
+            **kwargs: Additional arguments passed to json.dump()
+        """
+        data = self.model_dump(mode="json")
+        export_to_json(data, Path(filepath), pretty=pretty, **kwargs)
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert response to dictionary.
