@@ -1,6 +1,7 @@
 """Data client for INE Portugal API."""
 
 import logging
+from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional, Union, cast
 
 from pyine.client.base import INEClient
