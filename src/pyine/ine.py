@@ -11,6 +11,7 @@ from pyine.client.catalogue import CatalogueClient
 from pyine.client.data import DataClient
 from pyine.client.metadata import MetadataClient
 from pyine.models.indicator import Dimension, Indicator, IndicatorMetadata
+from pyine.models.response import DataResponse
 from pyine.processors.csv import export_to_csv
 from pyine.processors.dataframe import json_to_dataframe
 from pyine.processors.json import export_to_json, format_json
