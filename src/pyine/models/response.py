@@ -1,6 +1,7 @@
+from collections.abc import Iterator
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union, Iterator
+from typing import Any, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -23,7 +24,7 @@ class DataPoint(BaseModel):
     """
 
     value: Optional[float] = Field(None, description="Measured value")
-    dimensions: Dict[str, str] = Field(default_factory=dict, description="Dimension values")
+    dimensions: dict[str, str] = Field(default_factory=dict, description="Dimension values")
     unit: Optional[str] = Field(None, description="Unit of measurement")
 
     model_config = ConfigDict(
@@ -47,7 +48,7 @@ class DataResponse(BaseModel):
     varcd: str = Field(..., description="Indicator code")
     title: str = Field(..., description="Indicator name")
     language: str = Field(..., description="Language (PT or EN)")
-    data: List[Dict[str, Any]] = Field(default_factory=list, description="Raw data points")
+    data: list[dict[str, Any]] = Field(default_factory=list, description="Raw data points")
     unit: Optional[str] = Field(None, description="Unit of measurement")
     extraction_date: datetime = Field(
         default_factory=datetime.now, description="When data was extracted"
@@ -119,7 +120,7 @@ class DataResponse(BaseModel):
         data = self.model_dump(mode="json")
         export_to_json(data, Path(filepath), pretty=pretty, **kwargs)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert response to dictionary.
 
         Returns:
@@ -149,7 +150,7 @@ class CatalogueResponse(BaseModel):
     Contains a list of indicators returned from the catalogue query.
     """
 
-    indicators: List["Indicator"] = Field(default_factory=list, description="List of indicators")
+    indicators: list["Indicator"] = Field(default_factory=list, description="List of indicators")
     language: str = Field(..., description="Language (PT or EN)")
     extraction_date: datetime = Field(
         default_factory=datetime.now, description="When data was extracted"

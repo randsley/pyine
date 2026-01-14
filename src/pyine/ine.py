@@ -2,7 +2,7 @@
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Literal, Optional, Union
 
 from pyine.client.base import INEClient
 from pyine.client.catalogue import CatalogueClient
@@ -73,13 +73,6 @@ class INE:
         self.cache_enabled = cache
         self.cache_dir = cache_dir
 
-        common_client_params = {
-            "language": self.language,
-            "timeout": timeout,
-            "cache_enabled": cache,
-            "cache_dir": cache_dir,
-        }
-
         # Initialize base client
         self.base_client = INEClient(
             language=self.language,
@@ -119,11 +112,11 @@ class INE:
     def search(
         self,
         query: str,
-        search_fields: Optional[List[str]] = None,
+        search_fields: Optional[list[str]] = None,
         case_sensitive: bool = False,
         theme: Optional[str] = None,
         subtheme: Optional[str] = None,
-    ) -> List[Indicator]:
+    ) -> list[Indicator]:
         """Search for indicators by keyword, with optional theme/subtheme filtering.
 
         Searches across indicator titles, descriptions, keywords, themes, and subthemes.
@@ -155,7 +148,7 @@ class INE:
     def get_data(
         self,
         varcd: str,
-        dimensions: Optional[Dict[str, str]] = None,
+        dimensions: Optional[dict[str, str]] = None,
     ) -> DataResponse:
         """Get indicator data.
 
@@ -204,7 +197,7 @@ class INE:
         logger.info(f"Fetching metadata for indicator {varcd}")
         return self.metadata_client.get_metadata(varcd)
 
-    def get_dimensions(self, varcd: str) -> List[Dimension]:
+    def get_dimensions(self, varcd: str) -> list[Dimension]:
         """Get available dimensions for an indicator.
 
         Dimensions are used to filter data (e.g., by year, region, gender).
@@ -263,7 +256,7 @@ class INE:
         """
         return self.browser.validate_indicator(varcd)
 
-    def list_themes(self) -> List[str]:
+    def list_themes(self) -> list[str]:
         """Get list of all themes in catalogue.
 
         Returns:
@@ -281,7 +274,7 @@ class INE:
         self,
         varcd: str,
         filepath: Union[str, Path],
-        dimensions: Optional[Dict[str, str]] = None,
+        dimensions: Optional[dict[str, str]] = None,
         include_metadata: bool = True,
     ) -> None:
         """Export indicator data to CSV file.
@@ -328,7 +321,7 @@ class INE:
         self,
         varcd: str,
         filepath: Union[str, Path],
-        dimensions: Optional[Dict[str, str]] = None,
+        dimensions: Optional[dict[str, str]] = None,
         pretty: bool = True,
     ) -> None:
         """Export indicator data to JSON file.
@@ -371,7 +364,7 @@ class INE:
         self.browser.clear_cache()
         logger.info("Cache cleared")
 
-    def get_cache_info(self) -> Dict[str, Any]:
+    def get_cache_info(self) -> dict[str, Any]:
         """Get cache statistics.
 
         Returns:

@@ -3,7 +3,7 @@
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional, TextIO, Tuple
+from typing import Any, Optional, TextIO
 
 import pandas as pd
 
@@ -16,7 +16,7 @@ def export_to_csv(
     df: pd.DataFrame,
     filepath: Path,
     include_metadata: bool = True,
-    metadata: Optional[Dict[str, Any]] = None,
+    metadata: Optional[dict[str, Any]] = None,
     encoding: str = "utf-8-sig",
     **kwargs: Any,
 ) -> None:
@@ -73,7 +73,7 @@ def export_to_csv(
         raise DataProcessingError(f"Failed to export CSV: {str(e)}") from e
 
 
-def _write_metadata_header(file_handle: TextIO, metadata: Dict[str, Any]) -> None:
+def _write_metadata_header(file_handle: TextIO, metadata: dict[str, Any]) -> None:
     """Write metadata as CSV comments.
 
     Args:
@@ -97,7 +97,7 @@ def read_csv_with_metadata(
     filepath: Path,
     encoding: str = "utf-8-sig",
     **kwargs: Any,
-) -> Tuple[pd.DataFrame, Dict[str, str]]:
+) -> tuple[pd.DataFrame, dict[str, str]]:
     """Read CSV file and extract metadata from comments.
 
     Args:

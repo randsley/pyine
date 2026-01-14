@@ -1,7 +1,7 @@
 """DataFrame processing utilities for pyine."""
 
 import logging
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, Optional, Union, cast
 
 import pandas as pd
 
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def json_to_dataframe(
-    data: Union[List[Dict[str, Any]], Dict[str, Any]],
+    data: Union[list[dict[str, Any]], dict[str, Any]],
     normalize: bool = True,
     parse_dates: bool = True,
 ) -> pd.DataFrame:
@@ -86,7 +86,7 @@ def json_to_dataframe(
 def pivot_by_dimension(
     df: pd.DataFrame,
     dimension: str,
-    value_column: Union[str, List[str]] = "valor",
+    value_column: Union[str, list[str]] = "valor",
     aggfunc: str = "first",
 ) -> pd.DataFrame:
     """Pivot DataFrame by specific dimension.
@@ -137,7 +137,7 @@ def pivot_by_dimension(
 def clean_dataframe(
     df: pd.DataFrame,
     drop_internal_columns: bool = True,
-    rename_columns: Optional[Dict[str, str]] = None,
+    rename_columns: Optional[dict[str, str]] = None,
 ) -> pd.DataFrame:
     """Clean and standardize DataFrame.
 
@@ -174,7 +174,7 @@ def clean_dataframe(
 
 def merge_metadata(
     df: pd.DataFrame,
-    metadata: Dict[str, Any],
+    metadata: dict[str, Any],
     prefix: str = "meta_",
 ) -> pd.DataFrame:
     """Add metadata as columns to DataFrame.
@@ -231,8 +231,8 @@ def _parse_date_column(series: pd.Series) -> pd.Series:
 def aggregate_by_period(
     df: pd.DataFrame,
     period_column: str = "periodo",
-    value_column: Union[str, List[str]] = "valor",
-    agg_func: Union[str, List[str]] = "sum",
+    value_column: Union[str, list[str]] = "valor",
+    agg_func: Union[str, list[str]] = "sum",
 ) -> pd.DataFrame:
     """Aggregate data by time period.
 

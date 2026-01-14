@@ -3,7 +3,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pyine.utils.exceptions import DataProcessingError
 
@@ -95,7 +95,7 @@ def export_to_json(
 
 
 def export_to_jsonl(
-    data: List[Dict[str, Any]],
+    data: list[dict[str, Any]],
     filepath: Path,
     ensure_ascii: bool = False,
 ) -> None:
@@ -137,7 +137,7 @@ def export_to_jsonl(
 def read_jsonl(
     filepath: Path,
     max_lines: Optional[int] = None,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Read JSON Lines file.
 
     Args:
@@ -174,10 +174,10 @@ def read_jsonl(
 
 
 def flatten_json(
-    data: Dict[str, Any],
+    data: dict[str, Any],
     separator: str = ".",
     prefix: str = "",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Flatten nested JSON structure.
 
     Args:
@@ -218,9 +218,9 @@ def flatten_json(
 
 
 def unflatten_json(
-    data: Dict[str, Any],
+    data: dict[str, Any],
     separator: str = ".",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Unflatten a flattened JSON structure.
 
     Args:
@@ -236,7 +236,7 @@ def unflatten_json(
         >>> nested
         {'indicator': '0004167', 'metadata': {'source': 'INE'}}
     """
-    result: Dict[str, Any] = {}
+    result: dict[str, Any] = {}
 
     for key, value in data.items():
         parts = key.split(separator)
@@ -269,7 +269,7 @@ def unflatten_json(
 
 
 def merge_json_files(
-    filepaths: List[Path],
+    filepaths: list[Path],
     output_path: Path,
 ) -> None:
     """Merge multiple JSON files into one.

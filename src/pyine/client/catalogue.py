@@ -2,7 +2,7 @@
 
 import logging
 from datetime import datetime
-from typing import List, Optional, cast
+from typing import Optional, cast
 from xml.etree import ElementTree as ET
 
 from pyine.client.base import INEClient
@@ -72,7 +72,7 @@ class CatalogueClient(INEClient):
             logger.error(f"Failed to get indicator {varcd}: {str(e)}")
             raise
 
-    def get_main_indicators(self) -> List[Indicator]:
+    def get_main_indicators(self) -> list[Indicator]:
         """Get all main indicators from catalogue.
 
         Returns:
@@ -107,7 +107,7 @@ class CatalogueClient(INEClient):
             logger.error(f"Failed to get main indicators: {str(e)}")
             raise
 
-    def get_complete_catalogue(self) -> List[Indicator]:
+    def get_complete_catalogue(self) -> list[Indicator]:
         """Get the complete catalogue of indicators.
 
         Returns:
@@ -162,7 +162,7 @@ class CatalogueClient(INEClient):
             indicators=indicators, language=self.language, total_count=len(indicators)
         )
 
-    def _parse_catalogue_xml(self, xml_string: str) -> List[Indicator]:
+    def _parse_catalogue_xml(self, xml_string: str) -> list[Indicator]:
         """Parse XML catalogue response into list of Indicators.
 
         Args:
@@ -177,7 +177,7 @@ class CatalogueClient(INEClient):
         try:
             root = ET.fromstring(xml_string)
 
-            indicators: List[Indicator] = []
+            indicators: list[Indicator] = []
 
             # Find all <indicator> elements directly under the <catalog> root
             indicator_elements = root.findall(".//indicator")

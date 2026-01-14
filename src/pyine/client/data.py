@@ -1,8 +1,9 @@
 """Data client for INE Portugal API."""
 
 import logging
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional, Union, cast
+from typing import Any, Optional, Union, cast
 
 from pyine.client.base import INEClient
 from pyine.client.metadata import MetadataClient  # Import MetadataClient
@@ -41,7 +42,7 @@ class DataClient(INEClient):
     def get_data(
         self,
         varcd: str,
-        dimensions: Optional[Dict[str, str]] = None,
+        dimensions: Optional[dict[str, str]] = None,
     ) -> DataResponse:
         """Fetch indicator data with optional dimension filters.
 
@@ -78,7 +79,7 @@ class DataClient(INEClient):
 
             # Parse response
             data_response = self._parse_data_response(
-                varcd, cast(Union[Dict[str, Any], List[Dict[str, Any]]], raw_response)
+                varcd, cast(Union[dict[str, Any], list[dict[str, Any]]], raw_response)
             )
 
             logger.info(f"Retrieved {len(data_response.data)} data points for {varcd}")
@@ -92,7 +93,7 @@ class DataClient(INEClient):
     def get_all_data(
         self,
         varcd: str,
-        dimensions: Optional[Dict[str, str]] = None,
+        dimensions: Optional[dict[str, str]] = None,
         chunk_size: int = DEFAULT_PAGE_SIZE,
     ) -> Iterator[DataResponse]:
         """Fetch all data for a given indicator.
@@ -126,8 +127,8 @@ class DataClient(INEClient):
         logger.info(f"Completed fetch for {varcd}")
 
     def _build_params(
-        self, varcd: str, dimensions: Optional[Dict[str, str]] = None
-    ) -> Dict[str, str]:
+        self, varcd: str, dimensions: Optional[dict[str, str]] = None
+    ) -> dict[str, str]:
         """Build query parameters for data API request.
 
         Args:
@@ -154,7 +155,7 @@ class DataClient(INEClient):
         return params
 
     def _parse_data_response(
-        self, varcd: str, response: Union[Dict[str, Any], List[Dict[str, Any]]]
+        self, varcd: str, response: Union[dict[str, Any], list[dict[str, Any]]]
     ) -> DataResponse:
         """Parse data API response into DataResponse model.
 
@@ -229,7 +230,7 @@ class DataClient(INEClient):
             logger.error(f"Failed to parse data response: {str(e)}")
             raise DataProcessingError(f"Failed to parse data: {str(e)}") from e
 
-    def _process_data_point(self, data_point: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _process_data_point(self, data_point: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Process a single data point from the API response.
 
         Args:
@@ -267,7 +268,7 @@ class DataClient(INEClient):
             logger.warning(f"Failed to process data point {data_point}: {str(e)}")
             return None
 
-    def validate_dimensions(self, varcd: str, dimensions: Dict[str, str]) -> bool:
+    def validate_dimensions(self, varcd: str, dimensions: dict[str, str]) -> bool:
         """Validate dimension filters against indicator metadata.
 
         This method checks if the provided dimension codes and values are valid

@@ -2,7 +2,7 @@
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import pandas as pd
 
@@ -12,10 +12,10 @@ logger = logging.getLogger(__name__)
 
 
 def export_multiple_sheets(
-    data_dict: Dict[str, pd.DataFrame],
+    data_dict: dict[str, pd.DataFrame],
     filepath: Path,
     include_metadata: bool = True,
-    metadata: Optional[Dict[str, Any]] = None,
+    metadata: Optional[dict[str, Any]] = None,
 ) -> None:
     """Export multiple DataFrames to Excel file with separate sheets.
 
@@ -55,7 +55,7 @@ def export_multiple_sheets(
 
     except ImportError:
         raise DataProcessingError(
-            "openpyxl is required for Excel export. " "Install with: pip install openpyxl"
+            "openpyxl is required for Excel export. Install with: pip install openpyxl"
         ) from None
     except Exception as e:
         logger.error(f"Failed to export Excel: {str(e)}")

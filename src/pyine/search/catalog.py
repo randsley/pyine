@@ -1,7 +1,7 @@
 """Catalogue browsing and search functionality for pyine."""
 
 import logging
-from typing import List, Optional
+from typing import Optional
 
 from pyine.client.catalogue import CatalogueClient
 from pyine.models.indicator import Indicator
@@ -37,9 +37,9 @@ class CatalogueBrowser:
         """
         self.client = client
         self.language = language
-        self._cached_indicators: Optional[List[Indicator]] = None
+        self._cached_indicators: Optional[list[Indicator]] = None
 
-    def get_all_indicators(self, use_cache: bool = True) -> List[Indicator]:
+    def get_all_indicators(self, use_cache: bool = True) -> list[Indicator]:
         """Get all available indicators from catalogue.
 
         Args:
@@ -68,12 +68,12 @@ class CatalogueBrowser:
     def search(
         self,
         query: str,
-        search_fields: Optional[List[str]] = None,
+        search_fields: Optional[list[str]] = None,
         case_sensitive: bool = False,
         exact_match: bool = False,
         theme: Optional[str] = None,
         subtheme: Optional[str] = None,
-    ) -> List[Indicator]:
+    ) -> list[Indicator]:
         """Search indicators by text query, with optional theme/subtheme filtering.
 
         Searches across indicator title, description, keywords, theme, and subtheme.
@@ -149,7 +149,7 @@ class CatalogueBrowser:
         self,
         indicator: Indicator,
         query: str,
-        search_fields: List[str],
+        search_fields: list[str],
         case_sensitive: bool,
         exact_match: bool,
     ) -> bool:
@@ -193,7 +193,7 @@ class CatalogueBrowser:
 
         return False
 
-    def list_themes(self) -> List[str]:
+    def list_themes(self) -> list[str]:
         """Get list of all unique themes in catalogue.
 
         Returns:
@@ -214,7 +214,7 @@ class CatalogueBrowser:
 
         return sorted(themes)
 
-    def list_subthemes(self, theme: Optional[str] = None) -> List[str]:
+    def list_subthemes(self, theme: Optional[str] = None) -> list[str]:
         """Get list of subthemes, optionally filtered by theme.
 
         Args:
@@ -237,7 +237,7 @@ class CatalogueBrowser:
 
         return sorted(subthemes)
 
-    def get_recently_updated(self, limit: int = 10) -> List[Indicator]:
+    def get_recently_updated(self, limit: int = 10) -> list[Indicator]:
         """Get recently updated indicators.
 
         Args:

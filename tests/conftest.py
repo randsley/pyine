@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -14,7 +14,7 @@ def fixtures_dir() -> Path:
 
 
 @pytest.fixture
-def sample_metadata(fixtures_dir: Path) -> Dict[str, Any]:
+def sample_metadata(fixtures_dir: Path) -> dict[str, Any]:
     """Load sample metadata response."""
     fixture_path = fixtures_dir / "metadata_response.json"
     if fixture_path.exists():
@@ -40,7 +40,7 @@ def sample_metadata(fixtures_dir: Path) -> Dict[str, Any]:
 
 
 @pytest.fixture
-def sample_data(fixtures_dir: Path) -> Dict[str, Any]:
+def sample_data(fixtures_dir: Path) -> dict[str, Any]:
     """Load sample data response."""
     fixture_path = fixtures_dir / "data_response.json"
     if fixture_path.exists():

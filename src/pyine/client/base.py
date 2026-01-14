@@ -3,7 +3,7 @@
 import logging
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional, Type, Union, cast
+from typing import Any, Optional, Union, cast
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 _disk_cache = None
 
 
-def _get_disk_cache() -> Type[DiskCache]:
+def _get_disk_cache() -> type[DiskCache]:
     """Lazy import of DiskCache to avoid circular imports."""
     global _disk_cache
     if _disk_cache is None:
@@ -150,9 +150,9 @@ class INEClient:
     def _make_request(
         self,
         endpoint: str,
-        params: Optional[Dict[str, Any]] = None,
+        params: Optional[dict[str, Any]] = None,
         response_format: str = "json",
-    ) -> Union[Dict[str, Any], str]:
+    ) -> Union[dict[str, Any], str]:
         """Make HTTP request to INE API.
 
         Args:
@@ -223,7 +223,7 @@ class INEClient:
             logger.error(f"Request failed: {str(e)}")
             raise APIError(0, f"Network error: {str(e)}") from e
 
-    def _parse_json_response(self, response: requests.Response) -> Dict[str, Any]:
+    def _parse_json_response(self, response: requests.Response) -> dict[str, Any]:
         """Parse JSON response.
 
         Args:
@@ -238,7 +238,7 @@ class INEClient:
         try:
             data = response.json()
             logger.debug(f"Parsed JSON response with {len(str(data))} characters")
-            return cast(Dict[str, Any], data)
+            return cast(dict[str, Any], data)
         except ValueError as e:
             logger.error(f"Failed to parse JSON response: {str(e)}")
             raise APIError(0, f"Invalid JSON response: {str(e)}") from e

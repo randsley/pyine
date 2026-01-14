@@ -1,7 +1,7 @@
 """Pydantic models for INE indicators and dimensions."""
 
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -28,7 +28,7 @@ class Dimension(BaseModel):
     id: int = Field(..., description="Dimension identifier")
     name: str = Field(..., description="Dimension name")
     description: Optional[str] = Field(None, description="Dimension description")
-    values: List[DimensionValue] = Field(default_factory=list, description="Available values")
+    values: list[DimensionValue] = Field(default_factory=list, description="Available values")
 
 
 class Indicator(BaseModel):
@@ -43,7 +43,7 @@ class Indicator(BaseModel):
     description: Optional[str] = Field(None, description="Detailed description")
     theme: Optional[str] = Field(None, description="Primary theme")
     subtheme: Optional[str] = Field(None, description="Sub-theme")
-    keywords: List[str] = Field(default_factory=list, description="Search keywords")
+    keywords: list[str] = Field(default_factory=list, description="Search keywords")
     periodicity: Optional[str] = Field(None, description="Update frequency")
     last_period: Optional[str] = Field(None, description="Last data period")
     last_update: Optional[datetime] = Field(None, description="Last update timestamp")
@@ -79,7 +79,7 @@ class IndicatorMetadata(Indicator):
     """
 
     language: str = Field(..., description="Language (PT or EN)")
-    dimensions: List[Dimension] = Field(default_factory=list, description="Available dimensions")
+    dimensions: list[Dimension] = Field(default_factory=list, description="Available dimensions")
     notes: Optional[str] = Field(None, description="Additional notes")
 
     model_config = ConfigDict(

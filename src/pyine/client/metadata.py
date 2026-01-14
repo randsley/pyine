@@ -1,8 +1,8 @@
 """Metadata client for INE Portugal API."""
 
 import logging
-from typing import Any, Dict, List, Union, cast
 from datetime import datetime
+from typing import Any, Union, cast
 
 from pyine.client.base import INEClient
 from pyine.models.indicator import (
@@ -58,11 +58,9 @@ class MetadataClient(INEClient):
             )
 
             # Parse response
-            metadata = self._parse_metadata_response(cast(Dict[str, Any], response))
+            metadata = self._parse_metadata_response(cast(dict[str, Any], response))
 
-            logger.info(
-                f"Retrieved metadata for {varcd}: " f"{len(metadata.dimensions)} dimensions"
-            )
+            logger.info(f"Retrieved metadata for {varcd}: {len(metadata.dimensions)} dimensions")
 
             return metadata
 
@@ -70,7 +68,7 @@ class MetadataClient(INEClient):
             logger.error(f"Failed to get metadata for {varcd}: {str(e)}")
             raise
 
-    def get_dimensions(self, varcd: str) -> List[Dimension]:
+    def get_dimensions(self, varcd: str) -> list[Dimension]:
         """Get dimension definitions for an indicator.
 
         Args:
@@ -88,7 +86,7 @@ class MetadataClient(INEClient):
         metadata = self.get_metadata(varcd)
         return metadata.dimensions
 
-    def get_dimension_values(self, varcd: str, dimension_id: int) -> List[DimensionValue]:
+    def get_dimension_values(self, varcd: str, dimension_id: int) -> list[DimensionValue]:
         """Get available values for a specific dimension.
 
         Args:
@@ -119,7 +117,7 @@ class MetadataClient(INEClient):
         )
 
     def _parse_metadata_response(
-        self, response: Union[Dict[str, Any], List[Any]]
+        self, response: Union[dict[str, Any], list[Any]]
     ) -> IndicatorMetadata:
         """Parse metadata API response into IndicatorMetadata model.
 
@@ -212,7 +210,7 @@ class MetadataClient(INEClient):
             logger.error(f"Failed to parse metadata response: {str(e)}")
             raise DataProcessingError(f"Failed to parse metadata: {str(e)}") from e
 
-    def _parse_dimension(self, dim_data: Dict[str, Any], dimension_id: int) -> Dimension:
+    def _parse_dimension(self, dim_data: dict[str, Any], dimension_id: int) -> Dimension:
         """Parse a single dimension from API response.
 
         Args:
