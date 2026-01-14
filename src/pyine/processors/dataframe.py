@@ -452,8 +452,8 @@ def json_to_dataframe(
         logger.error(f"Failed to convert data to DataFrame: {str(e)}")
         raise DataProcessingError(f"Failed to convert to DataFrame: {str(e)}") from e
 
-
     """DataFrame processing utilities for pyine."""
+
 
 import logging
 from typing import Any, Dict, List, Optional, Union, cast
