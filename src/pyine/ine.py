@@ -103,7 +103,7 @@ class INE:
             timeout=timeout,
             cache_enabled=cache,
             cache_dir=cache_dir,
-            metadata_client=self.metadata_client, # Pass metadata_client
+            metadata_client=self.metadata_client,  # Pass metadata_client
         )
 
         # Initialize catalogue browser
@@ -315,7 +315,9 @@ class INE:
         logger.info(f"Exporting indicator {varcd} to {filepath}")
 
         # Get data as DataFrame
-        df = cast(pd.DataFrame, self.get_data(varcd, dimensions=dimensions, output_format="dataframe"))
+        df = cast(
+            pd.DataFrame, self.get_data(varcd, dimensions=dimensions, output_format="dataframe")
+        )
 
         # Get metadata if requested
         metadata_dict = None

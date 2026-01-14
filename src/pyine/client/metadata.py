@@ -117,7 +117,9 @@ class MetadataClient(INEClient):
             f"Available dimensions: {[d.id for d in dimensions]}"
         )
 
-    def _parse_metadata_response(self, response: Union[Dict[str, Any], List[Any]]) -> IndicatorMetadata:
+    def _parse_metadata_response(
+        self, response: Union[Dict[str, Any], List[Any]]
+    ) -> IndicatorMetadata:
         """Parse metadata API response into IndicatorMetadata model.
 
         Args:
@@ -136,7 +138,9 @@ class MetadataClient(INEClient):
                     response = response[0]
                 elif not response:
                     # If it's an empty list, treat as no metadata found
-                    raise DataProcessingError(f"No metadata found for indicator (empty list response).")
+                    raise DataProcessingError(
+                        f"No metadata found for indicator (empty list response)."
+                    )
                 else:
                     # If it's a list with multiple items or non-dict items, it's unexpected
                     raise DataProcessingError(
@@ -172,7 +176,9 @@ class MetadataClient(INEClient):
                 )
             else:
                 # This case should ideally not be reached after the list check
-                raise DataProcessingError("Unexpected metadata API response format: not a dictionary after list check.")
+                raise DataProcessingError(
+                    "Unexpected metadata API response format: not a dictionary after list check."
+                )
 
         except Exception as e:
             logger.error(f"Failed to parse metadata response: {str(e)}")

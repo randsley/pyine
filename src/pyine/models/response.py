@@ -127,6 +127,4 @@ class CatalogueResponse(BaseModel):
         return self.indicators[index]
 
 
-
-
 CatalogueResponse.model_rebuild()
