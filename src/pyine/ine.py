@@ -75,34 +75,23 @@ class INE:
         self.cache_enabled = cache
         self.cache_dir = cache_dir
 
+        common_client_params = {
+            "language": self.language,
+            "timeout": timeout,
+            "cache_enabled": cache,
+            "cache_dir": cache_dir,
+        }
+
         # Initialize base client
-        self.base_client = INEClient(
-            language=self.language,
-            timeout=timeout,
-            cache_enabled=cache,
-            cache_dir=cache_dir,
-        )
+        self.base_client = INEClient(**common_client_params)
 
         # Initialize specialized clients
-        self.catalogue_client = CatalogueClient(
-            language=self.language,
-            timeout=timeout,
-            cache_enabled=cache,
-            cache_dir=cache_dir,
-        )
+        self.catalogue_client = CatalogueClient(**common_client_params)
 
-        self.metadata_client = MetadataClient(
-            language=self.language,
-            timeout=timeout,
-            cache_enabled=cache,
-            cache_dir=cache_dir,
-        )
+        self.metadata_client = MetadataClient(**common_client_params)
 
         self.data_client = DataClient(
-            language=self.language,
-            timeout=timeout,
-            cache_enabled=cache,
-            cache_dir=cache_dir,
+            **common_client_params,
             metadata_client=self.metadata_client,  # Pass metadata_client
         )
 
