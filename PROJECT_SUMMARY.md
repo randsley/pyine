@@ -106,6 +106,12 @@ pyptine/
 - Mocked HTTP requests using responses library
 - 73% code coverage
 
+### 7. API Compatibility
+- Supports both old and new INE API response formats
+- Handles PascalCase and lowercase field names
+- Backward compatible with legacy API structure
+- Automatic fallback to metadata endpoint for missing fields
+
 ## API Endpoints Used
 
 The package interacts with three INE Portugal API endpoints:
@@ -255,6 +261,6 @@ MIT License - See LICENSE file for details
 
 **Project Status**: ✅ Complete and ready for use
 
-**Last Updated**: 2026-01-14
+**Last Updated**: 2026-01-15
 
-**Version**: 0.1.2
+**Version**: 0.1.3
