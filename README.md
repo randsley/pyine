@@ -17,6 +17,7 @@ High-level Python client for Statistics Portugal (INE) API. Query and download s
 - 🖥️ **Command-Line Interface**: A powerful CLI for quick data access and scripting.
 - 📖 **Modern Python**: Fully type-annotated for better developer experience and IDE support.
 - ✅ **Well-Tested**: Comprehensive test suite with 73% code coverage.
+- 🔄 **API Compatible**: Supports both old and new INE API response formats seamlessly.
 
 ## Installation
 
@@ -76,7 +77,7 @@ pyptine info 0004127
 pyptine download 0004127 --output data.csv
 
 # Download data and filter by dimensions
-pyptine download 0004167 --output filtered_data.csv -d Dim1=2023 -d Dim2=1
+pyptine download 0004167 --output filtered_data.csv -d Dim1=S7A2023 -d Dim2=PT
 
 # List all available statistical themes
 pyptine list-commands themes
@@ -165,11 +166,12 @@ Use the `dimensions` parameter to filter data before downloading.
 
 ```python
 # Get data for the year 2023 and region "Portugal"
+# Note: Dimension values use specific codes (e.g., 'S7A2023' for year 2023)
 filtered_response = ine.get_data(
     "0004167",
     dimensions={
-        "Dim1": "2023",  # Year
-        "Dim2": "1"      # Geographic region 'Portugal'
+        "Dim1": "S7A2023",  # Year 2023
+        "Dim2": "PT"        # Geographic region 'Portugal'
     }
 )
 df_filtered = filtered_response.to_dataframe()
@@ -188,9 +190,9 @@ ine.export_json("0004127", "output.json", pretty=True)
 
 # Export filtered data
 ine.export_csv(
-    "0004127",
+    "0004167",
     "filtered_output.csv",
-    dimensions={"Dim1": "2023"}
+    dimensions={"Dim1": "S7A2023"}
 )
 ```
 

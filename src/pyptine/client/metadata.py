@@ -6,10 +6,9 @@ from typing import Any, Union, cast
 
 from pyptine.client.base import INEClient
 from pyptine.models.indicator import (
-    Indicator,
-    IndicatorMetadata,
     Dimension,
     DimensionValue,
+    IndicatorMetadata,
 )
 from pyptine.utils.exceptions import DataProcessingError
 
@@ -149,38 +148,54 @@ class MetadataClient(INEClient):
                     )
 
             if isinstance(response, dict):
-                # Extract basic info
-                varcd = response.get("indicador", "")
-                title = response.get("nome", "")
-                language = response.get("lang", self.language)
-                unit = response.get("unidade")
-                source = response.get("fonte")
-                notes = response.get("notas")
-                description = response.get("descricao")
-                theme = response.get("tema")
-                subtheme = response.get("subtema")
-                periodicity = response.get("periodicidade")
-                last_period = response.get("ultimoPeriodo")
-                geo_last_level = response.get("geoUltimoNivel")
-                html_url = response.get("urlHtml")
-                metadata_url = response.get("urlMeta")
-                data_url = response.get("urlDados")
+                # Extract basic info - support both old and new API formats
+                # New format uses PascalCase field names
+                varcd = response.get("IndicadorCod") or response.get("indicador", "")
+                title = (
+                    response.get("IndicadorNome")
+                    or response.get("IndicadorDsg")
+                    or response.get("nome", "")
+                )
+                language = response.get("Lingua") or response.get("lang", self.language)
+                unit = response.get("UnidadeMedida") or response.get("unidade")
+                source = response.get("Fonte") or response.get("fonte")
+                notes = response.get("Nota") or response.get("notas")
+                description = response.get("Descricao") or response.get("descricao")
+                theme = response.get("Tema") or response.get("tema")
+                subtheme = response.get("Subtema") or response.get("subtema")
+                periodicity = response.get("Periodic") or response.get("periodicidade")
+                last_period = response.get("UltimoPeriodo") or response.get("ultimoPeriodo")
+                geo_last_level = response.get("GeoUltimoNivel") or response.get("geoUltimoNivel")
+                html_url = response.get("UrlHtml") or response.get("urlHtml")
+                metadata_url = response.get("UrlMeta") or response.get("urlMeta")
+                data_url = response.get("UrlDados") or response.get("urlDados")
 
-                last_update_str = response.get("ultimaActualizacao")
+                last_update_str = (
+                    response.get("DataUltimaAtualizacao") or response.get("ultimaActualizacao")
+                )
                 last_update = None
                 if last_update_str:
                     try:
+                        # Try ISO format first (old format)
                         last_update = datetime.fromisoformat(last_update_str)
                     except ValueError:
-                        logger.warning(f"Could not parse last_update: {last_update_str}")
+                        try:
+                            # Try DD-MM-YYYY format (new format)
+                            last_update = datetime.strptime(last_update_str, "%Y-%m-%d")
+                        except ValueError:
+                            logger.warning(f"Could not parse last_update: {last_update_str}")
 
-                # Parse dimensions
+                # Parse dimensions - support both old and new formats
                 dimensions = []
-                dims_data = response.get("dimensoes", [])
-
-                for i, dim_data in enumerate(dims_data, start=1):
-                    dimension = self._parse_dimension(dim_data, dimension_id=i)
-                    dimensions.append(dimension)
+                if "Dimensoes" in response:
+                    # New API format with complex structure
+                    dimensions = self._parse_dimensions_new_format(response["Dimensoes"])
+                elif "dimensoes" in response:
+                    # Old API format - simple list
+                    dims_data = response["dimensoes"]
+                    for i, dim_data in enumerate(dims_data, start=1):
+                        dimension = self._parse_dimension(dim_data, dimension_id=i)
+                        dimensions.append(dimension)
 
                 return IndicatorMetadata(
                     varcd=varcd,
@@ -212,7 +227,7 @@ class MetadataClient(INEClient):
             raise DataProcessingError(f"Failed to parse metadata: {str(e)}") from e
 
     def _parse_dimension(self, dim_data: dict[str, Any], dimension_id: int) -> Dimension:
-        """Parse a single dimension from API response.
+        """Parse a single dimension from API response (old format).
 
         Args:
             dim_data: Dimension data from API
@@ -239,3 +254,84 @@ class MetadataClient(INEClient):
             values.append(value)
 
         return Dimension(id=dim_id, name=name, description=description, values=values)
+
+    def _parse_dimensions_new_format(self, dims_data: dict[str, Any]) -> list[Dimension]:
+        """Parse dimensions from new API format.
+
+        New format structure:
+        {
+            "Descricao_Dim": [
+                {"dim_num": "1", "abrv": "Name", ...},
+                {"dim_num": "2", "abrv": "Name2", ...}
+            ],
+            "Categoria_Dim": [
+                {"Dim_Num1_CODE1": [{"categ_cod": "CODE1", "categ_dsg": "Label1", ...}]},
+                {"Dim_Num2_CODE2": [{"categ_cod": "CODE2", "categ_dsg": "Label2", ...}]}
+            ]
+        }
+
+        Args:
+            dims_data: Dimensions data from new API format
+
+        Returns:
+            List of parsed Dimension objects
+        """
+        dimensions = []
+
+        # Get dimension descriptions
+        dim_descriptions = dims_data.get("Descricao_Dim", [])
+        dim_categories = dims_data.get("Categoria_Dim", [])
+
+        # Build a map of dimension info
+        dim_info_map = {}
+        for dim_desc in dim_descriptions:
+            dim_num = dim_desc.get("dim_num", "")
+            dim_info_map[dim_num] = {
+                "name": dim_desc.get("abrv", f"Dimension {dim_num}"),
+                "description": dim_desc.get("nota_dsg"),
+            }
+
+        # Parse dimension values from categories
+        dim_values_map: dict[str, list[DimensionValue]] = {}
+
+        # Flatten all category items
+        if isinstance(dim_categories, list):
+            for cat_item in dim_categories:
+                if isinstance(cat_item, dict):
+                    # Each item has keys like "Dim_Num1_S7A2011"
+                    for key, value_list in cat_item.items():
+                        # Extract dimension number from key (e.g., "Dim_Num1_..." -> "1")
+                        if key.startswith("Dim_Num"):
+                            parts = key.split("_")
+                            if len(parts) >= 2:
+                                dim_num = parts[1].replace("Num", "")
+
+                                if dim_num not in dim_values_map:
+                                    dim_values_map[dim_num] = []
+
+                                # Parse values
+                                if isinstance(value_list, list):
+                                    for val_data in value_list:
+                                        if isinstance(val_data, dict):
+                                            value = DimensionValue(
+                                                code=val_data.get("categ_cod", ""),
+                                                label=val_data.get("categ_dsg", ""),
+                                                order=val_data.get("categ_ord"),
+                                            )
+                                            dim_values_map[dim_num].append(value)
+
+        # Build Dimension objects
+        for dim_num, info in dim_info_map.items():
+            values = dim_values_map.get(dim_num, [])
+            dimension = Dimension(
+                id=int(dim_num) if dim_num.isdigit() else 0,
+                name=info["name"],
+                description=info.get("description"),
+                values=values,
+            )
+            dimensions.append(dimension)
+
+        # Sort by dimension ID
+        dimensions.sort(key=lambda d: d.id)
+
+        return dimensions

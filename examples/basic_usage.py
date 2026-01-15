@@ -1,6 +1,6 @@
-"""Basic usage examples for the pyine library."""
+"""Basic usage examples for the pyptine library."""
 
-from pyine import INE
+from pyptine import INE
 
 # Initialize the client. Caching is enabled by default.
 ine = INE(language="EN")
@@ -50,7 +50,8 @@ print("Example 5: Filter data using dimensions")
 print("=" * 60)
 # Use a dimension code from the metadata explored in Example 3
 # For indicator 0004167, Dim1 is 'Period' and Dim2 is 'Geographic localization'
-dimension_filter = {"Dim1": "2023", "Dim2": "1"}  # Year 2023, Region 'Portugal'
+# Note: Dimension values use specific codes (e.g., 'S7A2023' for year 2023, 'PT' for Portugal)
+dimension_filter = {"Dim1": "S7A2023", "Dim2": "PT"}  # Year 2023, Region 'Portugal'
 print(f"Fetching data with filter: {dimension_filter}...")
 filtered_response = ine.get_data(varcd, dimensions=dimension_filter)
 filtered_df = filtered_response.to_dataframe()

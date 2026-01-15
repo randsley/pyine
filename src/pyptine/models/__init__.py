@@ -1,4 +1,5 @@
 """Data models for pyptine package."""
+
 from pyptine.models.indicator import (
     Dimension,
     DimensionValue,
