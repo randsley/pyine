@@ -309,8 +309,10 @@ def filter_by_geography(
             raise ValueError("Could not auto-detect geography column")
 
     # Filter by geography
-    mask = df[geography_column].astype(str).str.contains(geography, case=False, na=False)
-    filtered = df[mask].copy()
+    mask: pd.Series[bool] = (
+        df[geography_column].astype(str).str.contains(geography, case=False, na=False)
+    )
+    filtered: pd.DataFrame = cast(pd.DataFrame, df[mask].copy())
 
     logger.debug(f"Filtered to {len(filtered)} rows for geography: {geography}")
 
@@ -351,6 +353,7 @@ def get_latest_period(
     unique_periods = df_sorted[period_column].unique()[:n]
 
     # Filter to those periods
-    result = df_sorted[df_sorted[period_column].isin(unique_periods)].copy()
+    mask: pd.Series[bool] = df_sorted[period_column].isin(unique_periods)
+    result: pd.DataFrame = cast(pd.DataFrame, df_sorted[mask].copy())
 
-    return cast(pd.DataFrame, result)
+    return result

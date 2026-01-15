@@ -177,39 +177,59 @@ class DataClient(INEClient):
             data_array = []
 
             if isinstance(response, list):
-                # If response is a list, assume it's directly the data array
-                data_array = response
-                # Fetch metadata separately to get title and unit
-                if self.metadata_client:
-                    try:
-                        metadata = self.metadata_client.get_metadata(varcd)
-                        title = metadata.title
-                        unit = metadata.unit
-                    except Exception as e:
+                # New API format: response is a list with a single dict
+                if len(response) == 1 and isinstance(response[0], dict):
+                    response = response[0]
+                elif len(response) > 1:
+                    # Old format: response is directly the data array
+                    data_array = response
+                    # Fetch metadata separately to get title and unit
+                    if self.metadata_client:
+                        try:
+                            metadata = self.metadata_client.get_metadata(varcd)
+                            title = metadata.title
+                            unit = metadata.unit
+                        except Exception as e:
+                            logger.warning(
+                                f"Could not fetch metadata for {varcd} when parsing list data response: {e}"
+                            )
+                    else:
                         logger.warning(
-                            f"Could not fetch metadata for {varcd} when parsing list data response: {e}"
+                            "MetadataClient not available in DataClient to fetch indicator name and unit."
                         )
-                else:
-                    logger.warning(
-                        "MetadataClient not available in DataClient to fetch indicator name and unit."
-                    )
 
-                if not title and data_array:
-                    # Fallback: try to get unit from first data point if metadata not available
-                    first_point = data_array[0]
-                    unit = first_point.get("unidade") or first_point.get("unit")
+                    if not title and data_array:
+                        # Fallback: try to get unit from first data point if metadata not available
+                        first_point = data_array[0]
+                        unit = first_point.get("unidade") or first_point.get("unit")
 
-            elif isinstance(response, dict):
-                # If response is a dict, parse as before
-                varcd_val = response.get("indicador", "")
-                title = response.get("nome", "")
-                language = response.get("lang", self.language)
-                unit = response.get("unidade")
-                data_array = response.get("dados", [])
-            else:
-                raise DataProcessingError(
-                    "Unexpected data API response format: neither dict nor list"
+            if isinstance(response, dict):
+                # Support both old and new API formats
+                # New format uses PascalCase field names
+                varcd_val = response.get("IndicadorCod") or response.get("indicador", varcd)
+                title = (
+                    response.get("IndicadorDsg")
+                    or response.get("IndicadorNome")
+                    or response.get("nome", "")
                 )
+                language = response.get("Lingua") or response.get("lang", self.language)
+                unit = response.get("UnidadeMedida") or response.get("unidade")
+
+                # Handle both old and new data array formats
+                # Old format: "dados" is a flat array
+                # New format: "Dados" is an object with years as keys
+                dados = response.get("Dados") or response.get("dados")
+                if isinstance(dados, dict):
+                    # New format: flatten all years into a single array
+                    data_array = []
+                    for year_data in dados.values():
+                        if isinstance(year_data, list):
+                            data_array.extend(year_data)
+                elif isinstance(dados, list):
+                    # Old format: already a flat array
+                    data_array = dados
+                else:
+                    data_array = []
 
             # Process data points
             processed_data = []
@@ -217,6 +237,17 @@ class DataClient(INEClient):
                 processed_point = self._process_data_point(data_point)
                 if processed_point:
                     processed_data.append(processed_point)
+
+            # If unit is still None and we have metadata_client, fetch from metadata
+            if unit is None and self.metadata_client:
+                try:
+                    metadata = self.metadata_client.get_metadata(varcd)
+                    unit = metadata.unit
+                    # Also update title if it's empty
+                    if not title:
+                        title = metadata.title
+                except Exception as e:
+                    logger.debug(f"Could not fetch unit from metadata for {varcd}: {e}")
 
             return DataResponse(
                 varcd=varcd_val,

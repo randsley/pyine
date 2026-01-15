@@ -31,9 +31,7 @@ def handle_exceptions(func: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-@click.group(
-    help="""pyptine - Python client for INE Portugal (Statistics Portugal) API."""
-)
+@click.group(help="""pyptine - Python client for INE Portugal (Statistics Portugal) API.""")
 @click.version_option(version=__version__, prog_name="pyptine")
 @click.pass_context
 def cli(ctx: Context) -> None:  # type: ignore[misc]

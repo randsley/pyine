@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2026-01-15
+
+### Fixed
+
+- **INE API Compatibility**: Updated data and metadata clients to handle new INE Portugal API response format:
+  - Modified `DataClient._parse_data_response()` to support PascalCase field names (`IndicadorCod`, `IndicadorDsg`, `UnidadeMedida`) alongside old lowercase names
+  - Updated data parsing to handle new nested `Dados` structure (object with years as keys) vs old flat array format
+  - Added fallback to fetch unit information from metadata endpoint when not present in data response
+  - Modified `MetadataClient._parse_metadata_response()` to support both old and new field naming conventions
+  - Added new `_parse_dimensions_new_format()` method to handle complex dimension structure with `Descricao_Dim` and `Categoria_Dim`
+  - Updated date parsing to handle both ISO format and YYYY-MM-DD format
+  - Library now maintains backward compatibility with old API format while fully supporting the new format
+
+### Changed
+
+- **Error Handling**: Improved error handling for metadata fetching when unit information is missing from data responses
+
 ## [0.1.2] - 2026-01-14
 
 ### Fixed
