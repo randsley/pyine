@@ -6,7 +6,7 @@ from pathlib import Path
 import responses
 from click.testing import CliRunner
 
-from pyine.cli.main import cli
+from pyptine.cli.main import cli
 
 
 class TestSearchCommand:
@@ -373,7 +373,7 @@ class TestCLIHelp:
         result = runner.invoke(cli, ["--help"])
 
         assert result.exit_code == 0
-        assert "pyine" in result.output.lower()
+        assert "pyptine" in result.output.lower()
         assert "search" in result.output.lower()
 
     def test_cli_version(self):
@@ -408,12 +408,12 @@ class TestExceptionHandling:
     def test_exception_is_handled(self, monkeypatch):
         """Test that a generic INEError is handled."""
         # Mock the INE class to raise an exception
-        from pyine.utils.exceptions import INEError
+        from pyptine.utils.exceptions import INEError
 
         def mock_get_indicator(*args, **kwargs):
             raise INEError("A test error occurred")
 
-        monkeypatch.setattr("pyine.INE.get_indicator", mock_get_indicator)
+        monkeypatch.setattr("pyptine.INE.get_indicator", mock_get_indicator)
 
         runner = CliRunner()
         result = runner.invoke(cli, ["info", "0004167"])

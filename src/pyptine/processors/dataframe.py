@@ -1,11 +1,11 @@
-"""DataFrame processing utilities for pyine."""
+"""DataFrame processing utilities for pyptine."""
 
 import logging
 from typing import Any, Optional, Union, cast
 
 import pandas as pd
 
-from pyine.utils.exceptions import DataProcessingError
+from pyptine.utils.exceptions import DataProcessingError
 
 logger = logging.getLogger(__name__)
 

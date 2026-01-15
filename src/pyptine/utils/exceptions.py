@@ -1,4 +1,4 @@
-"""Custom exceptions for pyine package."""
+"""Custom exceptions for pyptine package."""
 
 
 class INEError(Exception):

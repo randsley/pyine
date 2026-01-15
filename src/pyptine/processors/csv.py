@@ -1,4 +1,4 @@
-"""CSV export functionality for pyine."""
+"""CSV export functionality for pyptine."""
 
 import logging
 from datetime import datetime
@@ -7,7 +7,7 @@ from typing import Any, Optional, TextIO
 
 import pandas as pd
 
-from pyine.utils.exceptions import DataProcessingError
+from pyptine.utils.exceptions import DataProcessingError
 
 logger = logging.getLogger(__name__)
 

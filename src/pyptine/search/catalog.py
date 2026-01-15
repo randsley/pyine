@@ -3,8 +3,8 @@
 import logging
 from typing import Optional
 
-from pyine.client.catalogue import CatalogueClient
-from pyine.models.indicator import Indicator
+from pyptine.client.catalogue import CatalogueClient
+from pyptine.models.indicator import Indicator
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ class CatalogueBrowser:
         language: Language code ('PT' or 'EN')
 
     Example:
-        >>> from pyine import INE
+        >>> from pyptine import INE
         >>> ine = INE(language="EN")
         >>> browser = CatalogueBrowser(ine.catalogue_client)
         >>> results = browser.search("population")

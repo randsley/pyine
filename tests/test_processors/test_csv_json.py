@@ -4,8 +4,8 @@ import json
 
 import pandas as pd
 
-from pyine.processors.csv import export_to_csv, read_csv_with_metadata
-from pyine.processors.json import (
+from pyptine.processors.csv import export_to_csv, read_csv_with_metadata
+from pyptine.processors.json import (
     export_to_json,
     export_to_jsonl,
     flatten_json,

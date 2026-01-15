@@ -1,11 +1,11 @@
-"""JSON processing utilities for pyine."""
+"""JSON processing utilities for pyptine."""
 
 import json
 import logging
 from pathlib import Path
 from typing import Any, Optional
 
-from pyine.utils.exceptions import DataProcessingError
+from pyptine.utils.exceptions import DataProcessingError
 
 logger = logging.getLogger(__name__)
 

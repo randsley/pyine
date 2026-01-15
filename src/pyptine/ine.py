@@ -4,15 +4,15 @@ import logging
 from pathlib import Path
 from typing import Any, Literal, Optional, Union
 
-from pyine.client.base import INEClient
-from pyine.client.catalogue import CatalogueClient
-from pyine.client.data import DataClient
-from pyine.client.metadata import MetadataClient
-from pyine.models.indicator import Dimension, Indicator, IndicatorMetadata
-from pyine.models.response import DataResponse
-from pyine.processors.csv import export_to_csv
-from pyine.processors.json import export_to_json
-from pyine.search.catalog import CatalogueBrowser
+from pyptine.client.base import INEClient
+from pyptine.client.catalogue import CatalogueClient
+from pyptine.client.data import DataClient
+from pyptine.client.metadata import MetadataClient
+from pyptine.models.indicator import Dimension, Indicator, IndicatorMetadata
+from pyptine.models.response import DataResponse
+from pyptine.processors.csv import export_to_csv
+from pyptine.processors.json import export_to_json
+from pyptine.search.catalog import CatalogueBrowser
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ OutputFormat = Literal["dataframe", "json", "dict"]
 class INE:
     """High-level interface to INE Portugal API.
 
-    This is the main entry point for using pyine. It provides simple methods
+    This is the main entry point for using pyptine. It provides simple methods
     to search indicators, fetch data, and export results.
 
     Args:
@@ -33,7 +33,7 @@ class INE:
         timeout: Request timeout in seconds (default: 30)
 
     Example:
-        >>> from pyine import INE
+        >>> from pyptine import INE
         >>> ine = INE(language="EN")
         >>>
         >>> # Search for indicators

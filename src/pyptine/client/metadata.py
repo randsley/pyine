@@ -4,13 +4,14 @@ import logging
 from datetime import datetime
 from typing import Any, Union, cast
 
-from pyine.client.base import INEClient
-from pyine.models.indicator import (
+from pyptine.client.base import INEClient
+from pyptine.models.indicator import (
+    Indicator,
+    IndicatorMetadata,
     Dimension,
     DimensionValue,
-    IndicatorMetadata,
 )
-from pyine.utils.exceptions import DataProcessingError
+from pyptine.utils.exceptions import DataProcessingError
 
 logger = logging.getLogger(__name__)
 

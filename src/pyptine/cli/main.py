@@ -1,4 +1,4 @@
-"""Command-line interface for pyine."""
+"""Command-line interface for pyptine."""
 
 import sys
 from functools import wraps
@@ -8,9 +8,9 @@ from typing import Any, Callable, Optional
 import click
 from click import Context
 
-from pyine import INE
-from pyine.__version__ import __version__
-from pyine.utils.exceptions import INEError
+from pyptine import INE
+from pyptine.__version__ import __version__
+from pyptine.utils.exceptions import INEError
 
 
 def handle_exceptions(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -31,20 +31,22 @@ def handle_exceptions(func: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-@click.group()
-@click.version_option(version=__version__, prog_name="pyine")
+@click.group(
+    help="""pyptine - Python client for INE Portugal (Statistics Portugal) API."""
+)
+@click.version_option(version=__version__, prog_name="pyptine")
 @click.pass_context
 def cli(ctx: Context) -> None:  # type: ignore[misc]
-    """pyine - Python client for INE Portugal (Statistics Portugal) API.
+    """pyptine - Python client for INE Portugal (Statistics Portugal) API.
 
     Access Portuguese statistical data from the command line.
 
     \b
     Examples:
-        pyine search "population"
-        pyine info 0004167
-        pyine download 0004167 --output data.csv
-        pyine list themes
+        pyptine search "population"
+        pyptine info 0004167
+        pyptine download 0004167 --output data.csv
+        pyptine list themes
     """
     # Ensure context object exists
     ctx.ensure_object(dict)
@@ -87,9 +89,9 @@ def search(
 
     \b
     Examples:
-        pyine search "gdp"
-        pyine search "population" --theme "Population"
-        pyine search "employment" --lang PT --limit 10
+        pyptine search "gdp"
+        pyptine search "population" --theme "Population"
+        pyptine search "employment" --lang PT --limit 10
     """
     ine = INE(language=lang, cache=True)
 
@@ -132,8 +134,8 @@ def info(varcd: str, lang: str) -> None:
 
     \b
     Examples:
-        pyine info 0004167
-        pyine info 0004167 --lang PT
+        pyptine info 0004167
+        pyptine info 0004167 --lang PT
     """
     ine = INE(language=lang, cache=True)
 
@@ -219,10 +221,10 @@ def download(
 
     \b
     Examples:
-        pyine download 0004167
-        pyine download 0004167 --output data.csv
-        pyine download 0004167 --format json
-        pyine download 0004167 --dimension "Dim1=2020"
+        pyptine download 0004167
+        pyptine download 0004167 --output data.csv
+        pyptine download 0004167 --format json
+        pyptine download 0004167 --dimension "Dim1=2020"
     """
     ine = INE(language=lang, cache=True)
 
@@ -277,8 +279,8 @@ def dimensions(varcd: str, lang: str) -> None:
 
     \b
     Examples:
-        pyine dimensions 0004167
-        pyine dimensions 0004167 --lang PT
+        pyptine dimensions 0004167
+        pyptine dimensions 0004167 --lang PT
     """
     ine = INE(language=lang, cache=True)
 
@@ -312,9 +314,9 @@ def list_commands() -> None:
 
     \b
     Examples:
-        pyine list themes
-        pyine list indicators
-        pyine list indicators --theme "Population"
+        pyptine list themes
+        pyptine list indicators
+        pyptine list indicators --theme "Population"
     """
     pass
 
@@ -404,8 +406,8 @@ def cache() -> None:
 
     \b
     Examples:
-        pyine cache info
-        pyine cache clear
+        pyptine cache info
+        pyptine cache clear
     """
     pass
 

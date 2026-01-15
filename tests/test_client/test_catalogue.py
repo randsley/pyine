@@ -3,10 +3,10 @@
 import pytest
 import responses
 
-from pyine.client.catalogue import CatalogueClient
-from pyine.models.indicator import Indicator
-from pyine.models.response import CatalogueResponse
-from pyine.utils.exceptions import APIError, DataProcessingError
+from pyptine.client.catalogue import CatalogueClient
+from pyptine.models.indicator import Indicator
+from pyptine.models.response import CatalogueResponse
+from pyptine.utils.exceptions import APIError, DataProcessingError
 
 
 @pytest.fixture

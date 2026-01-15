@@ -2,7 +2,7 @@
 
 ## ✅ Tested and Verified Versions
 
-pyine has been **tested and verified** on the following Python versions:
+pyptine has been **tested and verified** on the following Python versions:
 
 ### Python 3.14.2 ✅
 
@@ -16,7 +16,7 @@ pyine has been **tested and verified** on the following Python versions:
 
 ## 📋 Declared Compatibility Range
 
-pyine declares support for **Python 3.9 - 3.14**:
+pyptine declares support for **Python 3.9 - 3.14**:
 
 | Version | Status | Notes |
 |---------|--------|-------|
@@ -60,11 +60,11 @@ All dependencies work with Python 3.8-3.14:
 
 ## 🚀 Installation
 
-pyine can be installed on Python 3.9-3.14:
+pyptine can be installed on Python 3.9-3.14:
 
 ```bash
 # Requires Python 3.9 or higher
-pip install pyine
+pip install pyptine
 ```
 
 ## 📊 Test Results Summary
@@ -87,7 +87,7 @@ pip install pyine
 
 ## ✨ Conclusion
 
-pyine is **production-ready** for Python 3.9 through 3.14.
+pyptine is **production-ready** for Python 3.9 through 3.14.
 
 ---
 

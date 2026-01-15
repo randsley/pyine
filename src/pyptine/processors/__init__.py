@@ -1,10 +1,10 @@
-"""Data processing utilities for pyine package."""
+"""Data processing utilities for pyptine package."""
 
-from pyine.processors.csv import (
+from pyptine.processors.csv import (
     export_to_csv,
     read_csv_with_metadata,
 )
-from pyine.processors.dataframe import (
+from pyptine.processors.dataframe import (
     aggregate_by_period,
     clean_dataframe,
     filter_by_geography,
@@ -13,11 +13,11 @@ from pyine.processors.dataframe import (
     merge_metadata,
     pivot_by_dimension,
 )
-from pyine.processors.excel import (
+from pyptine.processors.excel import (
     export_multiple_sheets,
     format_for_excel,
 )
-from pyine.processors.json import (
+from pyptine.processors.json import (
     export_to_json,
     export_to_jsonl,
     flatten_json,

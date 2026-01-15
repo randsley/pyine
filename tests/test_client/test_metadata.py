@@ -3,9 +3,9 @@
 import pytest
 import responses
 
-from pyine.client.metadata import MetadataClient
-from pyine.models.indicator import Dimension, DimensionValue, IndicatorMetadata
-from pyine.utils.exceptions import APIError
+from pyptine.client.metadata import MetadataClient
+from pyptine.models.indicator import Dimension, DimensionValue, IndicatorMetadata
+from pyptine.utils.exceptions import APIError
 
 
 @pytest.fixture

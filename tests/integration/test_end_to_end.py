@@ -1,4 +1,4 @@
-"""End-to-end integration tests for pyine."""
+"""End-to-end integration tests for pyptine."""
 
 import json
 
@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 import responses
 
-from pyine import INE
+from pyptine import INE
 
 
 class TestINEIntegration:
@@ -280,7 +280,7 @@ class TestINEIntegration:
 
         ine = INE(language="EN", cache=False)
 
-        from pyine.utils.exceptions import APIError
+        from pyptine.utils.exceptions import APIError
 
         # Should raise APIError after retries
         with pytest.raises(APIError):  # Will be APIError or similar

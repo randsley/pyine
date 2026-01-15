@@ -5,11 +5,11 @@ from unittest.mock import MagicMock
 import pytest
 import responses
 
-from pyine.client.data import DataClient
-from pyine.client.metadata import MetadataClient
-from pyine.models.indicator import Dimension, DimensionValue, IndicatorMetadata
-from pyine.models.response import DataResponse
-from pyine.utils.exceptions import APIError, DimensionError
+from pyptine.client.data import DataClient
+from pyptine.client.metadata import MetadataClient
+from pyptine.models.indicator import Dimension, DimensionValue, IndicatorMetadata
+from pyptine.models.response import DataResponse
+from pyptine.utils.exceptions import APIError, DimensionError
 
 
 @pytest.fixture

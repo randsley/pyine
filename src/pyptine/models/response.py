@@ -5,9 +5,9 @@ from typing import Any, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from pyine.models.indicator import Indicator
-from pyine.processors.csv import export_to_csv
-from pyine.processors.json import export_to_json
+from pyptine.models.indicator import Indicator
+from pyptine.processors.csv import export_to_csv
+from pyptine.processors.json import export_to_json
 
 try:
     import pandas as pd

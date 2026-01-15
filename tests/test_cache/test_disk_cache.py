@@ -3,7 +3,7 @@
 import pytest
 import responses
 
-from pyine.cache.disk import DiskCache
+from pyptine.cache.disk import DiskCache
 
 
 @pytest.fixture
@@ -43,7 +43,7 @@ class TestDiskCache:
 
         cache_dir = cache.get_cache_dir()
         assert cache_dir.exists()
-        assert "pyine" in str(cache_dir).lower()
+        assert "pyptine" in str(cache_dir).lower()
 
         cache.close()
 

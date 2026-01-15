@@ -5,10 +5,10 @@ from datetime import datetime
 from typing import Optional, cast
 from xml.etree import ElementTree as ET
 
-from pyine.client.base import INEClient
-from pyine.models.indicator import Indicator
-from pyine.models.response import CatalogueResponse
-from pyine.utils.exceptions import DataProcessingError
+from pyptine.client.base import INEClient
+from pyptine.models.indicator import Indicator
+from pyptine.models.response import CatalogueResponse
+from pyptine.utils.exceptions import DataProcessingError
 
 logger = logging.getLogger(__name__)
 

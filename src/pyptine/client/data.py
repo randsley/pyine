@@ -5,10 +5,10 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Any, Optional, Union, cast
 
-from pyine.client.base import INEClient
-from pyine.client.metadata import MetadataClient  # Import MetadataClient
-from pyine.models.response import DataResponse
-from pyine.utils.exceptions import DataProcessingError, DimensionError
+from pyptine.client.base import INEClient
+from pyptine.client.metadata import MetadataClient  # Import MetadataClient
+from pyptine.models.response import DataResponse
+from pyptine.utils.exceptions import DataProcessingError, DimensionError
 
 logger = logging.getLogger(__name__)
 

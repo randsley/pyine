@@ -18,8 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Refactored
 
-- **Client Robustness**: Modified `_make_request` in `src/pyine/client/base.py` to create a copy of the `params` dictionary, preventing side effects.
-- **Type Hinting**: Improved type safety by replacing `Any` with `TextIO` for the `file_handle` parameter in `src/pyine/processors/csv.py`.
+- **Client Robustness**: Modified `_make_request` in `src/pyptine/client/base.py` to create a copy of the `params` dictionary, preventing side effects.
+- **Type Hinting**: Improved type safety by replacing `Any` with `TextIO` for the `file_handle` parameter in `src/pyptine/processors/csv.py`.
 
 ## [0.1.1] - 2026-01-13
 

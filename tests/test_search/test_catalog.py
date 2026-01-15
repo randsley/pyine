@@ -3,9 +3,9 @@
 import pytest
 import responses
 
-from pyine.client.catalogue import CatalogueClient
-from pyine.models.indicator import Indicator
-from pyine.search.catalog import CatalogueBrowser
+from pyptine.client.catalogue import CatalogueClient
+from pyptine.models.indicator import Indicator
+from pyptine.search.catalog import CatalogueBrowser
 
 
 class TestCatalogueBrowser:

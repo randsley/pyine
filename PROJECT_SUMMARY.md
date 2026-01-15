@@ -16,8 +16,8 @@
 ## Package Structure
 
 ```
-pyine/
-├── src/pyine/                    # Main package (1,265 lines of code)
+pyptine/
+├── src/pyptine/                    # Main package (1,265 lines of code)
 │   ├── __init__.py               # Public API exports
 │   ├── __version__.py            # Version string
 │   ├── ine.py                    # High-level INE class (82 lines)
@@ -138,7 +138,7 @@ The package interacts with three INE Portugal API endpoints:
 ### Python API
 
 ```python
-from pyine import INE
+from pyptine import INE
 
 # Initialize
 ine = INE(language="EN")
@@ -157,16 +157,16 @@ ine.export_csv("0004167", "data.csv")
 
 ```bash
 # Search
-pyine search "gdp"
+pyptine search "gdp"
 
 # Download
-pyine download 0004167 --output data.csv
+pyptine download 0004167 --output data.csv
 
 # Get info
-pyine info 0004167
+pyptine info 0004167
 
 # List themes
-pyine list-commands themes
+pyptine list-commands themes
 ```
 
 ## Test Coverage Breakdown

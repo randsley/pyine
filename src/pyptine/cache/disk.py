@@ -8,8 +8,8 @@ from typing import Any, Optional
 import requests_cache
 from platformdirs import user_cache_dir
 
-from pyine.cache.backend import CacheBackend
-from pyine.utils.exceptions import CacheError
+from pyptine.cache.backend import CacheBackend
+from pyptine.utils.exceptions import CacheError
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ class DiskCache(CacheBackend):
     ) -> None:
         """Initialize disk cache."""
         # Determine cache directory
-        cache_dir = Path(user_cache_dir("pyine", "pyine")) if cache_dir is None else Path(cache_dir)
+        cache_dir = Path(user_cache_dir("pyptine", "pyptine")) if cache_dir is None else Path(cache_dir)
 
         self.cache_dir = cache_dir
         self.metadata_ttl = metadata_ttl

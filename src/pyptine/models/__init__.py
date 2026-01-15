@@ -1,14 +1,12 @@
-"""Data models for pyine package."""
-
-from pyine.models.indicator import (
+"""Data models for pyptine package."""
+from pyptine.models.indicator import (
     Dimension,
     DimensionValue,
     Indicator,
     IndicatorMetadata,
 )
-from pyine.models.response import (
+from pyptine.models.response import (
     CatalogueResponse,
-    DataPoint,
     DataResponse,
 )
 

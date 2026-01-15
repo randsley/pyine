@@ -19,7 +19,7 @@ A clear and concise description of any alternative solutions or features you've 
 Describe how this feature would be used:
 ```python
 # Example usage of the proposed feature
-from pyine import INE
+from pyptine import INE
 
 ine = INE()
 # ...

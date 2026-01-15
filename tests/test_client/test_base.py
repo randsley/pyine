@@ -3,8 +3,8 @@
 import pytest
 import responses
 
-from pyine.client.base import INEClient
-from pyine.utils.exceptions import APIError, RateLimitError
+from pyptine.client.base import INEClient
+from pyptine.utils.exceptions import APIError, RateLimitError
 
 
 class TestINEClient:
@@ -186,7 +186,7 @@ class TestINEClient:
 
         headers = client.session.headers
         assert "User-Agent" in headers
-        assert "pyine" in headers["User-Agent"]
+        assert "pyptine" in headers["User-Agent"]
         assert "Accept" in headers
 
     @responses.activate

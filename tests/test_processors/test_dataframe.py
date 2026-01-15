@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 
-from pyine.processors.dataframe import (
+from pyptine.processors.dataframe import (
     aggregate_by_period,
     clean_dataframe,
     filter_by_geography,
@@ -12,7 +12,7 @@ from pyine.processors.dataframe import (
     merge_metadata,
     pivot_by_dimension,
 )
-from pyine.utils.exceptions import DataProcessingError
+from pyptine.utils.exceptions import DataProcessingError
 
 
 class TestJsonToDataFrame:

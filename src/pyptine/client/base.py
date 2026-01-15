@@ -9,9 +9,9 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from pyine.__version__ import __version__
-from pyine.cache.disk import DiskCache
-from pyine.utils.exceptions import APIError, RateLimitError
+from pyptine.__version__ import __version__
+from pyptine.cache.disk import DiskCache
+from pyptine.utils.exceptions import APIError, RateLimitError
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ def _get_disk_cache() -> type[DiskCache]:
     """Lazy import of DiskCache to avoid circular imports."""
     global _disk_cache
     if _disk_cache is None:
-        from pyine.cache.disk import DiskCache
+        from pyptine.cache.disk import DiskCache
 
         _disk_cache = DiskCache
     return _disk_cache
@@ -54,7 +54,7 @@ class INEClient:
     BASE_URL = "https://www.ine.pt"
     DEFAULT_TIMEOUT = 30
     MAX_RETRIES = 3
-    USER_AGENT = f"pyine/{__version__} (Python INE API Client)"
+    USER_AGENT = f"pyptine/{__version__} (Python INE API Client)"
 
     def __init__(
         self,

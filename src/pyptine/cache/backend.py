@@ -1,4 +1,4 @@
-"""Cache backend interface for pyine."""
+"""Cache backend interface for pyptine."""
 
 from abc import ABC, abstractmethod
 from pathlib import Path

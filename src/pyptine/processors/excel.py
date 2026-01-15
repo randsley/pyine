@@ -1,4 +1,4 @@
-"""Excel export functionality for pyine."""
+"""Excel export functionality for pyptine."""
 
 import logging
 from pathlib import Path
@@ -6,7 +6,7 @@ from typing import Any, Optional
 
 import pandas as pd
 
-from pyine.utils.exceptions import DataProcessingError
+from pyptine.utils.exceptions import DataProcessingError
 
 logger = logging.getLogger(__name__)
 

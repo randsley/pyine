@@ -56,20 +56,20 @@ docs = [
 ]
 
 [project.scripts]
-pyptine = "pyine.cli.main:cli"
+pyptine = "pyptine.cli.main:cli"
 
 [project.urls]
-Homepage = "https://github.com/nigelrandsley/pyine"
-Documentation = "https://pyine.readthedocs.io"
-Repository = "https://github.com/nigelrandsley/pyine"
-"Bug Tracker" = "https://github.com/nigelrandsley/pyine/issues"
+Homepage = "https://github.com/nigelrandsley/pyptine"
+Documentation = "https://pyptine.readthedocs.io"
+Repository = "https://github.com/nigelrandsley/pyptine"
+"Bug Tracker" = "https://github.com/nigelrandsley/pyptine/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-v --cov=pyine --cov-report=term-missing"
+addopts = "-v --cov=pyptine --cov-report=term-missing"
 markers = [
     "live: marks tests that hit the live API (deselect with '-m \"not live\"')",
 ]
