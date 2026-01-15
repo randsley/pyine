@@ -2,9 +2,7 @@
 
 from pyptine import INE
 from pyptine.processors.dataframe import (
-    aggregate_by_period,
     filter_by_geography,
-    get_latest_period,
 )
 
 # Initialize the client
@@ -65,8 +63,8 @@ filtered_response = ine.get_data(
     dimensions={
         "Dim1": "S7A2023",  # Year 2023
         "Dim2": "PT",  # Portugal
-        "Dim3": "T"  # Total (both sexes)
-    }
+        "Dim3": "T",  # Total (both sexes)
+    },
 )
 filtered_df = filtered_response.to_dataframe()
 print(f"Filtered data shape: {filtered_df.shape}")
@@ -144,7 +142,7 @@ print("=" * 60)
 cache_info = ine.get_cache_info()
 print("Current cache info:")
 print(f"  - Enabled: {cache_info['enabled']}")
-if cache_info['enabled']:
+if cache_info["enabled"]:
     print("  - Metadata cache and data cache are active")
     print("  - Metadata cached for 7 days, data for 1 day")
 # To clear cache: ine.clear_cache()

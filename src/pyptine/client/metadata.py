@@ -170,8 +170,8 @@ class MetadataClient(INEClient):
                 metadata_url = response.get("UrlMeta") or response.get("urlMeta")
                 data_url = response.get("UrlDados") or response.get("urlDados")
 
-                last_update_str = (
-                    response.get("DataUltimaAtualizacao") or response.get("ultimaActualizacao")
+                last_update_str = response.get("DataUltimaAtualizacao") or response.get(
+                    "ultimaActualizacao"
                 )
                 last_update = None
                 if last_update_str:
