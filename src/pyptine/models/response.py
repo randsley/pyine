@@ -126,7 +126,7 @@ class DataResponse(BaseModel):
         Returns:
             Dictionary representation of the response.
         """
-        return self.model_dump()
+        return self.model_dump(mode="python")
 
     model_config = ConfigDict(
         json_schema_extra={
