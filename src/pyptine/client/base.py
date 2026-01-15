@@ -256,7 +256,7 @@ class INEClient:
             APIError: If response is not valid text
         """
         try:
-            xml_text = response.text
+            xml_text = cast(str, response.text)
             logger.debug(f"Parsed XML response with {len(xml_text)} characters")
             return xml_text
         except Exception as e:
