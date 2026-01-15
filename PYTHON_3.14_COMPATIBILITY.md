@@ -40,6 +40,10 @@ pyptine, version 0.1.0
 
 $ pyptine --help
 Usage: pyptine [OPTIONS] COMMAND [ARGS]...
+
+# Example usage of list-commands
+$ pyptine list-commands themes
+$ pyptine list-commands indicators
 ✅ All commands working
 ```
 

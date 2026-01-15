@@ -167,6 +167,8 @@ pyptine info 0004167
 
 # List themes
 pyptine list-commands themes
+# List indicators
+pyptine list-commands indicators
 ```
 
 ## Test Coverage Breakdown

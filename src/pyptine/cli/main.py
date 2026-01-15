@@ -46,7 +46,7 @@ def cli(ctx: Context) -> None:  # type: ignore[misc]
         pyptine search "population"
         pyptine info 0004167
         pyptine download 0004167 --output data.csv
-        pyptine list themes
+        pyptine list-commands themes
     """
     # Ensure context object exists
     ctx.ensure_object(dict)
@@ -314,9 +314,9 @@ def list_commands() -> None:
 
     \b
     Examples:
-        pyptine list themes
-        pyptine list indicators
-        pyptine list indicators --theme "Population"
+        pyptine list-commands themes
+        pyptine list-commands indicators
+        pyptine list-commands indicators --theme "Population"
     """
     pass
 
