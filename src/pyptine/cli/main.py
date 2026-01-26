@@ -88,7 +88,7 @@ def cli(ctx: Context) -> None:  # type: ignore[misc]
 )
 @click.option(
     "--timeout",
-    "-t",
+    "-w",
     type=int,
     default=10,
     help="Request timeout in seconds (default: 10)",
