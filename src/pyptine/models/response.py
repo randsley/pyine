@@ -128,6 +128,164 @@ class DataResponse(BaseModel):
         """
         return self.model_dump(mode="python")
 
+    def calculate_yoy_growth(
+        self,
+        value_column: str = "value",
+        period_column: str = "Period",
+    ) -> "DataResponse":
+        """Calculate year-over-year growth rates.
+
+        Compares each period's value to the same period in the previous year.
+        Creates a new DataResponse with an added 'yoy_growth' column.
+
+        Args:
+            value_column: Name of the column containing values (default: "value")
+            period_column: Name of the column containing time period (default: "Period")
+
+        Returns:
+            New DataResponse with YoY growth calculations added
+
+        Raises:
+            ImportError: If pandas is not installed
+
+        Example:
+            >>> response = ine.get_data("0004167")
+            >>> yoy_response = response.calculate_yoy_growth()
+            >>> df = yoy_response.to_dataframe()
+            >>> print(df[['Period', 'value', 'yoy_growth']].head())
+        """
+        from pyptine.analysis.metrics import calculate_yoy_growth
+
+        new_data = calculate_yoy_growth(self.data, value_column, period_column)
+        return DataResponse(
+            varcd=self.varcd,
+            title=self.title,
+            language=self.language,
+            data=new_data,
+            unit=self.unit,
+            extraction_date=self.extraction_date,
+        )
+
+    def calculate_mom_change(
+        self,
+        value_column: str = "value",
+        period_column: str = "Period",
+    ) -> "DataResponse":
+        """Calculate month-over-month percentage changes.
+
+        Compares each period's value to the immediately preceding period.
+        Creates a new DataResponse with an added 'mom_change' column.
+
+        Args:
+            value_column: Name of the column containing values (default: "value")
+            period_column: Name of the column containing time period (default: "Period")
+
+        Returns:
+            New DataResponse with MoM change calculations added
+
+        Raises:
+            ImportError: If pandas is not installed
+
+        Example:
+            >>> response = ine.get_data("0004127")
+            >>> mom_response = response.calculate_mom_change()
+            >>> df = mom_response.to_dataframe()
+            >>> print(df[['Period', 'value', 'mom_change']].head())
+        """
+        from pyptine.analysis.metrics import calculate_mom_change
+
+        new_data = calculate_mom_change(self.data, value_column, period_column)
+        return DataResponse(
+            varcd=self.varcd,
+            title=self.title,
+            language=self.language,
+            data=new_data,
+            unit=self.unit,
+            extraction_date=self.extraction_date,
+        )
+
+    def calculate_moving_average(
+        self,
+        window: int = 3,
+        value_column: str = "value",
+        period_column: str = "Period",
+    ) -> "DataResponse":
+        """Calculate simple moving average over a time window.
+
+        Computes the rolling mean of values over a specified window size.
+        Creates a new DataResponse with an added 'moving_avg' column.
+
+        Args:
+            window: Number of periods to include in the moving average (default: 3)
+            value_column: Name of the column containing values (default: "value")
+            period_column: Name of the column containing time period (default: "Period")
+
+        Returns:
+            New DataResponse with moving average calculations added
+
+        Raises:
+            ImportError: If pandas is not installed
+            ValueError: If window size is invalid
+
+        Example:
+            >>> response = ine.get_data("0004127")
+            >>> ma_response = response.calculate_moving_average(window=12)
+            >>> df = ma_response.to_dataframe()
+            >>> print(df[['Period', 'value', 'moving_avg']].head(15))
+        """
+        from pyptine.analysis.metrics import calculate_moving_average
+
+        new_data = calculate_moving_average(self.data, window, value_column, period_column)
+        return DataResponse(
+            varcd=self.varcd,
+            title=self.title,
+            language=self.language,
+            data=new_data,
+            unit=self.unit,
+            extraction_date=self.extraction_date,
+        )
+
+    def calculate_exponential_moving_average(
+        self,
+        span: int = 3,
+        value_column: str = "value",
+        period_column: str = "Period",
+    ) -> "DataResponse":
+        """Calculate exponential moving average.
+
+        Computes the exponentially weighted moving mean, giving more weight to recent values.
+        Creates a new DataResponse with an added 'ema' column.
+
+        Args:
+            span: Span parameter for EMA calculation (default: 3)
+            value_column: Name of the column containing values (default: "value")
+            period_column: Name of the column containing time period (default: "Period")
+
+        Returns:
+            New DataResponse with EMA calculations added
+
+        Raises:
+            ImportError: If pandas is not installed
+            ValueError: If span is invalid
+
+        Example:
+            >>> response = ine.get_data("0004127")
+            >>> ema_response = response.calculate_exponential_moving_average(span=10)
+            >>> df = ema_response.to_dataframe()
+            >>> print(df[['Period', 'value', 'ema']].head(15))
+        """
+        from pyptine.analysis.metrics import calculate_exponential_moving_average
+
+        new_data = calculate_exponential_moving_average(self.data, span, value_column, period_column)
+        return DataResponse(
+            varcd=self.varcd,
+            title=self.title,
+            language=self.language,
+            data=new_data,
+            unit=self.unit,
+            extraction_date=self.extraction_date,
+        )
+
     model_config = ConfigDict(
         json_schema_extra={
             "example": {

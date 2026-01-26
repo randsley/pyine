@@ -10,6 +10,17 @@ This document outlines suggested improvements and refactorings for the `pyptine`
 
 ## Mid-Level / Design Improvements
 
+*   ~~**Advanced Data Analysis Methods:**~~ **✅ COMPLETED**
+    *   ~~**Location:** `src/pyptine/models/response.py` and analysis module~~
+    *   ~~**Details:** Add specific methods for calculating Year-over-Year (YoY) growth, Month-over-Month (MoM) changes, or moving averages directly within the library.~~
+    *   **Implementation:** Created `src/pyptine/analysis/metrics.py` with:
+        - `calculate_yoy_growth()` - Year-over-year percentage changes
+        - `calculate_mom_change()` - Month-over-month percentage changes
+        - `calculate_moving_average()` - Simple moving average with configurable window
+        - `calculate_exponential_moving_average()` - Exponentially weighted moving average
+        - Convenience methods on `DataResponse` class for easy access
+        - Full support for custom column names and chaining analyses
+
 *   **`INE.__init__` Client Initialization:** Reduce boilerplate in `src/pyptine/ine.py` by potentially using a helper function or a configuration object to handle common client initialization parameters.
 *   **`INE.get_data` Return Type Consistency:** Consider making `INE.get_data` always return a `DataResponse` object. Users can then call `to_dataframe()`, `to_json()`, etc., directly on the `DataResponse` object, simplifying the `get_data` signature and improving consistency.
 *   **`CatalogueBrowser.search` and `filter_by_theme` Integration:** Modify `CatalogueBrowser.search` in `src/pyptine/search/catalog.py` to accept a `theme` parameter. This would allow the CLI's `search` command to use a single, more intuitive filtering mechanism when both query and theme are provided.

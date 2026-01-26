@@ -221,6 +221,43 @@ all_chunks = list(client.get_all_data("0004127"))
 all_data = [point for chunk in all_chunks for point in chunk.data]
 ```
 
+#### Advanced Data Analysis
+
+Perform statistical calculations on indicator data directly within the library:
+
+```python
+# Get data and calculate year-over-year growth
+response = ine.get_data("0004127")
+yoy_response = response.calculate_yoy_growth()
+df_yoy = yoy_response.to_dataframe()
+print(df_yoy[['Period', 'value', 'yoy_growth']])
+
+# Calculate month-over-month changes
+mom_response = response.calculate_mom_change()
+df_mom = mom_response.to_dataframe()
+
+# Calculate simple moving average (3-period)
+ma_response = response.calculate_moving_average(window=3)
+df_ma = ma_response.to_dataframe()
+
+# Calculate exponential moving average
+ema_response = response.calculate_exponential_moving_average(span=5)
+df_ema = ema_response.to_dataframe()
+
+# Chain multiple analyses
+result = response.calculate_yoy_growth().calculate_moving_average(window=2)
+df = result.to_dataframe()
+print(df[['Period', 'value', 'yoy_growth', 'moving_avg']])
+```
+
+Available analysis methods on `DataResponse`:
+- `calculate_yoy_growth()` - Year-over-year percentage change
+- `calculate_mom_change()` - Month-over-month percentage change
+- `calculate_moving_average(window)` - Simple moving average
+- `calculate_exponential_moving_average(span)` - Exponential weighted moving average
+
+All methods support custom `value_column` and `period_column` parameters to work with different data structures.
+
 ## API Reference
 
 ### `INE` Class
