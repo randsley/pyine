@@ -12,10 +12,10 @@ except ImportError:
 import pandas as pd
 
 from pyptine.visualization.charts import (
+    plot_area_chart,
+    plot_bar_chart,
     plot_indicator,
     plot_line_chart,
-    plot_bar_chart,
-    plot_area_chart,
     plot_scatter_chart,
 )
 

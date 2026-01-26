@@ -1,7 +1,7 @@
 """Statistical metrics for data analysis."""
 
 import logging
-from typing import Any, Optional
+from typing import Any
 
 try:
     import pandas as pd

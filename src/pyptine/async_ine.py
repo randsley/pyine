@@ -1,8 +1,8 @@
 """Async high-level API for INE Portugal data access."""
 
 import logging
-from pathlib import Path
-from typing import AsyncIterator, Optional
+from collections.abc import AsyncIterator
+from typing import Optional
 
 from pyptine.client.async_data import AsyncDataClient
 from pyptine.client.metadata import MetadataClient

@@ -2,7 +2,6 @@
 
 import logging
 import time
-from pathlib import Path
 from typing import Any, Optional, Union
 
 import httpx

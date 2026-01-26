@@ -3,12 +3,10 @@
 import sys
 from typing import Any, Optional
 
-import click
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
-from rich.text import Text
 
 from pyptine.utils.exceptions import INEError
 

@@ -4,7 +4,6 @@ import logging
 from typing import Any, Optional, Union
 
 try:
-    import plotly.graph_objects as go
     import plotly.express as px
 
     PLOTLY_AVAILABLE = True
@@ -170,7 +169,7 @@ def plot_line_chart(
         hovermode="x unified",
         plot_bgcolor="rgba(240, 240, 240, 0.5)",
         paper_bgcolor="white",
-        font=dict(family="Arial, sans-serif", size=12),
+        font={"family": "Arial, sans-serif", "size": 12},
     )
 
     logger.debug(f"Created line chart: {title}")
@@ -226,7 +225,7 @@ def plot_bar_chart(
         hovermode="x",
         plot_bgcolor="rgba(240, 240, 240, 0.5)",
         paper_bgcolor="white",
-        font=dict(family="Arial, sans-serif", size=12),
+        font={"family": "Arial, sans-serif", "size": 12},
     )
 
     logger.debug(f"Created bar chart: {title}")
@@ -282,7 +281,7 @@ def plot_area_chart(
         hovermode="x unified",
         plot_bgcolor="rgba(240, 240, 240, 0.5)",
         paper_bgcolor="white",
-        font=dict(family="Arial, sans-serif", size=12),
+        font={"family": "Arial, sans-serif", "size": 12},
     )
 
     logger.debug(f"Created area chart: {title}")
@@ -341,7 +340,7 @@ def plot_scatter_chart(
         hovermode="closest",
         plot_bgcolor="rgba(240, 240, 240, 0.5)",
         paper_bgcolor="white",
-        font=dict(family="Arial, sans-serif", size=12),
+        font={"family": "Arial, sans-serif", "size": 12},
     )
 
     logger.debug(f"Created scatter chart: {title}")
