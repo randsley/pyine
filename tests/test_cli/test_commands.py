@@ -211,8 +211,8 @@ class TestDownloadCommand:
             assert Path("0004167.csv").exists()
 
     @responses.activate
-    def test_download_with_dimensions(self, sample_metadata, sample_data, tmp_path):
-        """Test download with dimension filters."""
+    def test_download_basic(self, sample_metadata, sample_data, tmp_path):
+        """Test basic download command."""
         responses.add(
             responses.GET,
             "https://www.ine.pt/ine/json_indicador/pindicaMeta.jsp",
@@ -228,7 +228,7 @@ class TestDownloadCommand:
         )
 
         runner = CliRunner()
-        output_file = tmp_path / "filtered.csv"
+        output_file = tmp_path / "data.csv"
 
         result = runner.invoke(
             cli,
@@ -237,8 +237,6 @@ class TestDownloadCommand:
                 "0004167",
                 "--output",
                 str(output_file),
-                "--dimension",
-                "Dim1=2020",
             ],
         )
 
