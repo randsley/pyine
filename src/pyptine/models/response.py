@@ -286,6 +286,197 @@ class DataResponse(BaseModel):
             extraction_date=self.extraction_date,
         )
 
+    def plot(
+        self,
+        chart_type: str = "line",
+        x_column: str = "Period",
+        y_column: str = "value",
+        color_column: Optional[str] = None,
+        **kwargs: Any,
+    ) -> Any:
+        """Create an interactive visualization of the indicator data.
+
+        Generates an interactive plotly chart from the indicator data. Automatically
+        uses the indicator title for the chart title and supports multiple visualization types.
+
+        Args:
+            chart_type: Type of chart - "line", "bar", "area", "scatter" (default: "line")
+            x_column: Column name for x-axis (default: "Period")
+            y_column: Column name for y-axis values (default: "value")
+            color_column: Optional column to use for coloring by dimension
+            **kwargs: Additional arguments passed to plotting functions
+
+        Returns:
+            Plotly figure object for display or further customization
+
+        Raises:
+            ImportError: If plotly or pandas is not installed
+            ValueError: If chart_type is invalid
+
+        Example:
+            >>> response = ine.get_data("0004127")
+            >>> fig = response.plot(chart_type="line")
+            >>> fig.show()
+            >>> # Save plot to HTML
+            >>> fig.write_html("indicator_plot.html")
+            >>> # Customize further
+            >>> fig.update_layout(height=600, width=1000)
+            >>> fig.show()
+        """
+        from pyptine.visualization.charts import plot_indicator
+
+        return plot_indicator(
+            self.data,
+            title=self.title,
+            x_column=x_column,
+            y_column=y_column,
+            chart_type=chart_type,
+            color_column=color_column,
+            **kwargs,
+        )
+
+    def plot_line(
+        self,
+        x_column: str = "Period",
+        y_column: str = "value",
+        color_column: Optional[str] = None,
+        markers: bool = True,
+        **kwargs: Any,
+    ) -> Any:
+        """Create an interactive line chart of the indicator data.
+
+        Args:
+            x_column: Column name for x-axis (default: "Period")
+            y_column: Column name for y-axis values (default: "value")
+            color_column: Optional column for coloring lines
+            markers: Show markers on line points (default: True)
+            **kwargs: Additional plotly arguments
+
+        Returns:
+            Plotly figure object
+
+        Example:
+            >>> response = ine.get_data("0004127")
+            >>> fig = response.plot_line(markers=True)
+            >>> fig.show()
+        """
+        from pyptine.visualization.charts import plot_line_chart
+
+        return plot_line_chart(
+            self.data,
+            title=self.title,
+            x_column=x_column,
+            y_column=y_column,
+            color_column=color_column,
+            markers=markers,
+            **kwargs,
+        )
+
+    def plot_bar(
+        self,
+        x_column: str = "Period",
+        y_column: str = "value",
+        color_column: Optional[str] = None,
+        **kwargs: Any,
+    ) -> Any:
+        """Create an interactive bar chart of the indicator data.
+
+        Args:
+            x_column: Column name for x-axis (categories)
+            y_column: Column name for y-axis values
+            color_column: Optional column for coloring bars
+            **kwargs: Additional plotly arguments
+
+        Returns:
+            Plotly figure object
+
+        Example:
+            >>> response = ine.get_data("0004127")
+            >>> fig = response.plot_bar()
+            >>> fig.show()
+        """
+        from pyptine.visualization.charts import plot_bar_chart
+
+        return plot_bar_chart(
+            self.data,
+            title=self.title,
+            x_column=x_column,
+            y_column=y_column,
+            color_column=color_column,
+            **kwargs,
+        )
+
+    def plot_area(
+        self,
+        x_column: str = "Period",
+        y_column: str = "value",
+        color_column: Optional[str] = None,
+        **kwargs: Any,
+    ) -> Any:
+        """Create an interactive area chart of the indicator data.
+
+        Args:
+            x_column: Column name for x-axis
+            y_column: Column name for y-axis values
+            color_column: Optional column for coloring areas
+            **kwargs: Additional plotly arguments
+
+        Returns:
+            Plotly figure object
+
+        Example:
+            >>> response = ine.get_data("0004127")
+            >>> fig = response.plot_area()
+            >>> fig.show()
+        """
+        from pyptine.visualization.charts import plot_area_chart
+
+        return plot_area_chart(
+            self.data,
+            title=self.title,
+            x_column=x_column,
+            y_column=y_column,
+            color_column=color_column,
+            **kwargs,
+        )
+
+    def plot_scatter(
+        self,
+        x_column: str = "Period",
+        y_column: str = "value",
+        color_column: Optional[str] = None,
+        size_column: Optional[str] = None,
+        **kwargs: Any,
+    ) -> Any:
+        """Create an interactive scatter chart of the indicator data.
+
+        Args:
+            x_column: Column name for x-axis
+            y_column: Column name for y-axis values
+            color_column: Optional column for coloring points
+            size_column: Optional column for point size
+            **kwargs: Additional plotly arguments
+
+        Returns:
+            Plotly figure object
+
+        Example:
+            >>> response = ine.get_data("0004127")
+            >>> fig = response.plot_scatter()
+            >>> fig.show()
+        """
+        from pyptine.visualization.charts import plot_scatter_chart
+
+        return plot_scatter_chart(
+            self.data,
+            title=self.title,
+            x_column=x_column,
+            y_column=y_column,
+            color_column=color_column,
+            size_column=size_column,
+            **kwargs,
+        )
+
     model_config = ConfigDict(
         json_schema_extra={
             "example": {

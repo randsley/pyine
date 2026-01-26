@@ -12,6 +12,19 @@ This document outlines suggested improvements and refactorings for the `pyptine`
 
 ## Mid-Level / Design Improvements
 
+*   ~~**Visualization Module:**~~ **✅ COMPLETED**
+    *   ~~**Location:** `src/pyptine/visualization/charts.py` and DataResponse methods~~
+    *   ~~**Details:** Add a plot() method to the INE class (using plotly) to instantly visualize indicators without needing to manually export to a DataFrame first.~~
+    *   **Implementation:** Created visualization module with:
+        - `plot_indicator()` - Main plotting function with multiple chart types
+        - `plot_line_chart()` - Interactive line charts with markers
+        - `plot_bar_chart()` - Bar chart visualizations
+        - `plot_area_chart()` - Area/stacked area charts
+        - `plot_scatter_chart()` - Scatter plots with optional sizing
+        - Convenience methods on DataResponse: `plot()`, `plot_line()`, `plot_bar()`, `plot_area()`, `plot_scatter()`
+        - Full support for color and size dimensions
+        - Interactive plotly figures with export capabilities
+
 *   ~~**Advanced Data Analysis Methods:**~~ **✅ COMPLETED**
     *   ~~**Location:** `src/pyptine/models/response.py` and analysis module~~
     *   ~~**Details:** Add specific methods for calculating Year-over-Year (YoY) growth, Month-over-Month (MoM) changes, or moving averages directly within the library.~~
