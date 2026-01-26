@@ -86,6 +86,13 @@ def cli(ctx: Context) -> None:  # type: ignore[misc]
     type=int,
     help="Maximum number of results to display",
 )
+@click.option(
+    "--timeout",
+    "-t",
+    type=int,
+    default=10,
+    help="Request timeout in seconds (default: 10)",
+)
 @handle_exceptions
 def search(
     query: str,
@@ -93,6 +100,7 @@ def search(
     subtheme: Optional[str],
     lang: str,
     limit: Optional[int],
+    timeout: int,
 ) -> None:
     """Search for indicators by keyword.
 
@@ -101,8 +109,9 @@ def search(
         pyptine search "gdp"
         pyptine search "population" --theme "Population"
         pyptine search "employment" --lang PT --limit 10
+        pyptine search "gdp" --timeout 20
     """
-    ine = INE(language=lang, cache=True)
+    ine = INE(language=lang, cache=True, timeout=timeout)
 
     # Search with spinner
     with spinner_task("Searching indicators...") as progress:
