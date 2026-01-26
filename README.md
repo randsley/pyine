@@ -64,7 +64,7 @@ print("Done!")
 
 ## Command-Line Usage
 
-The pyptine CLI provides a convenient way to access INE data from your terminal.
+The pyptine CLI provides a convenient way to access INE data from your terminal, with rich formatting and progress indicators for a better user experience.
 
 ```bash
 # Search for indicators related to "pib" (GDP in Portuguese)
@@ -73,18 +73,30 @@ pyptine search "pib"
 # Get detailed information about a specific indicator
 pyptine info 0004127
 
-# Download data for an indicator to a CSV file
+# Download data for an indicator to a CSV file (with progress bar)
 pyptine download 0004127 --output data.csv
 
 # Download data and filter by dimensions
 pyptine download 0004167 --output filtered_data.csv -d Dim1=S7A2023 -d Dim2=PT
 
-# List all available statistical themes
+# List all available statistical themes (in formatted table)
 pyptine list-commands themes
+
+# List all indicators (with pagination support)
+pyptine list-commands indicators --limit 50
+
+# View available dimensions for an indicator
+pyptine dimensions 0004167
 
 # Clear the local cache
 pyptine cache clear
 ```
+
+**CLI Features:**
+- **Rich Formatting** - Tables, panels, and colored output for better readability
+- **Progress Indicators** - Spinners and progress bars for long-running operations
+- **Error Handling** - Centralized, user-friendly error messages with context
+- **Better Organization** - Data displayed in well-formatted tables rather than plain text
 
 ## Documentation
 

@@ -4,7 +4,9 @@ This document outlines suggested improvements and refactorings for the `pyptine`
 
 ## High-Level / Architectural Improvements
 
-*   **Centralized Error Handling for CLI:** Implement a decorator or Click's context-based error handling to reduce repetitive `try...except` blocks in `src/pyptine/cli/main.py`. This will make the CLI more robust and maintainable.
+*   ~~**Centralized Error Handling for CLI:**~~ **✅ COMPLETED**
+    *   ~~**Details:** Implement a decorator or Click's context-based error handling to reduce repetitive `try...except` blocks in `src/pyptine/cli/main.py`. This will make the CLI more robust and maintainable.~~
+    *   **Implementation:** Created `src/pyptine/cli/utils.py` with centralized error handling (`handle_cli_error`), formatted output functions, and rich formatting utilities. All CLI commands refactored to use consistent error handling and rich formatting with tables, panels, and progress indicators.
 *   **`Indicator` and `IndicatorMetadata` Model Relationship:** Refactor `src/pyptine/models/indicator.py` to make `IndicatorMetadata` inherit from `Indicator` to reduce redundancy and clarify their relationship. Standardize naming (`varcd` vs. `indicator_code`, `title` vs. `indicator_name`) across these models.
 *   **`CacheManager` Role Clarification:** Re-evaluate the need for `src/pyptine/cache/manager.py`. If the `INE` class's cache methods are sufficient, consider removing `CacheManager`. Otherwise, clearly define its distinct purpose and usage guidelines.
 
@@ -31,6 +33,11 @@ This document outlines suggested improvements and refactorings for the `pyptine`
 *   **`json_to_dataframe` `data` Parameter Handling:** Clarify and potentially refine the logic for handling dictionary inputs without a "dados" key in `src/pyptine/processors/dataframe.py` to avoid unexpected behavior.
 *   **`pivot_by_dimension` and `aggregate_by_period` `value_column` Handling:** Adjust the logic in `src/pyptine/processors/dataframe.py` to correctly handle `value_column` when it is provided as a list of strings.
 *   **`merge_json_files` `merge_key` Parameter:** In `src/pyptine/processors/json.py`, either implement the merging logic based on the `merge_key` parameter or remove the parameter if it's not intended for use. Add a `TODO` comment if it's a planned future enhancement.
+*   ~~**Enhanced CLI Enhancements:**~~ **✅ COMPLETED**
+    *   **Rich Formatting:** Added colorful output with tables, panels, and formatted text
+    *   **Progress Indicators:** Implemented spinners and progress bars for downloads
+    *   **Better Error Messages:** Centralized error handling with informative panels
+    *   **Improved Organization:** Data displayed in structured tables for better readability
 
 ## Low-Level / Code Quality Improvements
 

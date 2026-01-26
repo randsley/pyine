@@ -7,9 +7,22 @@ from typing import Any, Callable, Optional
 
 import click
 from click import Context
+from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
 
 from pyptine import INE
 from pyptine.__version__ import __version__
+from pyptine.cli.utils import (
+    console,
+    print_error,
+    print_success,
+    print_info,
+    create_indicators_table,
+    create_dimensions_table,
+    create_themes_table,
+    format_indicator_info,
+    handle_cli_error,
+    spinner_task,
+)
 from pyptine.utils.exceptions import INEError
 
 
@@ -21,12 +34,10 @@ def handle_exceptions(func: Callable[..., Any]) -> Callable[..., Any]:
         try:
             func(*args, **kwargs)
         except INEError as e:
-            click.echo(f"Error: {e}", err=True)
-            sys.exit(1)
+            handle_cli_error(e, verbose=False)
         except Exception as e:
             # Catch any other unexpected exceptions
-            click.echo(f"An unexpected error occurred: {e}", err=True)
-            sys.exit(1)
+            handle_cli_error(e, verbose=False)
 
     return wrapper
 
@@ -93,28 +104,28 @@ def search(
     """
     ine = INE(language=lang, cache=True)
 
-    # Search
-    results = ine.search(query, theme=theme, subtheme=subtheme)
+    # Search with spinner
+    with spinner_task("Searching indicators...") as progress:
+        task_id = progress.add_task("[cyan]Searching...", total=None)
+        results = ine.search(query, theme=theme, subtheme=subtheme)
+        progress.update(task_id, completed=True)
 
     if not results:
-        click.echo(f"No indicators found for '{query}'", err=True)
+        print_error("No Results", f"No indicators found for '{query}'")
         sys.exit(1)
 
     # Apply limit if specified
     if limit:
         results = results[:limit]
 
-    # Display results
-    click.echo(f"\nFound {len(results)} indicator(s):\n")
-    for ind in results:
-        click.echo(f"  {click.style(ind.varcd, fg='cyan', bold=True)}: {ind.title}")
-        if ind.theme:
-            click.echo(f"    Theme: {ind.theme}")
-        if ind.description:
-            # Truncate long descriptions
-            desc = ind.description[:100] + "..." if len(ind.description) > 100 else ind.description
-            click.echo(f"    {desc}")
-        click.echo()
+    # Display results in a table
+    table = create_indicators_table(results, limit=len(results))
+    console.print(table)
+
+    # Summary
+    total_found = len(ine.search(query, theme=theme, subtheme=subtheme))
+    if total_found > len(results):
+        print_info(f"Results", f"Showing {len(results)} of {total_found} results. Use --limit to see more.")
 
 
 @cli.command()
@@ -137,40 +148,23 @@ def info(varcd: str, lang: str) -> None:
     """
     ine = INE(language=lang, cache=True)
 
-    # Get indicator info
-    indicator = ine.get_indicator(varcd)
-    metadata = ine.get_metadata(varcd)
+    # Get indicator info with spinner
+    with spinner_task("Fetching indicator information...") as progress:
+        task_id = progress.add_task("[cyan]Fetching...", total=None)
+        indicator = ine.get_indicator(varcd)
+        metadata = ine.get_metadata(varcd)
+        progress.update(task_id, completed=True)
 
-    # Display info
-    click.echo(f"\n{click.style('Indicator Information', bold=True)}")
-    click.echo(f"Code: {click.style(indicator.varcd, fg='cyan')}")
-    click.echo(f"Title: {indicator.title}")
+    # Display info in panel
+    info_text = format_indicator_info(indicator, metadata)
+    print_info("Indicator Information", "")
+    console.print(info_text)
 
-    if indicator.description:
-        click.echo(f"Description: {indicator.description}")
-
-    if indicator.theme:
-        click.echo(f"Theme: {indicator.theme}")
-
-    if indicator.subtheme:
-        click.echo(f"Subtheme: {indicator.subtheme}")
-
-    if indicator.periodicity:
-        click.echo(f"Periodicity: {indicator.periodicity}")
-
-    if indicator.last_period:
-        click.echo(f"Last Period: {indicator.last_period}")
-
-    if metadata.unit:
-        click.echo(f"Unit: {metadata.unit}")
-
-    # Display dimensions
+    # Display dimensions if available
     if metadata.dimensions:
-        click.echo(f"\n{click.style('Dimensions:', bold=True)}")
-        for dim in metadata.dimensions:
-            click.echo(f"  - {dim.name} ({len(dim.values)} values)")
-
-    click.echo()
+        console.print()
+        table = create_dimensions_table(metadata.dimensions)
+        console.print(table)
 
 
 @cli.command()
@@ -232,7 +226,7 @@ def download(
         dimensions = {}
         for dim in dimension:
             if "=" not in dim:
-                click.echo(f"Invalid dimension format: {dim}. Use 'DimN=value'", err=True)
+                print_error("Invalid Format", f"Dimension format should be 'DimN=value', got '{dim}'")
                 sys.exit(1)
             key, value = dim.split("=", 1)
             dimensions[key] = value
@@ -243,23 +237,38 @@ def download(
 
     output_path = Path(output)
 
-    # Download data
-    click.echo(f"Downloading indicator {varcd}...")
+    # Download data with progress bar
+    with Progress(
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TextColumn("[progress.percentage]{task.percentage:>3.1f}%"),
+        TextColumn("•"),
+        TimeRemainingColumn(),
+        console=console,
+    ) as progress:
+        task_id = progress.add_task(f"[cyan]Downloading {varcd}...", total=None)
+        response = ine.get_data(varcd, dimensions=dimensions)
+        progress.update(task_id, total=1, completed=1)
 
-    response = ine.get_data(varcd, dimensions=dimensions)
+        task_id = progress.add_task(f"[cyan]Saving to {output_format.upper()}...", total=None)
+        if output_format.lower() == "csv":
+            response.to_csv(
+                output_path,
+                include_metadata=not no_metadata,
+            )
+        else:  # json
+            response.to_json(
+                output_path,
+                pretty=True,
+            )
+        progress.update(task_id, total=1, completed=1)
 
-    if output_format.lower() == "csv":
-        response.to_csv(
-            output_path,
-            include_metadata=not no_metadata,
-        )
-    else:  # json
-        response.to_json(
-            output_path,
-            pretty=True,
-        )
-
-    click.echo(f"✓ Data saved to {click.style(str(output_path), fg='green')}")
+    # Success message
+    file_size = output_path.stat().st_size / 1024  # Convert to KB
+    print_success(
+        "Download Complete",
+        f"Data saved to {output_path} ({file_size:.1f} KB)"
+    )
 
 
 @cli.command()
@@ -282,28 +291,31 @@ def dimensions(varcd: str, lang: str) -> None:
     """
     ine = INE(language=lang, cache=True)
 
-    # Get dimensions
-    dims = ine.get_dimensions(varcd)
+    # Get dimensions with spinner
+    with spinner_task("Fetching dimensions...") as progress:
+        task_id = progress.add_task("[cyan]Fetching...", total=None)
+        dims = ine.get_dimensions(varcd)
+        progress.update(task_id, completed=True)
 
     if not dims:
-        click.echo(f"No dimensions found for indicator {varcd}", err=True)
+        print_error("No Dimensions", f"No dimensions found for indicator {varcd}")
         sys.exit(1)
 
-    # Display dimensions
-    click.echo(f"\n{click.style('Available Dimensions', bold=True)} for {varcd}:\n")
+    # Display dimensions table
+    table = create_dimensions_table(dims)
+    console.print(table)
 
+    # Display dimension values
     for dim in dims:
-        click.echo(f"  {click.style(f'Dim{dim.id}', fg='cyan')}: {dim.name}")
-        click.echo(f"    Values ({len(dim.values)}):")
+        console.print(f"\n[bold cyan]Dim{dim.id}: {dim.name}[/bold cyan] ({len(dim.values)} values)")
 
-        # Show first 10 values
-        for _i, val in enumerate(dim.values[:10]):
-            click.echo(f"      - {val.code}: {val.label}")
+        # Show all values (or first 20 if too many)
+        values_to_show = dim.values[:20]
+        for val in values_to_show:
+            console.print(f"  [cyan]{val.code}[/cyan] → {val.label}")
 
-        if len(dim.values) > 10:
-            click.echo(f"      ... and {len(dim.values) - 10} more")
-
-        click.echo()
+        if len(dim.values) > 20:
+            console.print(f"  [dim]... and {len(dim.values) - 20} more values[/dim]")
 
 
 @cli.group()
@@ -332,18 +344,19 @@ def list_themes(lang: str) -> None:
     """List all available themes."""
     ine = INE(language=lang, cache=True)
 
-    themes = ine.list_themes()
+    # Fetch themes with spinner
+    with spinner_task("Fetching themes...") as progress:
+        task_id = progress.add_task("[cyan]Fetching...", total=None)
+        themes = ine.list_themes()
+        progress.update(task_id, completed=True)
 
     if not themes:
-        click.echo("No themes found", err=True)
+        print_error("No Themes", "No themes found in the catalogue")
         sys.exit(1)
 
-    click.echo(f"\n{click.style('Available Themes', bold=True)} ({len(themes)}):\n")
-
-    for theme in themes:
-        click.echo(f"  • {theme}")
-
-    click.echo()
+    # Display themes in table
+    table = create_themes_table(themes)
+    console.print(table)
 
 
 @list_commands.command(name="indicators")
@@ -371,31 +384,30 @@ def list_indicators(theme: Optional[str], lang: str, limit: int) -> None:
     """List available indicators."""
     ine = INE(language=lang, cache=True)
 
-    # Get indicators
-    indicators = ine.search(query="", theme=theme)
+    # Get indicators with spinner
+    with spinner_task("Fetching indicators...") as progress:
+        task_id = progress.add_task("[cyan]Fetching...", total=None)
+        indicators = ine.search(query="", theme=theme)
+        progress.update(task_id, completed=True)
 
     if not indicators:
         if theme:
-            click.echo(f"No indicators found for theme '{theme}'", err=True)
+            print_error("No Results", f"No indicators found for theme '{theme}'")
         else:
-            click.echo("No indicators found", err=True)
+            print_error("No Results", "No indicators found in the catalogue")
         sys.exit(1)
 
     # Apply limit
     total = len(indicators)
     indicators = indicators[:limit]
 
-    # Display
-    click.echo(f"\n{click.style('Indicators', bold=True)} ({len(indicators)} of {total}):\n")
+    # Display table
+    table = create_indicators_table(indicators, limit=len(indicators))
+    console.print(table)
 
-    for ind in indicators:
-        click.echo(f"  {click.style(ind.varcd, fg='cyan')}: {ind.title}")
-        if ind.theme:
-            click.echo(f"    Theme: {ind.theme}")
-        click.echo()
-
+    # Show info about remaining results
     if total > limit:
-        click.echo(f"... and {total - limit} more. Use --limit to see more.")
+        print_info("Results", f"Showing {len(indicators)} of {total} indicators. Use --limit to see more.")
 
 
 @cli.group()
@@ -419,39 +431,41 @@ def cache_info() -> None:
     info = ine.get_cache_info()
 
     if not info["enabled"]:
-        click.echo("Cache is disabled")
+        print_info("Cache Status", "Cache is currently disabled")
         return
 
-    click.echo(f"\n{click.style('Cache Information', bold=True)}\n")
+    print_info("Cache Information", "")
 
-    # Metadata cache
+    # Display metadata cache info
     if "metadata_cache" in info:
         meta_info = info["metadata_cache"]
-        click.echo(f"{click.style('Metadata Cache:', fg='cyan')}")
-        click.echo(f"  - Entries: {meta_info.get('size', 0)}")
+        console.print(f"[bold cyan]Metadata Cache[/bold cyan]")
+        console.print(f"  Entries: {meta_info.get('size', 0)}")
         if "path" in meta_info:
-            click.echo(f"  - Location: {meta_info['path']}")
+            console.print(f"  Location: {meta_info['path']}")
 
-    # Data cache
+    # Display data cache info
     if "data_cache" in info:
         data_info = info["data_cache"]
-        click.echo(f"\n{click.style('Data Cache:', fg='cyan')}")
-        click.echo(f"  - Entries: {data_info.get('size', 0)}")
+        console.print(f"\n[bold cyan]Data Cache[/bold cyan]")
+        console.print(f"  Entries: {data_info.get('size', 0)}")
         if "path" in data_info:
-            click.echo(f"  - Location: {data_info['path']}")
-
-    click.echo()
+            console.print(f"  Location: {data_info['path']}")
 
 
 @cache.command(name="clear")
-@click.confirmation_option(prompt="Are you sure you want to clear the cache?")
+@click.confirmation_option(prompt="Are you sure you want to clear all cached data?")
 @handle_exceptions
 def cache_clear() -> None:
     """Clear all cached data."""
     ine = INE(cache=True)
-    ine.clear_cache()
 
-    click.echo(f"{click.style('✓', fg='green')} Cache cleared successfully")
+    with spinner_task("Clearing cache...") as progress:
+        task_id = progress.add_task("[cyan]Clearing...", total=None)
+        ine.clear_cache()
+        progress.update(task_id, completed=True)
+
+    print_success("Cache Cleared", "All cached data has been removed successfully")
 
 
 if __name__ == "__main__":
