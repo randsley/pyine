@@ -72,9 +72,7 @@ class TestDataResponseYoYGrowth:
 
     def test_yoy_growth_custom_columns(self, sample_response):
         """Test YoY growth with custom column names."""
-        result = sample_response.calculate_yoy_growth(
-            value_column="value", period_column="Period"
-        )
+        result = sample_response.calculate_yoy_growth(value_column="value", period_column="Period")
 
         assert "yoy_growth" in result.data[0]
         df = result.to_dataframe()
@@ -190,8 +188,10 @@ class TestChainedAnalysis:
 
     def test_chain_mom_and_ema(self, sample_monthly_response):
         """Test chaining MoM change with EMA."""
-        result = sample_monthly_response.calculate_mom_change().calculate_exponential_moving_average(
-            span=3
+        result = (
+            sample_monthly_response.calculate_mom_change().calculate_exponential_moving_average(
+                span=3
+            )
         )
 
         assert "mom_change" in result.data[0]

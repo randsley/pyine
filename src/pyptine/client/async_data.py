@@ -68,9 +68,7 @@ class AsyncDataClient(AsyncINEClient):
             )
 
             # Parse response
-            data_response = self._parse_data_response(
-                varcd, raw_response
-            )
+            data_response = self._parse_data_response(varcd, raw_response)
 
             logger.info(f"Retrieved {len(data_response.data)} data points for {varcd}")
 
@@ -219,9 +217,7 @@ class AsyncDataClient(AsyncINEClient):
                             title = metadata.title
                             unit = metadata.unit
                         except Exception as e:
-                            logger.warning(
-                                f"Could not fetch metadata for {varcd}: {e}"
-                            )
+                            logger.warning(f"Could not fetch metadata for {varcd}: {e}")
 
                     if not title and data_array:
                         first_point = data_array[0]

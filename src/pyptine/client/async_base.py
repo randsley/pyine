@@ -113,7 +113,9 @@ class AsyncINEClient:
             response = await self.client.get(url, params=params)
             elapsed = time.time() - start_time
 
-            logger.debug(f"Async request completed in {elapsed:.2f}s (status={response.status_code})")
+            logger.debug(
+                f"Async request completed in {elapsed:.2f}s (status={response.status_code})"
+            )
 
             # Handle rate limiting
             if response.status_code == 429:

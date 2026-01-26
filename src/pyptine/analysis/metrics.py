@@ -47,7 +47,9 @@ def calculate_yoy_growth(
         >>> # result[2]['yoy_growth'] is ~9.09% growth
     """
     if not PANDAS_AVAILABLE:
-        raise ImportError("pandas is required for YoY growth calculation. Install with: pip install pandas")
+        raise ImportError(
+            "pandas is required for YoY growth calculation. Install with: pip install pandas"
+        )
 
     if not data:
         return []
@@ -105,7 +107,9 @@ def calculate_mom_change(
         >>> # result[2]['mom_change'] is ~-2.86% (decline)
     """
     if not PANDAS_AVAILABLE:
-        raise ImportError("pandas is required for MoM change calculation. Install with: pip install pandas")
+        raise ImportError(
+            "pandas is required for MoM change calculation. Install with: pip install pandas"
+        )
 
     if not data:
         return []
