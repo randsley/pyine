@@ -7,20 +7,20 @@ from typing import Any, Callable, Optional
 
 import click
 from click import Context
-from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
+from rich.progress import BarColumn, Progress, TextColumn, TimeRemainingColumn
 
 from pyptine import INE
 from pyptine.__version__ import __version__
 from pyptine.cli.utils import (
     console,
-    print_error,
-    print_success,
-    print_info,
-    create_indicators_table,
     create_dimensions_table,
+    create_indicators_table,
     create_themes_table,
     format_indicator_info,
     handle_cli_error,
+    print_error,
+    print_info,
+    print_success,
     spinner_task,
 )
 from pyptine.utils.exceptions import INEError
@@ -136,7 +136,7 @@ def search(
     # Summary
     if total_found > len(results):
         print_info(
-            f"Results", f"Showing {len(results)} of {total_found} results. Use --limit to see more."
+            "Results", f"Showing {len(results)} of {total_found} results. Use --limit to see more."
         )
 
 
@@ -454,7 +454,7 @@ def cache_info() -> None:
     # Display metadata cache info
     if "metadata_cache" in info:
         meta_info = info["metadata_cache"]
-        console.print(f"[bold cyan]Metadata Cache[/bold cyan]")
+        console.print("[bold cyan]Metadata Cache[/bold cyan]")
         console.print(f"  Entries: {meta_info.get('size', 0)}")
         if "path" in meta_info:
             console.print(f"  Location: {meta_info['path']}")
@@ -462,7 +462,7 @@ def cache_info() -> None:
     # Display data cache info
     if "data_cache" in info:
         data_info = info["data_cache"]
-        console.print(f"\n[bold cyan]Data Cache[/bold cyan]")
+        console.print("\n[bold cyan]Data Cache[/bold cyan]")
         console.print(f"  Entries: {data_info.get('size', 0)}")
         if "path" in data_info:
             console.print(f"  Location: {data_info['path']}")

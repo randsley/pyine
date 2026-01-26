@@ -214,7 +214,7 @@ class TestPlotCustomization:
 
     def test_plot_preserves_metadata(self, sample_response):
         """Test that plotting preserves response metadata."""
-        fig = sample_response.plot()
+        sample_response.plot()
 
         # Response should remain unchanged
         assert sample_response.varcd == "0004127"

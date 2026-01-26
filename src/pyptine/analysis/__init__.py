@@ -5,8 +5,8 @@ including year-over-year growth, month-over-month changes, and moving averages.
 """
 
 from pyptine.analysis.metrics import (
-    calculate_moving_average,
     calculate_mom_change,
+    calculate_moving_average,
     calculate_yoy_growth,
 )
 

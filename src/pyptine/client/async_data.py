@@ -1,7 +1,8 @@
 """Async data client for INE Portugal API."""
 
 import logging
-from typing import Any, AsyncIterator, Optional, Union
+from collections.abc import AsyncIterator
+from typing import Any, Optional, Union
 
 from pyptine.client.async_base import AsyncINEClient
 from pyptine.client.metadata import MetadataClient
