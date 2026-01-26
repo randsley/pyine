@@ -233,6 +233,52 @@ all_chunks = list(client.get_all_data("0004127"))
 all_data = [point for chunk in all_chunks for point in chunk.data]
 ```
 
+#### Visualizing Data
+
+Create interactive visualizations directly from indicator data without exporting to DataFrame:
+
+```python
+# Get data and create interactive line chart
+response = ine.get_data("0004127")
+fig = response.plot(chart_type="line")
+fig.show()
+
+# Different chart types
+fig_bar = response.plot_bar()
+fig_area = response.plot_area()
+fig_scatter = response.plot_scatter()
+
+# Customize visualization
+fig = response.plot_line(
+    markers=True,
+    x_column="Period",
+    y_column="value"
+)
+
+# Color by dimensions (if data has dimension columns)
+fig = response.plot_line(color_column="region")
+
+# Save to HTML for sharing
+fig.write_html("indicator_plot.html")
+
+# Further customization with plotly
+fig.update_layout(height=600, width=1200, title="Custom Title")
+fig.show()
+```
+
+**Available Visualization Methods:**
+- `plot(chart_type)` - Generic plot with selectable chart type
+- `plot_line()` - Interactive line chart with optional markers
+- `plot_bar()` - Bar chart for categorical comparison
+- `plot_area()` - Stacked area chart for trends
+- `plot_scatter()` - Scatter plot with optional size and color dimensions
+
+All methods support:
+- Interactive plotly charts with hover, zoom, and pan
+- Custom column selection for x/y axes
+- Color coding by dimension columns
+- Export to HTML, PNG, or other formats
+
 #### Advanced Data Analysis
 
 Perform statistical calculations on indicator data directly within the library:
