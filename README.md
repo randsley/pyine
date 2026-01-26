@@ -196,6 +196,31 @@ ine.export_csv(
 )
 ```
 
+#### Working with Large Datasets
+
+For large datasets that exceed the default 40,000 data point limit, use the `get_all_data()` method which automatically handles pagination:
+
+```python
+from pyptine.client.data import DataClient
+
+client = DataClient(language="EN")
+
+# Fetch data in chunks (default chunk_size=40,000)
+for chunk in client.get_all_data("0004127"):
+    df = chunk.to_dataframe()
+    print(f"Processed {len(df)} rows")
+    # Process each chunk
+
+# Custom chunk size
+for chunk in client.get_all_data("0004127", chunk_size=5000):
+    # Process smaller chunks
+    pass
+
+# Combine all chunks into a single dataset
+all_chunks = list(client.get_all_data("0004127"))
+all_data = [point for chunk in all_chunks for point in chunk.data]
+```
+
 ## API Reference
 
 ### `INE` Class

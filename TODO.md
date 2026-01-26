@@ -40,9 +40,10 @@ This document outlines suggested improvements and refactorings for the `pyptine`
 These suggestions are based on comparing the `pyptine` implementation with the official INE API documentation for the Catalogue, Database, and Metadata endpoints.
 
 
-*   **Refine Pagination in `DataClient.get_data_paginated`:**
-    *   **Location:** `src/pyptine/client/data.py`
-    *   **Details:** The Database API documentation mentions "data in chunks." Investigate the API documentation for specific pagination mechanisms (e.g., offset/limit, page numbers). Implement true pagination in `DataClient.get_data_paginated` to efficiently handle very large datasets.
+*   ~~**Refine Pagination in `DataClient.get_data_paginated`:**~~  **✅ COMPLETED**
+    *   ~~**Location:** `src/pyptine/client/data.py`~~
+    *   ~~**Details:** The Database API documentation mentions "data in chunks." Investigate the API documentation for specific pagination mechanisms (e.g., offset/limit, page numbers). Implement true pagination in `DataClient.get_data_paginated` to efficiently handle very large datasets.~~
+    *   **Implementation:** True pagination now implemented with offset/limit parameters. `get_all_data()` automatically fetches data in configurable chunks, detecting the end when fewer records than chunk_size are returned.
 *   **Robustness of List Responses (Documentation Clarification):**
     *   **Location:** `src/pyptine/client/data.py`, `src/pyptine/client/metadata.py`
     *   **Details:** `pyptine` has been updated to handle cases where the API returns a list instead of a dictionary for single indicator data/metadata. While the current fix works, if the API consistently returns a list for certain indicators, it might be worth clarifying this behavior in the API documentation or adapting `pyptine` to explicitly expect this for specific `varcd`s if that's the pattern.

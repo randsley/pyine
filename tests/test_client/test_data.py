@@ -209,3 +209,112 @@ class TestDataClient:
         assert params["Dim1"] == "2023"
         assert params["Dim2"] == "1"
         assert params["varcd"] == "0004167"
+
+    def test_build_params_with_pagination(self, data_client):
+        """Test building parameters with pagination parameters."""
+        params = data_client._build_params("0004167", offset=100, limit=50)
+
+        assert params["start"] == "100"
+        assert params["count"] == "50"
+        assert params["varcd"] == "0004167"
+        assert params["op"] == "2"
+
+    def test_build_params_with_offset_only(self, data_client):
+        """Test building parameters with only offset."""
+        params = data_client._build_params("0004167", offset=0)
+
+        assert params["start"] == "0"
+        assert "count" not in params
+
+    def test_build_params_with_limit_only(self, data_client):
+        """Test building parameters with only limit."""
+        params = data_client._build_params("0004167", limit=1000)
+
+        assert params["count"] == "1000"
+        assert "start" not in params
+
+    @responses.activate
+    def test_get_all_data_single_chunk(self, data_client, sample_data):
+        """Test pagination with a single chunk (less than chunk_size)."""
+        responses.add(
+            responses.GET,
+            "https://www.ine.pt/ine/json_indicador/pindica.jsp",
+            json=sample_data,
+            status=200,
+        )
+
+        chunks = list(data_client.get_all_data("0004167", chunk_size=40000))
+
+        assert len(chunks) == 1
+        assert isinstance(chunks[0], DataResponse)
+        assert len(responses.calls) == 1
+        assert "start=0" in responses.calls[0].request.url
+        assert "count=40000" in responses.calls[0].request.url
+
+    @responses.activate
+    def test_get_all_data_multiple_chunks(self, data_client):
+        """Test pagination with multiple chunks."""
+        # Create two chunks of data
+        chunk1_data = {
+            "indicador": "0004167",
+            "nome": "Population",
+            "lang": "EN",
+            "dados": [{"periodo": f"202{i}", "valor": f"1000{i}"} for i in range(5)],
+        }
+
+        chunk2_data = {
+            "indicador": "0004167",
+            "nome": "Population",
+            "lang": "EN",
+            "dados": [{"periodo": f"202{i}", "valor": f"2000{i}"} for i in range(3)],
+        }
+
+        # First request returns full chunk
+        responses.add(
+            responses.GET,
+            "https://www.ine.pt/ine/json_indicador/pindica.jsp",
+            json=chunk1_data,
+            status=200,
+        )
+
+        # Second request returns partial chunk (indicating end)
+        responses.add(
+            responses.GET,
+            "https://www.ine.pt/ine/json_indicador/pindica.jsp",
+            json=chunk2_data,
+            status=200,
+        )
+
+        chunks = list(data_client.get_all_data("0004167", chunk_size=5))
+
+        # Should have 2 chunks: first with 5 points, second with 3 points
+        assert len(chunks) == 2
+        assert len(chunks[0].data) == 5
+        assert len(chunks[1].data) == 3
+
+        # Verify pagination parameters in requests
+        assert "start=0" in responses.calls[0].request.url
+        assert "count=5" in responses.calls[0].request.url
+        assert "start=5" in responses.calls[1].request.url
+        assert "count=5" in responses.calls[1].request.url
+
+    @responses.activate
+    def test_get_all_data_with_dimensions(self, data_client, sample_data):
+        """Test pagination with dimension filters."""
+        responses.add(
+            responses.GET,
+            "https://www.ine.pt/ine/json_indicador/pindica.jsp",
+            json=sample_data,
+            status=200,
+        )
+
+        dimensions = {"Dim1": "2023", "Dim2": "1"}
+        chunks = list(data_client.get_all_data("0004167", dimensions=dimensions, chunk_size=100))
+
+        assert len(chunks) >= 1
+        # Verify dimensions are included in request
+        request_url = responses.calls[0].request.url
+        assert "Dim1=2023" in request_url
+        assert "Dim2=1" in request_url
+        assert "start=0" in request_url
+        assert "count=100" in request_url

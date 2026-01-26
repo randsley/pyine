@@ -96,55 +96,109 @@ class DataClient(INEClient):
         dimensions: Optional[dict[str, str]] = None,
         chunk_size: int = DEFAULT_PAGE_SIZE,
     ) -> Iterator[DataResponse]:
-        """Fetch all data for a given indicator.
+        """Fetch all data for a given indicator with pagination support.
 
-        Note: The INE API does not support true pagination. This method
-        fetches all available data for the specified indicator and dimensions
-        in a single request (up to the API's internal limit of 40,000 data points).
-        For larger datasets, consider breaking down requests by dimensions manually.
+        Implements chunked data fetching to handle large datasets efficiently.
+        The INE API returns data in chunks; this method automatically handles
+        pagination by fetching subsequent chunks until all data is retrieved.
 
         Args:
             varcd: Indicator code
             dimensions: Optional dimension filters
-            chunk_size: This parameter is ignored as true pagination is not supported.
+            chunk_size: Number of data points per chunk (default: 40,000)
 
         Yields:
-            DataResponse objects, one per chunk (currently always one chunk)
+            DataResponse objects, one per chunk. Each chunk contains up to
+            chunk_size data points.
 
         Example:
             >>> client = DataClient()
             >>> for chunk in client.get_all_data("0004167"):
             ...     df = chunk.to_dataframe()
-            ...     # Process chunk
+            ...     print(f"Processed {len(df)} rows")
+            >>> # Or collect all chunks
+            >>> all_chunks = list(client.get_all_data("0004167"))
+            >>> total_points = sum(len(chunk.data) for chunk in all_chunks)
         """
-        logger.info(f"Fetching all data for indicator {varcd}")
+        logger.info(f"Fetching all data for indicator {varcd} with chunk_size={chunk_size}")
 
-        # For now, fetch all data at once
-        # TODO: Implement true pagination if API supports it (by dimensions)
-        response = self.get_data(varcd, dimensions)
-        yield response
+        offset = 0
+        total_fetched = 0
+        chunk_count = 0
 
-        logger.info(f"Completed fetch for {varcd}")
+        while True:
+            chunk_count += 1
+            logger.debug(f"Fetching chunk {chunk_count} with offset={offset}")
+
+            params = self._build_params(varcd, dimensions, offset=offset, limit=chunk_size)
+
+            try:
+                raw_response = self._make_request(
+                    self.DATA_ENDPOINT, params=params, response_format="json"
+                )
+
+                # Parse response
+                data_response = self._parse_data_response(
+                    varcd, cast(Union[dict[str, Any], list[dict[str, Any]]], raw_response)
+                )
+
+                chunk_size_received = len(data_response.data)
+                total_fetched += chunk_size_received
+
+                logger.info(
+                    f"Chunk {chunk_count}: Retrieved {chunk_size_received} data points "
+                    f"(total so far: {total_fetched})"
+                )
+
+                yield data_response
+
+                # If we received fewer data points than requested, we've reached the end
+                if chunk_size_received < chunk_size:
+                    logger.info(f"Completed fetch for {varcd}: total {total_fetched} data points")
+                    break
+
+                offset += chunk_size
+
+            except Exception as e:
+                logger.error(f"Failed to fetch chunk {chunk_count} for {varcd}: {str(e)}")
+                raise
 
     def _build_params(
-        self, varcd: str, dimensions: Optional[dict[str, str]] = None
+        self,
+        varcd: str,
+        dimensions: Optional[dict[str, str]] = None,
+        offset: Optional[int] = None,
+        limit: Optional[int] = None,
     ) -> dict[str, str]:
         """Build query parameters for data API request.
 
         Args:
             varcd: Indicator code
             dimensions: Optional dimension filters
+            offset: Starting offset for pagination (0-based)
+            limit: Maximum number of records to return
 
         Returns:
             Dictionary of query parameters
 
         Raises:
             DimensionError: If dimension keys or values are invalid
+
+        Example:
+            >>> params = client._build_params("0004167")
+            >>> params = client._build_params("0004167", dimensions={"Dim1": "2023"})
+            >>> params = client._build_params("0004167", offset=0, limit=1000)
         """
         params = {
             "op": "2",  # Operation code for data retrieval
             "varcd": varcd,
         }
+
+        # Add pagination parameters if provided
+        if offset is not None:
+            params["start"] = str(offset)
+        if limit is not None:
+            params["count"] = str(limit)
 
         # Validate dimensions before building params
         if dimensions:
