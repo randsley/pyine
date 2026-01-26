@@ -87,12 +87,14 @@ class TestAsyncDataFetching:
         import asyncio
 
         mock_response = mocker.AsyncMock()
-        mock_response.json = mocker.AsyncMock(return_value={
-            "indicador": "0004167",
-            "nome": "Test",
-            "lang": "EN",
-            "dados": [{"periodo": "2020", "valor": "100"}]
-        })
+        mock_response.json = mocker.AsyncMock(
+            return_value={
+                "indicador": "0004167",
+                "nome": "Test",
+                "lang": "EN",
+                "dados": [{"periodo": "2020", "valor": "100"}],
+            }
+        )
         mock_response.status_code = 200
 
         mock_client = mocker.AsyncMock()
@@ -123,9 +125,7 @@ class TestAsyncMetadata:
         """Test async metadata retrieval."""
         mock_client_obj = mocker.MagicMock()
         mock_client_obj.get_metadata.return_value = mocker.MagicMock(
-            varcd="0004167",
-            title="Test",
-            unit="No."
+            varcd="0004167", title="Test", unit="No."
         )
 
         async with AsyncINE(language="EN") as ine:

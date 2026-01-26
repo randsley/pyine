@@ -276,7 +276,9 @@ class DataResponse(BaseModel):
         """
         from pyptine.analysis.metrics import calculate_exponential_moving_average
 
-        new_data = calculate_exponential_moving_average(self.data, span, value_column, period_column)
+        new_data = calculate_exponential_moving_average(
+            self.data, span, value_column, period_column
+        )
         return DataResponse(
             varcd=self.varcd,
             title=self.title,

@@ -135,7 +135,9 @@ def search(
 
     # Summary
     if total_found > len(results):
-        print_info(f"Results", f"Showing {len(results)} of {total_found} results. Use --limit to see more.")
+        print_info(
+            f"Results", f"Showing {len(results)} of {total_found} results. Use --limit to see more."
+        )
 
 
 @cli.command()
@@ -236,7 +238,9 @@ def download(
         dimensions = {}
         for dim in dimension:
             if "=" not in dim:
-                print_error("Invalid Format", f"Dimension format should be 'DimN=value', got '{dim}'")
+                print_error(
+                    "Invalid Format", f"Dimension format should be 'DimN=value', got '{dim}'"
+                )
                 sys.exit(1)
             key, value = dim.split("=", 1)
             dimensions[key] = value
@@ -275,10 +279,7 @@ def download(
 
     # Success message
     file_size = output_path.stat().st_size / 1024  # Convert to KB
-    print_success(
-        "Download Complete",
-        f"Data saved to {output_path} ({file_size:.1f} KB)"
-    )
+    print_success("Download Complete", f"Data saved to {output_path} ({file_size:.1f} KB)")
 
 
 @cli.command()
@@ -317,7 +318,9 @@ def dimensions(varcd: str, lang: str) -> None:
 
     # Display dimension values
     for dim in dims:
-        console.print(f"\n[bold cyan]Dim{dim.id}: {dim.name}[/bold cyan] ({len(dim.values)} values)")
+        console.print(
+            f"\n[bold cyan]Dim{dim.id}: {dim.name}[/bold cyan] ({len(dim.values)} values)"
+        )
 
         # Show all values (or first 20 if too many)
         values_to_show = dim.values[:20]
@@ -417,7 +420,9 @@ def list_indicators(theme: Optional[str], lang: str, limit: int) -> None:
 
     # Show info about remaining results
     if total > limit:
-        print_info("Results", f"Showing {len(indicators)} of {total} indicators. Use --limit to see more.")
+        print_info(
+            "Results", f"Showing {len(indicators)} of {total} indicators. Use --limit to see more."
+        )
 
 
 @cli.group()
