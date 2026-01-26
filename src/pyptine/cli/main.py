@@ -114,6 +114,8 @@ def search(
         print_error("No Results", f"No indicators found for '{query}'")
         sys.exit(1)
 
+    total_found = len(results)
+
     # Apply limit if specified
     if limit:
         results = results[:limit]
@@ -123,7 +125,6 @@ def search(
     console.print(table)
 
     # Summary
-    total_found = len(ine.search(query, theme=theme, subtheme=subtheme))
     if total_found > len(results):
         print_info(f"Results", f"Showing {len(results)} of {total_found} results. Use --limit to see more.")
 
