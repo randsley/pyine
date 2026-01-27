@@ -1,5 +1,6 @@
 """Utilities for CLI formatting and output."""
 
+import platform
 import sys
 from typing import Any, Optional
 
@@ -9,6 +10,12 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
 
 from pyptine.utils.exceptions import INEError
+
+# Detect platform and use appropriate symbols
+IS_WINDOWS = platform.system() == "Windows"
+SUCCESS_SYMBOL = "OK" if IS_WINDOWS else "✓"
+ERROR_SYMBOL = "X" if IS_WINDOWS else "✗"
+INFO_SYMBOL = "i" if IS_WINDOWS else "ℹ"
 
 # Create a rich console for output
 console = Console()
@@ -24,7 +31,7 @@ def print_error(title: str, message: str) -> None:
     """
     error_panel = Panel(
         f"[red]{message}[/red]",
-        title=f"[bold red]✗ {title}[/bold red]",
+        title=f"[bold red]{ERROR_SYMBOL} {title}[/bold red]",
         border_style="red",
     )
     error_console.print(error_panel)
@@ -40,7 +47,7 @@ def print_success(title: str, message: str = "") -> None:
     content = f"[green]{message}[/green]" if message else ""
     success_panel = Panel(
         content,
-        title=f"[bold green]✓ {title}[/bold green]",
+        title=f"[bold green]{SUCCESS_SYMBOL} {title}[/bold green]",
         border_style="green",
         padding=(0, 1) if message else (0, 0),
     )
@@ -57,7 +64,7 @@ def print_info(title: str, message: str = "") -> None:
     content = f"[cyan]{message}[/cyan]" if message else ""
     info_panel = Panel(
         content,
-        title=f"[bold cyan]ℹ {title}[/bold cyan]",
+        title=f"[bold cyan]{INFO_SYMBOL} {title}[/bold cyan]",
         border_style="cyan",
         padding=(0, 1) if message else (0, 0),
     )

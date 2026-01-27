@@ -1,7 +1,7 @@
 """Catalogue browsing and search functionality for pyine."""
 
 import logging
-from typing import Optional
+from typing import Any, Optional
 
 from pyptine.client.catalogue import CatalogueClient
 from pyptine.models.indicator import Indicator
@@ -39,11 +39,28 @@ class CatalogueBrowser:
         self.language = language
         self._cached_indicators: Optional[list[Indicator]] = None
 
-    def get_all_indicators(self, use_cache: bool = True) -> list[Indicator]:
+    def is_catalogue_cached(self) -> bool:
+        """Check if catalogue is cached in memory.
+
+        Returns:
+            True if catalogue is cached in memory, False otherwise
+
+        Note:
+            This only checks the in-memory cache. The disk cache check is
+            unreliable because requests-cache may have the data cached but
+            we still want to show progress for first-time use in a session.
+        """
+        # Only check in-memory cache for more reliable first-run detection
+        return self._cached_indicators is not None
+
+    def get_all_indicators(
+        self, use_cache: bool = True, progress_callback: Optional[Any] = None
+    ) -> list[Indicator]:
         """Get all available indicators from catalogue.
 
         Args:
             use_cache: Use cached indicators if available
+            progress_callback: Optional callback function(downloaded_bytes, total_bytes)
 
         Returns:
             List of all indicators
@@ -59,7 +76,7 @@ class CatalogueBrowser:
             return self._cached_indicators
 
         logger.info("Fetching all indicators from complete catalogue (opc=2)")
-        indicators = self.client.get_complete_catalogue()
+        indicators = self.client.get_complete_catalogue(progress_callback=progress_callback)
         self._cached_indicators = indicators
 
         logger.info(f"Retrieved {len(indicators)} indicators")
@@ -73,6 +90,7 @@ class CatalogueBrowser:
         exact_match: bool = False,
         theme: Optional[str] = None,
         subtheme: Optional[str] = None,
+        progress_callback: Optional[Any] = None,
     ) -> list[Indicator]:
         """Search indicators by text query, with optional theme/subtheme filtering.
 
@@ -85,6 +103,7 @@ class CatalogueBrowser:
             exact_match: Require exact match (not substring)
             theme: Optional theme name to filter by
             subtheme: Optional subtheme name to filter by
+            progress_callback: Optional callback function(downloaded_bytes, total_bytes)
 
         Returns:
             List of matching indicators
@@ -95,9 +114,9 @@ class CatalogueBrowser:
             >>> results = browser.search("GDP", search_fields=["title", "keywords"])
         """
         if not query and not theme and not subtheme:
-            return self.get_all_indicators()
+            return self.get_all_indicators(progress_callback=progress_callback)
 
-        indicators = self.get_all_indicators()
+        indicators = self.get_all_indicators(progress_callback=progress_callback)
         filtered_indicators = []
 
         for indicator in indicators:
@@ -193,8 +212,11 @@ class CatalogueBrowser:
 
         return False
 
-    def list_themes(self) -> list[str]:
+    def list_themes(self, progress_callback: Optional[Any] = None) -> list[str]:
         """Get list of all unique themes in catalogue.
+
+        Args:
+            progress_callback: Optional callback function(downloaded_bytes, total_bytes)
 
         Returns:
             Sorted list of theme names
@@ -205,7 +227,7 @@ class CatalogueBrowser:
             >>> print(themes)
             ['Agriculture', 'Economy', 'Population', ...]
         """
-        indicators = self.get_all_indicators()
+        indicators = self.get_all_indicators(progress_callback=progress_callback)
         themes = set()
 
         for indicator in indicators:

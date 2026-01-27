@@ -7,7 +7,15 @@ from typing import Any, Callable, Optional
 
 import click
 from click import Context
-from rich.progress import BarColumn, Progress, TextColumn, TimeRemainingColumn
+from rich.progress import (
+    BarColumn,
+    DownloadColumn,
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    TimeRemainingColumn,
+    TransferSpeedColumn,
+)
 
 from pyptine import INE
 from pyptine.__version__ import __version__
@@ -113,11 +121,42 @@ def search(
     """
     ine = INE(language=lang, cache=True, timeout=timeout)
 
-    # Search with spinner
-    with spinner_task("Searching indicators...") as progress:
-        task_id = progress.add_task("[cyan]Searching...", total=None)
-        results = ine.search(query, theme=theme, subtheme=subtheme)
-        progress.update(task_id, completed=True)
+    # Check if catalogue is cached
+    is_cached = ine.browser.is_catalogue_cached()
+
+    # Search with context-aware progress
+    if is_cached:
+        # Fast path: catalogue is already cached
+        with spinner_task("Searching indicators...") as progress:
+            task_id = progress.add_task("[cyan]Searching...", total=None)
+            results = ine.search(query, theme=theme, subtheme=subtheme)
+            progress.update(task_id, completed=True)
+    else:
+        # Slow path: need to download catalogue with progress bar
+        from rich.progress import Progress, BarColumn, DownloadColumn, TransferSpeedColumn
+
+        print_info(
+            "First Run",
+            "Downloading indicator catalogue (this only happens once, subsequent searches will be fast)",
+        )
+
+        # Use spinner progress for indeterminate download (no Content-Length from API)
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            DownloadColumn(),
+            TransferSpeedColumn(),
+            console=console,
+            refresh_per_second=10,
+        ) as progress:
+            download_task = progress.add_task("[cyan]Downloading catalogue...", total=None)
+
+            def progress_callback(downloaded: int, total: int) -> None:
+                progress.update(download_task, completed=downloaded)
+
+            results = ine.search(
+                query, theme=theme, subtheme=subtheme, progress_callback=progress_callback
+            )
 
     if not results:
         print_error("No Results", f"No indicators found for '{query}'")
@@ -357,11 +396,38 @@ def list_themes(lang: str) -> None:
     """List all available themes."""
     ine = INE(language=lang, cache=True)
 
-    # Fetch themes with spinner
-    with spinner_task("Fetching themes...") as progress:
-        task_id = progress.add_task("[cyan]Fetching...", total=None)
-        themes = ine.list_themes()
-        progress.update(task_id, completed=True)
+    # Check if catalogue is cached
+    is_cached = ine.browser.is_catalogue_cached()
+
+    # Fetch themes with context-aware progress
+    if is_cached:
+        # Fast path: catalogue is already cached
+        with spinner_task("Fetching themes...") as progress:
+            task_id = progress.add_task("[cyan]Fetching...", total=None)
+            themes = ine.list_themes()
+            progress.update(task_id, completed=True)
+    else:
+        # Slow path: need to download catalogue with progress bar
+        print_info(
+            "First Run",
+            "Downloading indicator catalogue (this only happens once, subsequent requests will be fast)",
+        )
+
+        # Use spinner progress for indeterminate download (no Content-Length from API)
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            DownloadColumn(),
+            TransferSpeedColumn(),
+            console=console,
+            refresh_per_second=10,
+        ) as progress:
+            download_task = progress.add_task("[cyan]Downloading catalogue...", total=None)
+
+            def progress_callback(downloaded: int, total: int) -> None:
+                progress.update(download_task, completed=downloaded)
+
+            themes = ine.list_themes(progress_callback=progress_callback)
 
     if not themes:
         print_error("No Themes", "No themes found in the catalogue")
@@ -397,11 +463,38 @@ def list_indicators(theme: Optional[str], lang: str, limit: int) -> None:
     """List available indicators."""
     ine = INE(language=lang, cache=True)
 
-    # Get indicators with spinner
-    with spinner_task("Fetching indicators...") as progress:
-        task_id = progress.add_task("[cyan]Fetching...", total=None)
-        indicators = ine.search(query="", theme=theme)
-        progress.update(task_id, completed=True)
+    # Check if catalogue is cached
+    is_cached = ine.browser.is_catalogue_cached()
+
+    # Get indicators with context-aware progress
+    if is_cached:
+        # Fast path: catalogue is already cached
+        with spinner_task("Fetching indicators...") as progress:
+            task_id = progress.add_task("[cyan]Fetching...", total=None)
+            indicators = ine.search(query="", theme=theme)
+            progress.update(task_id, completed=True)
+    else:
+        # Slow path: need to download catalogue with progress bar
+        print_info(
+            "First Run",
+            "Downloading indicator catalogue (this only happens once, subsequent requests will be fast)",
+        )
+
+        # Use spinner progress for indeterminate download (no Content-Length from API)
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            DownloadColumn(),
+            TransferSpeedColumn(),
+            console=console,
+            refresh_per_second=10,
+        ) as progress:
+            download_task = progress.add_task("[cyan]Downloading catalogue...", total=None)
+
+            def progress_callback(downloaded: int, total: int) -> None:
+                progress.update(download_task, completed=downloaded)
+
+            indicators = ine.search(query="", theme=theme, progress_callback=progress_callback)
 
     if not indicators:
         if theme:
