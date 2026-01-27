@@ -116,6 +116,7 @@ class INE:
         case_sensitive: bool = False,
         theme: Optional[str] = None,
         subtheme: Optional[str] = None,
+        progress_callback: Optional[Any] = None,
     ) -> list[Indicator]:
         """Search for indicators by keyword, with optional theme/subtheme filtering.
 
@@ -127,6 +128,7 @@ class INE:
             case_sensitive: Perform case-sensitive search
             theme: Optional theme name to filter by
             subtheme: Optional subtheme name to filter by
+            progress_callback: Optional callback function(downloaded_bytes, total_bytes)
 
         Returns:
             List of matching indicators
@@ -143,6 +145,7 @@ class INE:
             case_sensitive=case_sensitive,
             theme=theme,
             subtheme=subtheme,
+            progress_callback=progress_callback,
         )
 
     def get_data(
@@ -256,8 +259,11 @@ class INE:
         """
         return self.browser.validate_indicator(varcd)
 
-    def list_themes(self) -> list[str]:
+    def list_themes(self, progress_callback: Optional[Any] = None) -> list[str]:
         """Get list of all themes in catalogue.
+
+        Args:
+            progress_callback: Optional callback function(downloaded_bytes, total_bytes)
 
         Returns:
             Sorted list of theme names
@@ -268,7 +274,7 @@ class INE:
             >>> print(themes)
             ['Agriculture', 'Economy', 'Population', ...]
         """
-        return self.browser.list_themes()
+        return self.browser.list_themes(progress_callback=progress_callback)
 
     def export_csv(
         self,

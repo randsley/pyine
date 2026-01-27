@@ -152,6 +152,7 @@ class INEClient:
         endpoint: str,
         params: Optional[dict[str, Any]] = None,
         response_format: str = "json",
+        progress_callback: Optional[Any] = None,
     ) -> Union[dict[str, Any], str]:
         """Make HTTP request to INE API.
 
@@ -159,6 +160,7 @@ class INEClient:
             endpoint: API endpoint path (e.g., "/ine/json_indicador/pindica.jsp")
             params: Query parameters
             response_format: Expected response format ("json" or "xml")
+            progress_callback: Optional callback function(downloaded_bytes, total_bytes)
 
         Returns:
             Parsed JSON dict or raw XML string
@@ -180,7 +182,44 @@ class INEClient:
 
         try:
             start_time = time.time()
-            response = session.get(url, params=params, timeout=self.timeout)
+
+            # Use streaming if progress callback is provided
+            # Note: Disable cache for streaming to get real-time progress
+            if progress_callback is not None:
+                # Use raw session (not cached) for progress tracking
+                raw_session = self.session
+                response = raw_session.get(url, params=params, timeout=self.timeout, stream=True)
+
+                # Handle rate limiting
+                if response.status_code == 429:
+                    raise RateLimitError("Too many requests to INE API")
+
+                # Raise for HTTP errors
+                response.raise_for_status()
+
+                # Get total size from headers
+                total_size = int(response.headers.get("content-length", 0))
+                downloaded = 0
+                chunks = []
+
+                # Report initial state
+                progress_callback(0, total_size)
+
+                # Download in chunks and report progress
+                chunk_size = 8192
+                for chunk in response.iter_content(chunk_size=chunk_size):
+                    if chunk:
+                        chunks.append(chunk)
+                        downloaded += len(chunk)
+                        progress_callback(downloaded, total_size)
+
+                # Combine chunks
+                content = b"".join(chunks)
+                response._content = content
+
+            else:
+                response = session.get(url, params=params, timeout=self.timeout)
+
             elapsed = time.time() - start_time
 
             # Check if response was from cache
@@ -191,12 +230,13 @@ class INEClient:
                 f"status={response.status_code})"
             )
 
-            # Handle rate limiting
+            # Handle rate limiting (for non-streaming requests)
             if response.status_code == 429:
                 raise RateLimitError("Too many requests to INE API")
 
-            # Raise for HTTP errors
-            response.raise_for_status()
+            # Raise for HTTP errors (for non-streaming requests)
+            if not progress_callback:
+                response.raise_for_status()
 
             # Parse response based on format
             if response_format == "json":

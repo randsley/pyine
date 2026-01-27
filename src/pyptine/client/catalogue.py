@@ -2,7 +2,7 @@
 
 import logging
 from datetime import datetime
-from typing import Optional, cast
+from typing import Any, Optional, cast
 from xml.etree import ElementTree as ET
 
 from pyptine.client.base import INEClient
@@ -107,8 +107,11 @@ class CatalogueClient(INEClient):
             logger.error(f"Failed to get main indicators: {str(e)}")
             raise
 
-    def get_complete_catalogue(self) -> list[Indicator]:
+    def get_complete_catalogue(self, progress_callback: Optional[Any] = None) -> list[Indicator]:
         """Get the complete catalogue of indicators.
+
+        Args:
+            progress_callback: Optional callback function(downloaded_bytes, total_bytes)
 
         Returns:
             List of all Indicator objects in the complete catalogue.
@@ -130,7 +133,10 @@ class CatalogueClient(INEClient):
 
         try:
             xml_response = self._make_request(
-                self.CATALOGUE_ENDPOINT, params=params, response_format="xml"
+                self.CATALOGUE_ENDPOINT,
+                params=params,
+                response_format="xml",
+                progress_callback=progress_callback,
             )
 
             indicators = self._parse_catalogue_xml(cast(str, xml_response))
