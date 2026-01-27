@@ -1,7 +1,7 @@
 # pyptine - INE Portugal API Client
 
 [![PyPI version](https://img.shields.io/pypi/v/pyptine.svg)](https://pypi.org/project/pyptine/)
-[![Tests](https://github.com/nigelrandsley/pyptine/workflows/Tests/badge.svg)](https://github.com/nigelrandsley/pyptine/actions)
+[![Tests](https://img.shields.io/github/actions/workflow/status/nigelrandsley/pyptine/tests.yml?branch=main)](https://github.com/nigelrandsley/pyptine/actions)
 [![codecov](https://codecov.io/gh/nigelrandsley/pyptine/branch/main/graph/badge.svg)](https://codecov.io/gh/nigelrandsley/pyptine)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
