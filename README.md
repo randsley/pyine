@@ -3,20 +3,25 @@
 [![PyPI version](https://badge.fury.io/py/pyptine.svg)](https://badge.fury.io/py/pyptine)
 [![Build Status](https://github.com/nigelrandsley/pyptine/actions/workflows/tests.yml/badge.svg)](https://github.com/nigelrandsley/pyptine)
 [![codecov](https://codecov.io/gh/nigelrandsley/pyptine/branch/main/graph/badge.svg?token=YOUR_CODECOV_TOKEN)](https://codecov.io/gh/nigelrandsley/pyptine)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://github.com/randsley/pyptine)
 
 High-level Python client for Statistics Portugal (INE) API. Query and download statistical data from [INE Portugal](https://www.ine.pt) with a simple, intuitive interface.
 
 ## Features
 
 - 🎯 **High-level Convenience API**: Simple interface for common data retrieval and analysis tasks.
+- ⚡ **Async Support**: Non-blocking I/O with `AsyncINE` for concurrent requests using httpx.
 - 📊 **Multiple Output Formats**: Export data to pandas DataFrames, JSON, or CSV with ease.
+- 📈 **Data Visualization**: Interactive plotly charts (line, bar, area, scatter) directly from data.
+- 🔬 **Statistical Analysis**: Built-in YoY growth, MoM changes, moving averages, and EMA calculations.
 - 💾 **Smart Caching**: Disk-based caching reduces redundant API calls, speeding up repeated queries.
 - 🔍 **Metadata Browsing**: Search and discover indicators, themes, and dimensions.
-- 🖥️ **Command-Line Interface**: A powerful CLI for quick data access and scripting.
+- 🖥️ **Enhanced CLI**: Rich formatting with progress bars, tables, and colored output.
+- 📑 **True Pagination**: Efficient streaming of large datasets with `get_all_data()`.
 - 📖 **Modern Python**: Fully type-annotated for better developer experience and IDE support.
-- ✅ **Well-Tested**: Comprehensive test suite with 73% code coverage.
+- ✅ **Well-Tested**: Comprehensive test suite with 81% code coverage (239 tests).
 - 🔄 **API Compatible**: Supports both old and new INE API response formats seamlessly.
 
 ## Installation
@@ -61,6 +66,43 @@ print(f"\nExporting data to {output_file}...")
 ine.export_csv(varcd, output_file)
 print("Done!")
 ```
+
+## Async API
+
+For concurrent requests and non-blocking I/O, use the `AsyncINE` client:
+
+```python
+import asyncio
+from pyptine import AsyncINE
+
+async def main():
+    async with AsyncINE(language="EN") as ine:
+        # Fetch single indicator
+        response = await ine.get_data("0004167")
+        df = response.to_dataframe()
+        print(df.head())
+
+        # Fetch multiple indicators concurrently
+        import asyncio
+        responses = await asyncio.gather(
+            ine.get_data("0004167"),
+            ine.get_data("0004127"),
+            ine.get_data("0008074")
+        )
+
+        # Stream large datasets
+        async for chunk in ine.get_all_data("0004127", chunk_size=40000):
+            df_chunk = chunk.to_dataframe()
+            print(f"Processing {len(df_chunk)} rows...")
+
+asyncio.run(main())
+```
+
+**AsyncINE Features:**
+- Non-blocking I/O for faster concurrent requests
+- Async iterator for memory-efficient pagination
+- Same API as the synchronous `INE` client
+- Automatic connection pooling and retries
 
 ## Command-Line Usage
 
@@ -337,6 +379,15 @@ The main class for interacting with the INE API.
 | `export_json(varcd, ...)` | Export indicator data to a JSON file. |
 | `clear_cache()` | Clear all cached data. |
 | `get_cache_info()` | Get statistics about the cache. |
+
+---
+
+## Links & Resources
+
+- **PyPI Package**: https://pypi.org/project/pyptine/
+- **GitHub Repository**: https://github.com/randsley/pyptine
+- **Issue Tracker**: https://github.com/randsley/pyptine/issues
+- **INE Portal**: https://www.ine.pt/
 
 ---
 
