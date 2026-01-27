@@ -113,6 +113,8 @@ def plot_indicator(
             **kwargs,
         )
 
+    return None
+
 
 def plot_line_chart(
     data: Union[list[dict[str, Any]], "pd.DataFrame"],

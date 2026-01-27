@@ -157,7 +157,7 @@ class AsyncINEClient:
             APIError: If JSON parsing fails
         """
         try:
-            data = response.json()
+            data: dict[str, Any] = response.json()
             logger.debug(f"Parsed JSON response with {len(str(data))} characters")
             return data
         except ValueError as e:

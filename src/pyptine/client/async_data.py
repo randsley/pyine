@@ -2,7 +2,7 @@
 
 import logging
 from collections.abc import AsyncIterator
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
 
 from pyptine.client.async_base import AsyncINEClient
 from pyptine.client.metadata import MetadataClient
@@ -69,7 +69,9 @@ class AsyncDataClient(AsyncINEClient):
             )
 
             # Parse response
-            data_response = self._parse_data_response(varcd, raw_response)
+            data_response = self._parse_data_response(
+                varcd, cast(Union[dict[str, Any], list[dict[str, Any]]], raw_response)
+            )
 
             logger.info(f"Retrieved {len(data_response.data)} data points for {varcd}")
 
@@ -122,7 +124,9 @@ class AsyncDataClient(AsyncINEClient):
                 )
 
                 # Parse response
-                data_response = self._parse_data_response(varcd, raw_response)
+                data_response = self._parse_data_response(
+                    varcd, cast(Union[dict[str, Any], list[dict[str, Any]]], raw_response)
+                )
 
                 chunk_size_received = len(data_response.data)
                 total_fetched += chunk_size_received

@@ -2,7 +2,7 @@
 
 import logging
 from collections.abc import AsyncIterator
-from typing import Optional
+from typing import Any, Optional
 
 from pyptine.client.async_data import AsyncDataClient
 from pyptine.client.metadata import MetadataClient
@@ -69,7 +69,7 @@ class AsyncINE:
         await self.data_client.__aenter__()
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+    async def __aexit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         """Async context manager exit."""
         if self.data_client:
             await self.data_client.__aexit__(exc_type, exc_val, exc_tb)
@@ -135,7 +135,7 @@ class AsyncINE:
         async for chunk in self.data_client.get_all_data(varcd, dimensions, chunk_size):
             yield chunk
 
-    async def get_metadata(self, varcd: str):
+    async def get_metadata(self, varcd: str) -> Any:
         """Fetch indicator metadata.
 
         Args:
@@ -154,7 +154,7 @@ class AsyncINE:
 
         return self.metadata_client.get_metadata(varcd)
 
-    async def get_dimensions(self, varcd: str):
+    async def get_dimensions(self, varcd: str) -> Any:
         """Fetch available dimensions for an indicator.
 
         Args:
@@ -174,7 +174,7 @@ class AsyncINE:
 
         return self.metadata_client.get_dimensions(varcd)
 
-    async def get_indicator(self, varcd: str):
+    async def get_indicator(self, varcd: str) -> Any:
         """Fetch indicator metadata from catalogue.
 
         Args:
