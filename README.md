@@ -1,6 +1,6 @@
 # pyptine - INE Portugal API Client
 
-[![PyPI version](https://badge.fury.io/py/pyptine.svg)](https://badge.fury.io/py/pyptine)
+[![PyPI version](https://badge.fury.io/py/pyptine.svg)](https://pypi.org/project/pyptine/)
 [![Build Status](https://github.com/nigelrandsley/pyptine/actions/workflows/tests.yml/badge.svg)](https://github.com/nigelrandsley/pyptine)
 [![codecov](https://codecov.io/gh/nigelrandsley/pyptine/branch/main/graph/badge.svg?token=YOUR_CODECOV_TOKEN)](https://codecov.io/gh/nigelrandsley/pyptine)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
