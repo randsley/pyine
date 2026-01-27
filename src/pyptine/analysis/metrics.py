@@ -1,7 +1,7 @@
 """Statistical metrics for data analysis."""
 
 import logging
-from typing import Any
+from typing import Any, cast
 
 try:
     import pandas as pd
@@ -70,7 +70,7 @@ def calculate_yoy_growth(
 
     logger.debug(f"Calculated YoY growth for {len(df)} data points")
 
-    return df.to_dict(orient="records")
+    return cast(list[dict[str, Any]], df.to_dict(orient="records"))
 
 
 def calculate_mom_change(
@@ -130,7 +130,7 @@ def calculate_mom_change(
 
     logger.debug(f"Calculated MoM change for {len(df)} data points")
 
-    return df.to_dict(orient="records")
+    return cast(list[dict[str, Any]], df.to_dict(orient="records"))
 
 
 def calculate_moving_average(
@@ -195,7 +195,7 @@ def calculate_moving_average(
 
     logger.debug(f"Calculated {window}-period moving average for {len(df)} data points")
 
-    return df.to_dict(orient="records")
+    return cast(list[dict[str, Any]], df.to_dict(orient="records"))
 
 
 def calculate_exponential_moving_average(
@@ -257,4 +257,4 @@ def calculate_exponential_moving_average(
 
     logger.debug(f"Calculated EMA (span={span}) for {len(df)} data points")
 
-    return df.to_dict(orient="records")
+    return cast(list[dict[str, Any]], df.to_dict(orient="records"))
