@@ -5,6 +5,70 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-01-27
+
+### Added
+
+- **Real-time Progress Tracking**: First-run catalogue downloads now show real-time progress with spinner, bytes downloaded, and transfer speed
+- **Context-aware Progress Display**: Automatically detects cached vs fresh downloads and shows appropriate progress indicators
+- **Progress Callback API**: Full API support for progress tracking throughout the call chain (`INE.search()`, `INE.list_themes()`, etc.)
+- **Cache Detection**: New `CatalogueBrowser.is_catalogue_cached()` method to determine if catalogue needs downloading
+
+### Fixed
+
+- **Windows Compatibility**: Fixed Unicode symbol encoding issues in CLI output (✓, ✗, ℹ symbols now use ASCII-safe alternatives on Windows)
+
+### Changed
+
+- **Indeterminate Progress**: Uses spinner-based progress for catalogue downloads (INE API doesn't provide Content-Length header)
+- **Improved UX**: Users now see clear feedback during first-run downloads with informative messages
+
+## [0.2.0] - 2026-01-16 (Unreleased)
+
+### Added
+
+#### Async Support
+- **AsyncINE Client**: Non-blocking I/O for concurrent requests using httpx
+- **Async Iterators**: Memory-efficient streaming with `async for` support in `get_all_data()`
+- **Connection Pooling**: Automatic connection management and retries for async operations
+- **Concurrent Requests**: Fetch multiple indicators simultaneously using `asyncio.gather()`
+
+#### Data Visualization
+- **Interactive Charts**: Create plotly visualizations directly from `DataResponse` objects
+- **Multiple Chart Types**: Support for line, bar, area, and scatter plots
+- **Visualization Methods**: `plot()`, `plot_line()`, `plot_bar()`, `plot_area()`, `plot_scatter()`
+- **Customization**: Color coding, custom axes, markers, and export to HTML/PNG/SVG
+
+#### Advanced Analytics
+- **Year-over-year Growth**: `calculate_yoy_growth()` method on `DataResponse`
+- **Month-over-month Changes**: `calculate_mom_change()` method
+- **Moving Averages**: `calculate_moving_average(window)` for trend analysis
+- **Exponential Moving Averages**: `calculate_exponential_moving_average(span)` for weighted averages
+- **Chainable Operations**: Combine multiple analyses (e.g., `response.calculate_yoy_growth().calculate_moving_average(3)`)
+
+#### CLI Enhancements
+- **Rich Formatting**: Beautiful tables, panels, and colored output using rich library
+- **Progress Indicators**: Spinners and progress bars for long-running operations
+- **Better Error Handling**: User-friendly error messages with context
+- **Configurable Timeout**: Added `--timeout` option for search command
+
+#### True Pagination
+- **`get_all_data()` Method**: Automatically handles datasets exceeding 40,000 data point limit
+- **Streaming Support**: Process large datasets in memory-efficient chunks
+- **Customizable Chunk Size**: Control memory usage with configurable chunk sizes
+
+### Changed
+
+- **CLI Parameter**: Renamed `format` to `output_format` in download command
+- **Dependencies**: Added httpx (async), plotly (visualization), rich (CLI formatting)
+
+### Fixed
+
+- **Duplicate API Calls**: Eliminated duplicate search API calls in search command
+- **Type Checking**: Resolved mypy type checking errors
+- **Code Quality**: Fixed ruff linting issues and applied black formatting throughout
+- **Test Reliability**: Replaced flaky dimension test with stable download test
+
 ## [0.1.3] - 2026-01-15
 
 ### Fixed
@@ -102,4 +166,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project summary document
 - Three example files (basic usage, advanced filtering, CLI examples)
 
+[0.3.0]: https://github.com/randsley/pyptine/releases/tag/v0.3.0
+[0.2.0]: https://github.com/randsley/pyptine/compare/v0.1.3...v0.2.0
+[0.1.3]: https://github.com/randsley/pyptine/releases/tag/v0.1.3
 [0.1.0]: https://github.com/nigelrandsley/pyptine/releases/tag/v0.1.0
