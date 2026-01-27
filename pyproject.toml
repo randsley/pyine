@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyptine"
-version = "0.1.0"
+version = "0.2.0"
 description = "High-level Python client for INE Portugal (Statistics Portugal) API"
 authors = [{name = "Nigel Randsley", email = "nigel.randsley@gmail.com"}]
 readme = "README.md"
