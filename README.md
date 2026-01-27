@@ -1,11 +1,10 @@
 # pyptine - INE Portugal API Client
 
-[![PyPI version](https://badge.fury.io/py/pyptine.svg)](https://pypi.org/project/pyptine/)
-[![Build Status](https://github.com/nigelrandsley/pyptine/actions/workflows/tests.yml/badge.svg)](https://github.com/nigelrandsley/pyptine)
-[![codecov](https://codecov.io/gh/nigelrandsley/pyptine/branch/main/graph/badge.svg?token=YOUR_CODECOV_TOKEN)](https://codecov.io/gh/nigelrandsley/pyptine)
+[![PyPI version](https://img.shields.io/pypi/v/pyptine.svg)](https://pypi.org/project/pyptine/)
+[![Build Status](https://github.com/nigelrandsley/pyptine/actions/workflows/tests.yml/badge.svg)](https://github.com/nigelrandsley/pyptine/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/nigelrandsley/pyptine/branch/main/graph/badge.svg)](https://codecov.io/gh/nigelrandsley/pyptine)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://github.com/randsley/pyptine)
 
 High-level Python client for Statistics Portugal (INE) API. Query and download statistical data from [INE Portugal](https://www.ine.pt) with a simple, intuitive interface.
 
