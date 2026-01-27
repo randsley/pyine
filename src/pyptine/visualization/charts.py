@@ -62,10 +62,7 @@ def plot_indicator(
         raise ImportError("pandas is required for visualization. Install with: pip install pandas")
 
     # Convert to DataFrame if needed
-    if isinstance(data, list):
-        df = pd.DataFrame(data)
-    else:
-        df = data.copy()
+    df = pd.DataFrame(data) if isinstance(data, list) else data.copy()
 
     if df.empty:
         logger.warning("Data is empty, cannot create visualization")
@@ -146,10 +143,7 @@ def plot_line_chart(
     if not PLOTLY_AVAILABLE or not PANDAS_AVAILABLE:
         raise ImportError("plotly and pandas are required")
 
-    if isinstance(data, list):
-        df = pd.DataFrame(data)
-    else:
-        df = data.copy()
+    df = pd.DataFrame(data) if isinstance(data, list) else data.copy()
 
     fig = px.line(
         df,
@@ -203,10 +197,7 @@ def plot_bar_chart(
     if not PLOTLY_AVAILABLE or not PANDAS_AVAILABLE:
         raise ImportError("plotly and pandas are required")
 
-    if isinstance(data, list):
-        df = pd.DataFrame(data)
-    else:
-        df = data.copy()
+    df = pd.DataFrame(data) if isinstance(data, list) else data.copy()
 
     fig = px.bar(
         df,
@@ -259,10 +250,7 @@ def plot_area_chart(
     if not PLOTLY_AVAILABLE or not PANDAS_AVAILABLE:
         raise ImportError("plotly and pandas are required")
 
-    if isinstance(data, list):
-        df = pd.DataFrame(data)
-    else:
-        df = data.copy()
+    df = pd.DataFrame(data) if isinstance(data, list) else data.copy()
 
     fig = px.area(
         df,
@@ -317,10 +305,7 @@ def plot_scatter_chart(
     if not PLOTLY_AVAILABLE or not PANDAS_AVAILABLE:
         raise ImportError("plotly and pandas are required")
 
-    if isinstance(data, list):
-        df = pd.DataFrame(data)
-    else:
-        df = data.copy()
+    df = pd.DataFrame(data) if isinstance(data, list) else data.copy()
 
     fig = px.scatter(
         df,
