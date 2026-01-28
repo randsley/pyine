@@ -133,7 +133,7 @@ def search(
             progress.update(task_id, completed=True)
     else:
         # Slow path: need to download catalogue with progress bar
-        from rich.progress import Progress, BarColumn, DownloadColumn, TransferSpeedColumn
+        from rich.progress import DownloadColumn, Progress, TransferSpeedColumn
 
         print_info(
             "First Run",
