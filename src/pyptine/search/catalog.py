@@ -40,18 +40,17 @@ class CatalogueBrowser:
         self._cached_indicators: Optional[list[Indicator]] = None
 
     def is_catalogue_cached(self) -> bool:
-        """Check if catalogue is cached in memory.
+        """Check if catalogue is cached (memory or disk).
 
         Returns:
-            True if catalogue is cached in memory, False otherwise
-
-        Note:
-            This only checks the in-memory cache. The disk cache check is
-            unreliable because requests-cache may have the data cached but
-            we still want to show progress for first-time use in a session.
+            True if catalogue is cached, False otherwise
         """
-        # Only check in-memory cache for more reliable first-run detection
-        return self._cached_indicators is not None
+        # Check in-memory cache first (fastest)
+        if self._cached_indicators is not None:
+            return True
+
+        # Check disk cache
+        return self.client.is_catalogue_cached_on_disk()
 
     def get_all_indicators(
         self, use_cache: bool = True, progress_callback: Optional[Any] = None

@@ -276,6 +276,14 @@ class INE:
         """
         return self.browser.list_themes(progress_callback=progress_callback)
 
+    def is_catalogue_cached(self) -> bool:
+        """Check if catalogue is cached (memory or disk).
+
+        Returns:
+            True if catalogue data is available in cache
+        """
+        return self.browser.is_catalogue_cached()
+
     def export_csv(
         self,
         varcd: str,
