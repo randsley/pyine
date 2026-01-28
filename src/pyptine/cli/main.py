@@ -549,16 +549,19 @@ def cache_info() -> None:
         meta_info = info["metadata_cache"]
         console.print("[bold cyan]Metadata Cache[/bold cyan]")
         console.print(f"  Entries: {meta_info.get('size', 0)}")
-        if "path" in meta_info:
-            console.print(f"  Location: {meta_info['path']}")
 
     # Display data cache info
     if "data_cache" in info:
         data_info = info["data_cache"]
         console.print("\n[bold cyan]Data Cache[/bold cyan]")
         console.print(f"  Entries: {data_info.get('size', 0)}")
-        if "path" in data_info:
-            console.print(f"  Location: {data_info['path']}")
+
+    # Display total size and location
+    if "total_size_mb" in info:
+        console.print(f"\n[bold cyan]Total Size[/bold cyan]: {info['total_size_mb']:.1f} MB")
+
+    if "metadata_cache" in info and info["metadata_cache"].get("path"):
+        console.print(f"[bold cyan]Location[/bold cyan]: {info['metadata_cache']['path']}")
 
 
 @cache.command(name="clear")
