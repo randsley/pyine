@@ -159,9 +159,7 @@ async def example_8_async_with_dimensions() -> None:
         print("Fetching population data for multiple years...")
         years = ["S7A2020", "S7A2021", "S7A2022", "S7A2023"]
 
-        tasks = [
-            ine.get_data("0004167", dimensions={"Dim1": year, "Dim2": "PT"}) for year in years
-        ]
+        tasks = [ine.get_data("0004167", dimensions={"Dim1": year, "Dim2": "PT"}) for year in years]
 
         responses = await asyncio.gather(*tasks)
 

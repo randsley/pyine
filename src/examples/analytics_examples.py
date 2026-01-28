@@ -315,9 +315,7 @@ def example_10_comprehensive_analysis() -> None:
     print(f"Columns: {list(df.columns)}")
     print(f"\nRecent data (last 10 periods):")
     print(
-        df[["Period", "value", "yoy_growth", "mom_change", "moving_avg", "exp_moving_avg"]].tail(
-            10
-        )
+        df[["Period", "value", "yoy_growth", "mom_change", "moving_avg", "exp_moving_avg"]].tail(10)
     )
 
     # Summary statistics
