@@ -29,7 +29,7 @@ def example_1_yoy_growth() -> None:
     # Display results
     print("\nData with YoY growth:")
     print(f"Columns: {list(df.columns)}")
-    print(f"\nFirst 10 rows:")
+    print("\nFirst 10 rows:")
     print(df[["Period", "value", "yoy_growth"]].head(10))
 
     # Save to CSV
@@ -60,7 +60,7 @@ def example_2_mom_change() -> None:
     # Display results
     print("\nData with MoM change:")
     print(f"Columns: {list(df.columns)}")
-    print(f"\nFirst 10 rows:")
+    print("\nFirst 10 rows:")
     print(df[["Period", "value", "mom_change"]].head(10))
 
     # Save to CSV
@@ -91,7 +91,7 @@ def example_3_moving_average() -> None:
     # Display results
     print("\nData with moving average:")
     print(f"Columns: {list(df.columns)}")
-    print(f"\nFirst 10 rows:")
+    print("\nFirst 10 rows:")
     print(df[["Period", "value", "moving_avg"]].head(10))
 
     # Save to CSV
@@ -122,7 +122,7 @@ def example_4_exponential_moving_average() -> None:
     # Display results
     print("\nData with exponential moving average:")
     print(f"Columns: {list(df.columns)}")
-    print(f"\nFirst 10 rows:")
+    print("\nFirst 10 rows:")
     print(df[["Period", "value", "exp_moving_avg"]].head(10))
 
     # Save to CSV
@@ -153,7 +153,7 @@ def example_5_chained_analysis() -> None:
     # Display results
     print("\nData with chained analysis:")
     print(f"Columns: {list(df.columns)}")
-    print(f"\nFirst 10 rows:")
+    print("\nFirst 10 rows:")
     print(df[["Period", "value", "yoy_growth", "moving_avg"]].head(10))
 
     # Save to CSV
@@ -313,7 +313,7 @@ def example_10_comprehensive_analysis() -> None:
     # Display comprehensive results
     print("\nComprehensive Analysis Results:")
     print(f"Columns: {list(df.columns)}")
-    print(f"\nRecent data (last 10 periods):")
+    print("\nRecent data (last 10 periods):")
     print(
         df[["Period", "value", "yoy_growth", "mom_change", "moving_avg", "exp_moving_avg"]].tail(10)
     )

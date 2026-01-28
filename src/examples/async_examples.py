@@ -5,6 +5,7 @@ and concurrent API requests.
 """
 
 import asyncio
+
 from pyptine import AsyncINE
 
 
@@ -18,9 +19,9 @@ async def example_1_basic_async() -> None:
         # Fetch single indicator
         response = await ine.get_data("0004167")
         df = response.to_dataframe()
-        print(f"Fetched data for indicator 0004167")
+        print("Fetched data for indicator 0004167")
         print(f"Data shape: {df.shape}")
-        print(f"First 5 rows:")
+        print("First 5 rows:")
         print(df.head())
 
 
