@@ -7,7 +7,7 @@ using plotly directly from DataResponse objects.
 from pyptine import INE
 
 
-def example_1_basic_line_chart():
+def example_1_basic_line_chart() -> None:
     """Example 1: Create a basic line chart."""
     print("=" * 60)
     print("Example 1: Basic Line Chart")
@@ -32,7 +32,7 @@ def example_1_basic_line_chart():
     print(f"Chart saved to {output_file}")
 
 
-def example_2_line_chart_with_markers():
+def example_2_line_chart_with_markers() -> None:
     """Example 2: Line chart with markers."""
     print("\n" + "=" * 60)
     print("Example 2: Line Chart with Markers")
@@ -63,7 +63,7 @@ def example_2_line_chart_with_markers():
     print(f"Chart saved to {output_file}")
 
 
-def example_3_bar_chart():
+def example_3_bar_chart() -> None:
     """Example 3: Create a bar chart."""
     print("\n" + "=" * 60)
     print("Example 3: Bar Chart")
@@ -92,7 +92,7 @@ def example_3_bar_chart():
     print(f"Chart saved to {output_file}")
 
 
-def example_4_area_chart():
+def example_4_area_chart() -> None:
     """Example 4: Create an area chart."""
     print("\n" + "=" * 60)
     print("Example 4: Area Chart")
@@ -122,7 +122,7 @@ def example_4_area_chart():
     print(f"Chart saved to {output_file}")
 
 
-def example_5_scatter_plot():
+def example_5_scatter_plot() -> None:
     """Example 5: Create a scatter plot."""
     print("\n" + "=" * 60)
     print("Example 5: Scatter Plot")
@@ -151,7 +151,7 @@ def example_5_scatter_plot():
     print(f"Chart saved to {output_file}")
 
 
-def example_6_generic_plot():
+def example_6_generic_plot() -> None:
     """Example 6: Use generic plot method with chart type parameter."""
     print("\n" + "=" * 60)
     print("Example 6: Generic Plot Method")
@@ -176,7 +176,7 @@ def example_6_generic_plot():
         print(f"  Saved to {output_file}")
 
 
-def example_7_custom_columns():
+def example_7_custom_columns() -> None:
     """Example 7: Specify custom columns for x and y axes."""
     print("\n" + "=" * 60)
     print("Example 7: Custom Column Selection")
@@ -201,7 +201,7 @@ def example_7_custom_columns():
     print(f"Chart saved to {output_file}")
 
 
-def example_8_multiple_indicators():
+def example_8_multiple_indicators() -> None:
     """Example 8: Compare multiple indicators on separate charts."""
     print("\n" + "=" * 60)
     print("Example 8: Multiple Indicators")
@@ -236,7 +236,7 @@ def example_8_multiple_indicators():
         print(f"    Saved to {output_file}")
 
 
-def example_9_advanced_customization():
+def example_9_advanced_customization() -> None:
     """Example 9: Advanced chart customization."""
     print("\n" + "=" * 60)
     print("Example 9: Advanced Customization")
@@ -292,7 +292,7 @@ def example_9_advanced_customization():
     print(f"Chart saved to {output_file}")
 
 
-def example_10_export_formats():
+def example_10_export_formats() -> None:
     """Example 10: Export charts to different formats."""
     print("\n" + "=" * 60)
     print("Example 10: Export to Multiple Formats")
@@ -328,7 +328,7 @@ def example_10_export_formats():
     print("  pip install kaleido")
 
 
-def main():
+def main() -> None:
     """Run all visualization examples."""
     print("\n" + "=" * 80)
     print("PYPTINE VISUALIZATION EXAMPLES")

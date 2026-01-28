@@ -8,7 +8,7 @@ import asyncio
 from pyptine import AsyncINE
 
 
-async def example_1_basic_async():
+async def example_1_basic_async() -> None:
     """Example 1: Basic async usage with context manager."""
     print("=" * 60)
     print("Example 1: Basic Async Usage")
@@ -24,7 +24,7 @@ async def example_1_basic_async():
         print(df.head())
 
 
-async def example_2_concurrent_requests():
+async def example_2_concurrent_requests() -> None:
     """Example 2: Fetch multiple indicators concurrently."""
     print("\n" + "=" * 60)
     print("Example 2: Concurrent Requests")
@@ -45,7 +45,7 @@ async def example_2_concurrent_requests():
             print(f"  {i}. Indicator: {response.varcd}, Data points: {len(df)}")
 
 
-async def example_3_async_search():
+async def example_3_async_search() -> None:
     """Example 3: Async search operations."""
     print("\n" + "=" * 60)
     print("Example 3: Async Search")
@@ -54,7 +54,7 @@ async def example_3_async_search():
     async with AsyncINE(language="EN") as ine:
         # Search for indicators
         print("Searching for 'gdp' indicators...")
-        results = await ine.search("gdp")
+        results = await ine.search("gdp")  # type: ignore[attr-defined]
         print(f"Found {len(results)} indicators")
 
         # Display first 5 results
@@ -63,7 +63,7 @@ async def example_3_async_search():
             print(f"  - {indicator.varcd}: {indicator.title}")
 
 
-async def example_4_async_metadata():
+async def example_4_async_metadata() -> None:
     """Example 4: Fetch metadata asynchronously."""
     print("\n" + "=" * 60)
     print("Example 4: Async Metadata Fetching")
@@ -85,7 +85,7 @@ async def example_4_async_metadata():
             print(f"    - Dimensions: {len(metadata.dimensions)}")
 
 
-async def example_5_streaming_large_dataset():
+async def example_5_streaming_large_dataset() -> None:
     """Example 5: Stream large datasets with async iterator."""
     print("\n" + "=" * 60)
     print("Example 5: Streaming Large Datasets")
@@ -107,7 +107,7 @@ async def example_5_streaming_large_dataset():
         print(f"Total chunks: {chunk_count}")
 
 
-async def example_6_error_handling():
+async def example_6_error_handling() -> None:
     """Example 6: Error handling in async operations."""
     print("\n" + "=" * 60)
     print("Example 6: Error Handling")
@@ -129,7 +129,7 @@ async def example_6_error_handling():
         print(f"Successfully fetched indicator {response.varcd}")
 
 
-async def example_7_batch_processing():
+async def example_7_batch_processing() -> None:
     """Example 7: Batch process multiple search queries."""
     print("\n" + "=" * 60)
     print("Example 7: Batch Processing")
@@ -140,7 +140,7 @@ async def example_7_batch_processing():
         search_terms = ["population", "gdp", "employment", "inflation"]
         print(f"Searching for {len(search_terms)} terms concurrently...")
 
-        tasks = [ine.search(term) for term in search_terms]
+        tasks = [ine.search(term) for term in search_terms]  # type: ignore[attr-defined]
         results = await asyncio.gather(*tasks)
 
         print("\nSearch results:")
@@ -148,7 +148,7 @@ async def example_7_batch_processing():
             print(f"  '{term}': {len(result_list)} indicators found")
 
 
-async def example_8_async_with_dimensions():
+async def example_8_async_with_dimensions() -> None:
     """Example 8: Fetch data with dimension filters asynchronously."""
     print("\n" + "=" * 60)
     print("Example 8: Async with Dimension Filters")
@@ -171,7 +171,7 @@ async def example_8_async_with_dimensions():
             print(f"  Year data: {len(df)} rows")
 
 
-async def example_9_async_export():
+async def example_9_async_export() -> None:
     """Example 9: Export data asynchronously."""
     print("\n" + "=" * 60)
     print("Example 9: Async Export")
@@ -192,7 +192,7 @@ async def example_9_async_export():
         print(f"Data exported to {output_file}")
 
 
-async def example_10_performance_comparison():
+async def example_10_performance_comparison() -> None:
     """Example 10: Compare async vs sequential performance."""
     print("\n" + "=" * 60)
     print("Example 10: Performance Comparison")
@@ -213,7 +213,7 @@ async def example_10_performance_comparison():
         print(f"Average per indicator: {concurrent_time / len(indicators):.2f} seconds")
 
 
-async def main():
+async def main() -> None:
     """Run all async examples."""
     print("\n" + "=" * 80)
     print("PYPTINE ASYNC EXAMPLES")

@@ -7,7 +7,7 @@ calculating year-over-year growth, moving averages, and other statistical measur
 from pyptine import INE
 
 
-def example_1_yoy_growth():
+def example_1_yoy_growth() -> None:
     """Example 1: Calculate Year-over-Year (YoY) growth."""
     print("=" * 60)
     print("Example 1: Year-over-Year Growth")
@@ -38,7 +38,7 @@ def example_1_yoy_growth():
     print(f"\nSaved to {output_file}")
 
 
-def example_2_mom_change():
+def example_2_mom_change() -> None:
     """Example 2: Calculate Month-over-Month (MoM) change."""
     print("\n" + "=" * 60)
     print("Example 2: Month-over-Month Change")
@@ -69,7 +69,7 @@ def example_2_mom_change():
     print(f"\nSaved to {output_file}")
 
 
-def example_3_moving_average():
+def example_3_moving_average() -> None:
     """Example 3: Calculate Simple Moving Average (SMA)."""
     print("\n" + "=" * 60)
     print("Example 3: Simple Moving Average")
@@ -100,7 +100,7 @@ def example_3_moving_average():
     print(f"\nSaved to {output_file}")
 
 
-def example_4_exponential_moving_average():
+def example_4_exponential_moving_average() -> None:
     """Example 4: Calculate Exponential Moving Average (EMA)."""
     print("\n" + "=" * 60)
     print("Example 4: Exponential Moving Average")
@@ -131,7 +131,7 @@ def example_4_exponential_moving_average():
     print(f"\nSaved to {output_file}")
 
 
-def example_5_chained_analysis():
+def example_5_chained_analysis() -> None:
     """Example 5: Chain multiple analytical methods."""
     print("\n" + "=" * 60)
     print("Example 5: Chained Analysis")
@@ -162,7 +162,7 @@ def example_5_chained_analysis():
     print(f"\nSaved to {output_file}")
 
 
-def example_6_multiple_window_sizes():
+def example_6_multiple_window_sizes() -> None:
     """Example 6: Compare different moving average window sizes."""
     print("\n" + "=" * 60)
     print("Example 6: Multiple Window Sizes")
@@ -191,7 +191,7 @@ def example_6_multiple_window_sizes():
         print(df[["Period", "value", "moving_avg"]].head(5))
 
 
-def example_7_trend_analysis():
+def example_7_trend_analysis() -> None:
     """Example 7: Analyze trends using YoY and moving averages."""
     print("\n" + "=" * 60)
     print("Example 7: Trend Analysis")
@@ -219,7 +219,7 @@ def example_7_trend_analysis():
     print(ma_df[["Period", "value", "moving_avg"]].tail(10))
 
 
-def example_8_volatility_analysis():
+def example_8_volatility_analysis() -> None:
     """Example 8: Analyze volatility using MoM changes."""
     print("\n" + "=" * 60)
     print("Example 8: Volatility Analysis")
@@ -247,7 +247,7 @@ def example_8_volatility_analysis():
     print(df[["Period", "value", "mom_change"]].tail(10))
 
 
-def example_9_smoothing_comparison():
+def example_9_smoothing_comparison() -> None:
     """Example 9: Compare simple and exponential moving averages."""
     print("\n" + "=" * 60)
     print("Example 9: Smoothing Comparison (SMA vs EMA)")
@@ -284,7 +284,7 @@ def example_9_smoothing_comparison():
         )
 
 
-def example_10_comprehensive_analysis():
+def example_10_comprehensive_analysis() -> None:
     """Example 10: Comprehensive multi-metric analysis."""
     print("\n" + "=" * 60)
     print("Example 10: Comprehensive Analysis")
@@ -333,7 +333,7 @@ def example_10_comprehensive_analysis():
     print(f"\nComprehensive analysis saved to {output_file}")
 
 
-def main():
+def main() -> None:
     """Run all analytics examples."""
     print("\n" + "=" * 80)
     print("PYPTINE ANALYTICS EXAMPLES")
