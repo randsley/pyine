@@ -388,8 +388,15 @@ class INE:
             stats = self.base_client.cache.get_stats()
             return {
                 "enabled": True,
-                "metadata_cache": stats.get("metadata", {}),
-                "data_cache": stats.get("data", {}),
+                "metadata_cache": {
+                    "size": stats.get("metadata_entries", 0),
+                    "path": stats.get("cache_dir", ""),
+                },
+                "data_cache": {
+                    "size": stats.get("data_entries", 0),
+                    "path": stats.get("cache_dir", ""),
+                },
+                "total_size_mb": stats.get("cache_size_mb", 0),
             }
         else:
             return {"enabled": False}
