@@ -227,6 +227,25 @@ class DiskCache(CacheBackend):
             logger.debug(f"Error calculating directory size: {e}")
         return total
 
+    def has_catalogue_cached(self) -> bool:
+        """Check if catalogue data is cached.
+
+        Returns:
+            True if catalogue responses exist in metadata cache
+        """
+        try:
+            # Check if any catalogue URL is in the metadata cache
+            responses = self.metadata_cache.cache.responses
+            for key in responses:
+                response = responses[key]
+                url = str(response.url)
+                if "xml_indic.jsp" in url and "opc=2" in url:
+                    return True
+            return False
+        except Exception as e:
+            logger.debug(f"Error checking catalogue cache: {e}")
+            return False
+
     def close(self) -> None:
         """Close cache sessions and cleanup."""
         try:

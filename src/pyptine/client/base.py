@@ -303,6 +303,16 @@ class INEClient:
             logger.error(f"Failed to parse XML response: {str(e)}")
             raise APIError(0, f"Invalid XML response: {str(e)}") from e
 
+    def is_catalogue_cached_on_disk(self) -> bool:
+        """Check if catalogue data is cached on disk.
+
+        Returns:
+            True if catalogue is in disk cache
+        """
+        if not self.cache_enabled or self.cache is None:
+            return False
+        return self.cache.has_catalogue_cached()
+
     def close(self) -> None:
         """Close HTTP session and cleanup resources.
 
